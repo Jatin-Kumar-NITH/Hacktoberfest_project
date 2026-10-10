@@ -1,0 +1,52 @@
+{
+  "college": "Sample Institute of Technology",
+  "note": "Sample data for the demo. Replace data/hostel.json with your college's real information.",
+  "announcements": [
+    {"date": "2026-10-09", "title": "Water supply off in Block C", "body": "Water supply in Block C will be off from 10 AM to 1 PM on Sunday for tank cleaning."},
+    {"date": "2026-10-08", "title": "Diwali stay-back form open", "body": "Residents staying during the vacation must fill the stay-back form on the student portal."},
+    {"date": "2026-10-06", "title": "Wi-Fi maintenance", "body": "Hostel Wi-Fi may be slow on Wednesday night between 11 PM and 2 AM due to router upgrades."}
+  ],
+  "mess_menu": {
+    "Monday":    {"Breakfast": "Poha, banana, tea/coffee", "Lunch": "Rajma, jeera rice, roti, salad", "Snacks": "Samosa, tea", "Dinner": "Mix veg, dal tadka, roti, rice"},
+    "Tuesday":   {"Breakfast": "Aloo paratha, curd, tea/coffee", "Lunch": "Chole, rice, roti, raita", "Snacks": "Bread pakora, tea", "Dinner": "Paneer butter masala, roti, rice, dal"},
+    "Wednesday": {"Breakfast": "Idli, sambar, chutney", "Lunch": "Kadhi pakora, rice, roti, aloo sabzi", "Snacks": "Biscuits, tea", "Dinner": "Egg curry / matar paneer, roti, rice"},
+    "Thursday":  {"Breakfast": "Upma, boiled eggs, tea/coffee", "Lunch": "Dal makhani, rice, roti, bhindi", "Snacks": "Veg sandwich, tea", "Dinner": "Aloo gobi, dal, roti, rice, kheer"},
+    "Friday":    {"Breakfast": "Puri, aloo sabzi, tea/coffee", "Lunch": "Sambar, rice, roti, cabbage sabzi", "Snacks": "Maggi, tea", "Dinner": "Veg biryani, raita, salad"},
+    "Saturday":  {"Breakfast": "Dosa, sambar, chutney", "Lunch": "Moong dal, rice, roti, lauki sabzi", "Snacks": "Pakora, tea", "Dinner": "Chicken curry / kadhai paneer, roti, rice"},
+    "Sunday":    {"Breakfast": "Chole bhature, tea/coffee", "Lunch": "Special thali, gulab jamun", "Snacks": "Fruit chaat", "Dinner": "Khichdi, kadhi, papad"}
+  },
+  "mess_timings": {"Breakfast": "7:30 – 9:30 AM", "Lunch": "12:30 – 2:30 PM", "Snacks": "5:00 – 6:00 PM", "Dinner": "7:30 – 9:30 PM"},
+  "rules": [
+    {"title": "Entry and in-time", "body": "Hostel gates close at 10:00 PM. Late entry needs prior permission from the warden."},
+    {"title": "Night attendance", "body": "Attendance is taken at 10:00 PM. Residents must be in their own block."},
+    {"title": "Visitors", "body": "Visitors are allowed only in the visitors' room between 4:00 PM and 7:00 PM, with an entry in the visitor register."},
+    {"title": "Electrical appliances", "body": "Heaters, induction cooktops and kettles are not allowed in rooms. Laptops, phone chargers and table lamps are allowed."},
+    {"title": "Leave", "body": "Residents going home must submit a leave form signed by a parent or guardian before leaving."},
+    {"title": "Ragging", "body": "Ragging in any form is strictly prohibited and is a punishable offence. Report any incident to the warden or the anti-ragging committee immediately."},
+    {"title": "Room care", "body": "Residents are responsible for furniture and fittings in their room. Damage is charged to the residents of that room."},
+    {"title": "Quiet hours", "body": "Quiet hours are from 11:00 PM to 6:00 AM. Use headphones for music and calls."}
+  ],
+  "faqs": [
+    {"q": "How do I change my room?", "a": "Submit a room-change request to your block warden. Changes are usually done only at the start of a semester, subject to availability."},
+    {"q": "Can I stay in the hostel during vacations?", "a": "Yes, if you fill the stay-back form before the deadline mentioned in the vacation circular. Only some blocks may stay open."},
+    {"q": "What if I miss a meal?", "a": "Meals are not refunded for single missed meals. For long leave, ask the mess office about the mess-rebate rule."},
+    {"q": "How do I get a guest room for my parents?", "a": "Apply to the hostel office at least 3 days in advance. Guest rooms are limited and given first-come, first-served."},
+    {"q": "Who do I contact if I feel unwell at night?", "a": "Inform your block warden or security desk immediately. For emergencies, call your college's emergency number or 112."},
+    {"q": "Is laundry available?", "a": "A laundry service collects clothes from each block on Monday and Thursday mornings. Charges are per piece."}
+  ],
+  "contacts": [
+    {"role": "Chief Warden", "where": "Hostel Office, Block A, Ground Floor", "hours": "10 AM – 5 PM, Mon–Sat", "phone": null},
+    {"role": "Block Warden", "where": "Warden's room in your block", "hours": "Evenings and on call", "phone": null},
+    {"role": "Mess Manager", "where": "Mess office, Block A", "hours": "8 AM – 8 PM", "phone": null},
+    {"role": "Maintenance Desk", "where": "Hostel Office, Block A", "hours": "9 AM – 6 PM", "phone": null},
+    {"role": "Campus Medical Centre", "where": "Near the main gate", "hours": "24 hours", "phone": null},
+    {"role": "National emergency number", "where": "Police, fire, ambulance (India)", "hours": "24 hours", "phone": "112"}
+  ],
+  "complaint_steps": [
+    {"title": "Describe the problem", "body": "Note the block, room number, what is broken (fan, light, tap, furniture, Wi-Fi) and since when."},
+    {"title": "Take a photo", "body": "A clear photo helps the maintenance team bring the right tools."},
+    {"title": "Register the complaint", "body": "Use your hostel's maintenance portal or register at the Maintenance Desk. Keep the complaint number."},
+    {"title": "Follow up", "body": "If it isn't fixed in 48 hours, inform your block warden with the complaint number."},
+    {"title": "Escalate if needed", "body": "For safety issues (exposed wires, water leaks near sockets), report to the warden immediately, not just online."}
+  ]
+}

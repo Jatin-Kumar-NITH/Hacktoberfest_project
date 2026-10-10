@@ -1,0 +1,1843 @@
+{
+ "note": "Sample timetables for the demo. Replace data/sections.json with your college's real timetables.",
+ "break": "10:40 – 11:00 short break · 12:40 – 1:30 lunch",
+ "sections": [
+  {
+   "id": "A",
+   "name": "Section A",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "TR-1",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "TR-1",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-101",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  },
+  {
+   "id": "B",
+   "name": "Section B",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "TR-2",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "TR-2",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-102",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ]
+   }
+  },
+  {
+   "id": "C",
+   "name": "Section C",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "TR-3",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "TR-3",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-103",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  },
+  {
+   "id": "D",
+   "name": "Section D",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "TR-4",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "TR-4",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-104",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E",
+   "name": "Section E",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "TR-5",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "TR-5",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-105",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  },
+  {
+   "id": "F",
+   "name": "Section F",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "TR-6",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "TR-6",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-106",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ]
+   }
+  },
+  {
+   "id": "G",
+   "name": "Section G",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "TR-1",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "TR-1",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-107",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  },
+  {
+   "id": "H",
+   "name": "Section H",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "TR-2",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "TR-2",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-108",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ]
+   }
+  },
+  {
+   "id": "I",
+   "name": "Section I",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "TR-3",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "TR-3",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-109",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  },
+  {
+   "id": "J",
+   "name": "Section J",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "TR-4",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "TR-4",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Data Structures Lab",
+      "room": "Lab-1",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "LH-110",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ]
+   }
+  },
+  {
+   "id": "Z",
+   "name": "Section Z",
+   "program": "B.Tech, Semester III",
+   "week": {
+    "Monday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Data Structures",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Digital Electronics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "OOP with Java",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-3",
+      "type": "Lab"
+     }
+    ],
+    "Tuesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Digital Electronics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "OOP with Java",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Data Structures",
+      "room": "TR-5",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Digital Electronics Lab",
+      "room": "Lab-4",
+      "type": "Lab"
+     }
+    ],
+    "Wednesday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Data Structures",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Digital Electronics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Library / Self study",
+      "room": "Central Library",
+      "type": "Free"
+     }
+    ],
+    "Thursday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "Discrete Mathematics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Digital Electronics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "OOP with Java",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Engineering Mathematics III",
+      "room": "TR-5",
+      "type": "Tutorial"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Java Lab",
+      "room": "Lab-2",
+      "type": "Lab"
+     }
+    ],
+    "Friday": [
+     {
+      "time": "9:00 – 9:50",
+      "subject": "OOP with Java",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "9:50 – 10:40",
+      "subject": "Engineering Mathematics III",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:00 – 11:50",
+      "subject": "Data Structures",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "11:50 – 12:40",
+      "subject": "Discrete Mathematics",
+      "room": "LH-111",
+      "type": "Lecture"
+     },
+     {
+      "time": "1:30 – 3:10",
+      "subject": "Mentoring / Sports",
+      "room": "Ground",
+      "type": "Free"
+     }
+    ]
+   }
+  }
+ ]
+}

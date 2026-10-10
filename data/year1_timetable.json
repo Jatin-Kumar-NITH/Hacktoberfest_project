@@ -1,0 +1,3300 @@
+{
+ "year": 1,
+ "title": "1st Year Odd Semester Class Timetable, Academic Year 2026-2027",
+ "source": "Office of Dean Academic · Effective from 20-08-2026",
+ "official": true,
+ "note": "Labs will be conducted in the respective Department/Center. For subject names against subject codes, see the institute website.",
+ "classrooms": {
+  "B2": "Vivekananda Lecture Hall Complex, Basement",
+  "G1": "Vivekananda Lecture Hall Complex, Ground Floor",
+  "G2": "Vivekananda Lecture Hall Complex, Ground Floor",
+  "F1": "Vivekananda Lecture Hall Complex, First Floor",
+  "F2": "Vivekananda Lecture Hall Complex, First Floor",
+  "DRG Hall": "Administrative Block, First Floor (Drawing Hall)",
+  "Workshop": "Near State Bank of India",
+  "Studio I": "Department of Architecture"
+ },
+ "sections": [
+  {
+   "id": "A",
+   "name": "Section A",
+   "classroom": "B2",
+   "branches": "CE: Civil Engg",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BCE001–26BCE029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BCE030–26BCE059"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BCE060–26BCE090"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Tanya",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Navneet",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 12,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Nitish",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 12,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Keshav",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Keshav",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 18,
+     "code": "PH-102",
+     "label": "PH-102-Gr.2",
+     "faculty": "Navneet",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.3",
+     "faculty": "Manoj",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Tanya",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Navneet",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 12,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Nitish",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 12,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Keshav",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Keshav",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 18,
+     "code": "PH-102",
+     "label": "PH-102-Gr.1",
+     "faculty": "Navneet",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.2",
+     "faculty": "Manoj",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Tanya",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Navneet",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Nitish",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 16,
+     "code": "ME-102",
+     "label": "ME-102",
+     "faculty": "K Dass",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "ME-102",
+     "label": "ME-102 Workshop",
+     "faculty": "K Dass",
+     "group": null,
+     "type": "Lab",
+     "room": "Workshop"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Keshav",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "PH-102",
+     "label": "PH-102-Gr.3",
+     "faculty": "Navneet",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "HS-102",
+     "label": "HS-102-Gr.1",
+     "faculty": "Manoj",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Spriha",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Manoj",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Spriha",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Manoj",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "name": "Section B",
+   "classroom": "G1",
+   "branches": "ME: Mech Engg",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BME001–26BME029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BME030–26BME059"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BME060–26BME090"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Jyoti",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "PH-102",
+     "label": "PH-102-Gr.2",
+     "faculty": "Suresh",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "HS-102",
+     "label": "HS-102-Gr.3",
+     "faculty": "P. Puri",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "ME-102",
+     "label": "ME-102 Workshop",
+     "faculty": "K Dass",
+     "group": null,
+     "type": "Lab",
+     "room": "Workshop"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 15,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Deepak",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "ME-102",
+     "label": "ME-102",
+     "faculty": "K Dass",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Jyoti",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "PH-102",
+     "label": "PH-102-Gr.3",
+     "faculty": "Shailja",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "HS-102",
+     "label": "HS-102-Gr.1",
+     "faculty": "P. Puri",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Jyoti",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "PH-102",
+     "label": "PH-102-Gr.1",
+     "faculty": "Navneet",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "HS-102",
+     "label": "HS-102-Gr.2",
+     "faculty": "P. Puri",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Jyoti",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Pawan K",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "B. Das",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Jyoti",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Deepak",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 11,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "P. Puri",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Pawan K",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Thursday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "B. Das",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Deepak",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 11,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "P. Puri",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Pawan K",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "B. Das",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "name": "Section C",
+   "classroom": "G2",
+   "branches": "PH: Physics, ME: Mech Engg",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BPH001–26BPH029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BPH030–26BPH050"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BME091–26BME125"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "R. K. Vats",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Monday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 12,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Shania",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Monday",
+     "start": 12,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Priyanka",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "R. K. Vats",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 12,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Shania",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 12,
+     "end": 13,
+     "code": "ME-102",
+     "label": "ME-102",
+     "faculty": "K Dass",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 18,
+     "code": "ME-102",
+     "label": "ME-102 Workshop",
+     "faculty": "Param",
+     "group": null,
+     "type": "Lab",
+     "room": "Workshop"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "R. K. Vats",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Shania",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Priyanka",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 17,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Zareena",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Priyanka",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "PH-102",
+     "label": "PH-102-Gr.3",
+     "faculty": "Navneet",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "HS-102",
+     "label": "HS-102-Gr.1",
+     "faculty": "Zareena",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Priyanka",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "PH-102",
+     "label": "PH-102-Gr.2",
+     "faculty": "S Kaur",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.3",
+     "faculty": "Zareena",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Zareena",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Friday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Priyanka",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 18,
+     "code": "PH-102",
+     "label": "PH-102-Gr.1",
+     "faculty": "Suresh",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.2",
+     "faculty": "Zareena",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    }
+   ]
+  },
+  {
+   "id": "D",
+   "name": "Section D",
+   "classroom": "F1",
+   "branches": "DCS: Dual Deg. Comp. Sc., DEC: Dual Deg. Electronics, CE: Civil",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26DCS001–26DCS028"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26DEC001–26DEC028"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BCE091–26BCE123"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Khalid",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "PH-102",
+     "label": "PH-102-Gr.2",
+     "faculty": "Shailja",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "HS-102",
+     "label": "HS-102-Gr.3",
+     "faculty": "Sumita",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 15,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Khalid",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.1",
+     "faculty": "Sumita",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Sumita",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Spriha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Khalid",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "PH-102",
+     "label": "PH-102-Gr.3",
+     "faculty": "Shailja",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shilpa",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Shailja",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Sumita",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "Spriha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 11,
+     "code": "ME-102",
+     "label": "ME-102",
+     "faculty": "Ankush",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shilpa",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Shailja",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Khalid",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 16,
+     "code": "PH-102",
+     "label": "PH-102-Gr.1",
+     "faculty": "Shailja",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 16,
+     "code": "HS-102",
+     "label": "HS-102-Gr.2",
+     "faculty": "Sumita",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "ME-102",
+     "label": "ME-102 Workshop",
+     "faculty": "Ankush",
+     "group": null,
+     "type": "Lab",
+     "room": "Workshop"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Khalid",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shilpa",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Friday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "Shailja",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    }
+   ]
+  },
+  {
+   "id": "E",
+   "name": "Section E",
+   "classroom": "F2",
+   "branches": "MA: Mathematics, MS: Mater. Sc.",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BMA001–26BMA029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BMA030–26BMA050"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BMS001–26BMS040"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 15,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Rohit",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "S Kaur",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "SK Negi",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Sumita",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Soniya",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 10,
+     "end": 11,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "S Kaur",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Akanksha",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "PH-102",
+     "label": "PH-102-Gr.2",
+     "faculty": "S Kaur",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "HS-102",
+     "label": "HS-102-Gr.3",
+     "faculty": "Sumita",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "HS-103",
+     "label": "HS-103",
+     "faculty": "SK Negi",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 16,
+     "code": "HS-101",
+     "label": "HS-101",
+     "faculty": "Sumita",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Akanksha",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "PH-102",
+     "label": "PH-102-Gr.3",
+     "faculty": "S Kaur",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "HS-102",
+     "label": "HS-102-Gr.1",
+     "faculty": "Sumita",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Rohit",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Akanksha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Soniya",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 12,
+     "end": 13,
+     "code": "PH-101",
+     "label": "PH-101",
+     "faculty": "S Kaur",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "ME-101",
+     "label": "ME-101",
+     "faculty": "Rohit",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Akanksha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Soniya",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 12,
+     "end": 13,
+     "code": "ME-102",
+     "label": "ME-102",
+     "faculty": "Ankush",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Akanksha",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 16,
+     "code": "PH-102",
+     "label": "PH-102-Gr.1",
+     "faculty": "S Kaur",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 16,
+     "code": "HS-102",
+     "label": "HS-102-Gr.2",
+     "faculty": "Sumita",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 18,
+     "code": "ME-102",
+     "label": "ME-102 Workshop",
+     "faculty": "Ankush",
+     "group": null,
+     "type": "Lab",
+     "room": "Workshop"
+    }
+   ]
+  },
+  {
+   "id": "F",
+   "name": "Section F",
+   "classroom": "B2",
+   "branches": "CS: Comp. Sc.",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BCS001–26BCS029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BCS030–26BCS059"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BCS060–26BCS090"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "CY-102",
+     "label": "CY-102-Gr.1",
+     "faculty": "Varun",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "EE-102",
+     "label": "EE-102-Gr.2",
+     "faculty": "Ashok K, Avinash",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Vidyotima",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "CY-102",
+     "label": "CY-102-Gr.3",
+     "faculty": "K S Ghosh",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "EE-102",
+     "label": "EE-102-Gr.1",
+     "faculty": "R. Chandel, Ravi",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Vidyotima",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Vidyotima",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Adya",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 17,
+     "code": "MB-101",
+     "label": "MB-101",
+     "faculty": "Kamboj",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "CY-102",
+     "label": "CY-102-Gr.2",
+     "faculty": "K.S Ghosh",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "EE-102",
+     "label": "EE-102-Gr.3",
+     "faculty": "Krishan K, Vishal",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Vidyotima",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Vidyotima",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Adya",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Maan",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Raj K",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 15,
+     "code": "CE-101",
+     "label": "CE-101",
+     "faculty": "Harshita",
+     "group": null,
+     "type": "Lecture",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Wednesday",
+     "start": 15,
+     "end": 17,
+     "code": "CE-101",
+     "label": "CE-101(P)",
+     "faculty": "Harshita, Anita, Amit",
+     "group": null,
+     "type": "Lab",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Ravi",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Deepanshu",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Maan",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Thursday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Raj K",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Ravi",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Deepanshu",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Maan",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    },
+    {
+     "day": "Friday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Raj K",
+     "group": null,
+     "type": "Lecture",
+     "room": "B2"
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "name": "Section G",
+   "classroom": "G1",
+   "branches": "EC: Electronics",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BEC001–26BEC029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BEC030–26BEC059"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BEC060–26BEC090"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Neeraj",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Monday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Monika",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Monday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Prakash",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "CE-101",
+     "label": "CE-101",
+     "faculty": "Rajat",
+     "group": null,
+     "type": "Lecture",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 18,
+     "code": "CE-101",
+     "label": "CE-101(P)",
+     "faculty": "Rajat, Ram Raj, Amit",
+     "group": null,
+     "type": "Lab",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Neeraj",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Monika",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Prakash",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Monika",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 10,
+     "end": 11,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Prakash",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "M. Nayyer",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "CY-102",
+     "label": "CY-102-Gr.2",
+     "faculty": "J. Prakash",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 13,
+     "code": "EE-102",
+     "label": "EE-102-Gr.3",
+     "faculty": "Angira, Neeraj",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "M. Nayyer",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "CY-102",
+     "label": "CY-102-Gr.1",
+     "faculty": "J. Prakash",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 11,
+     "code": "EE-102",
+     "label": "EE-102-Gr.2",
+     "faculty": "M Bharti, Abhishek",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "M. Nayyer",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "CY-102",
+     "label": "CY-102-Gr.3",
+     "faculty": "P. Awasthi",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 13,
+     "code": "EE-102",
+     "label": "EE-102-Gr.1",
+     "faculty": "Krishan K, Vishal",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "M. Nayyer",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "M. Nayyer",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 15,
+     "end": 16,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 17,
+     "code": "MB-101",
+     "label": "MB-101",
+     "faculty": "Richa",
+     "group": null,
+     "type": "Lecture",
+     "room": "G1"
+    }
+   ]
+  },
+  {
+   "id": "H",
+   "name": "Section H",
+   "classroom": "G2",
+   "branches": "EE: Electrical",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BEE001–26BEE029"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BEE030–26BEE059"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BEE060–26BEE090"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Pratibha",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "CY-102",
+     "label": "CY-102-Gr.2",
+     "faculty": "J. Kuchlyan",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "EE-102",
+     "label": "EE-102-Gr.3",
+     "faculty": "Saurabh, Avinash",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Pratibha",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Pratibha",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Vishal",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 17,
+     "code": "MB-101",
+     "label": "MB-101",
+     "faculty": "Pratima",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "CY-102",
+     "label": "CY-102-Gr.1",
+     "faculty": "J. Kuchlyan",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "EE-102",
+     "label": "EE-102-Gr.2",
+     "faculty": "Aman, Neeraj",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Pratibha",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shruti",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Kuchlyan",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 16,
+     "code": "CY-102",
+     "label": "CY-102-Gr.3",
+     "faculty": "Arun",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 16,
+     "code": "EE-102",
+     "label": "EE-102-Gr.1",
+     "faculty": "Rakesh, Neeraj",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 14,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Pratibha",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shruti",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Kuchlyan",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "CE-101",
+     "label": "CE-101",
+     "faculty": "Shubham",
+     "group": null,
+     "type": "Lecture",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "CE-101",
+     "label": "CE-101(P)",
+     "faculty": "Shubham, Sumit, Rajat",
+     "group": null,
+     "type": "Lab",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Shruti",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    },
+    {
+     "day": "Friday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "J. Kuchlyan",
+     "group": null,
+     "type": "Lecture",
+     "room": "G2"
+    }
+   ]
+  },
+  {
+   "id": "I",
+   "name": "Section I",
+   "classroom": "F1",
+   "branches": "CH: Chemical, EC: Electronics",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BCH001–26BCH038"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BCH039–26BCH076, 25BCH015"
+    },
+    {
+     "id": "Gr.3",
+     "rolls": "26BEC091–26BEC117"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Monday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Apoorva",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Suket",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Monday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Varun",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 10,
+     "end": 11,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Apoorva",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 12,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Suket",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 12,
+     "end": 13,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Varun",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Tuesday",
+     "start": 15,
+     "end": 16,
+     "code": "CE-101",
+     "label": "CE-101",
+     "faculty": "Anita",
+     "group": null,
+     "type": "Lecture",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Tuesday",
+     "start": 16,
+     "end": 18,
+     "code": "CE-101",
+     "label": "CE-101(P)",
+     "faculty": "Anita, Ekta, Rajat",
+     "group": null,
+     "type": "Lab",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Suket",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 10,
+     "end": 11,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Varun",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Shobhna",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "CY-102",
+     "label": "CY-102-Gr.2",
+     "faculty": "Varun",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 16,
+     "end": 18,
+     "code": "EE-102",
+     "label": "EE-102-Gr.3",
+     "faculty": "CS Prasad, Avinash",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 15,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Neha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Shobhna",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Shobhna",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "CY-102",
+     "label": "CY-102-Gr.1",
+     "faculty": "Varun",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 18,
+     "code": "EE-102",
+     "label": "EE-102-Gr.2",
+     "faculty": "Avijit, Avinash",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 11,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Shobhna",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 11,
+     "code": "CY-102",
+     "label": "CY-102-Gr.3",
+     "faculty": "Varun",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 11,
+     "code": "EE-102",
+     "label": "EE-102-Gr.1",
+     "faculty": "Avijit, Avinash",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 15,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Neha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Friday",
+     "start": 15,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Shobhna",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    },
+    {
+     "day": "Friday",
+     "start": 16,
+     "end": 17,
+     "code": "MB-101",
+     "label": "MB-101",
+     "faculty": "Pratima",
+     "group": null,
+     "type": "Lecture",
+     "room": "F1"
+    }
+   ]
+  },
+  {
+   "id": "J",
+   "name": "Section J",
+   "classroom": "F2",
+   "branches": "CS: Comp. Sc., EE: Electrical",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BCS091–26BCS130"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BEE091–26BEE125, 25BEE121"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Kodeshwari",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Monday",
+     "start": 10,
+     "end": 11,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Monday",
+     "start": 11,
+     "end": 12,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Arun",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Monday",
+     "start": 12,
+     "end": 13,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Akanksha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111-Gr.1",
+     "faculty": "Tanuj",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 16,
+     "code": "CY-102",
+     "label": "CY-102-Gr.2",
+     "faculty": "Arun",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Monday",
+     "start": 14,
+     "end": 16,
+     "code": "EE-102",
+     "label": "EE-102-Gr.3",
+     "faculty": "Vinod, Nimish",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "EC-101",
+     "label": "EC-101",
+     "faculty": "Kodeshwari",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 10,
+     "end": 11,
+     "code": "EN-101",
+     "label": "EN-101",
+     "faculty": "Ravin",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 12,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "Arun",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 12,
+     "end": 13,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Akanksha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 16,
+     "code": "CS-111",
+     "label": "CS-111-Gr.2",
+     "faculty": "Tanuj",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 16,
+     "code": "CY-102",
+     "label": "CY-102-Gr.3",
+     "faculty": "Arun",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 16,
+     "code": "EE-102",
+     "label": "EE-102-Gr.1",
+     "faculty": "Shiva, Neeraj",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "CY-101",
+     "label": "CY-101",
+     "faculty": "B. Gaur",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Wednesday",
+     "start": 12,
+     "end": 13,
+     "code": "MA-111",
+     "label": "MA-111",
+     "faculty": "Akanksha",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "CE-101",
+     "label": "CE-101",
+     "faculty": "Anshul",
+     "group": null,
+     "type": "Lecture",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 12,
+     "code": "CE-101",
+     "label": "CE-101(P)",
+     "faculty": "Anshul, Mohan, Payel",
+     "group": null,
+     "type": "Lab",
+     "room": "DRG Hall"
+    },
+    {
+     "day": "Thursday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Tanuj",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 17,
+     "code": "MB-101",
+     "label": "MB-101",
+     "faculty": "Pratima",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 13,
+     "code": "CS-111",
+     "label": "CS-111-Gr.3",
+     "faculty": "Tanuj",
+     "group": "Gr.3",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 13,
+     "code": "CY-102",
+     "label": "CY-102-Gr.1",
+     "faculty": "Arun",
+     "group": "Gr.1",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 11,
+     "end": 13,
+     "code": "EE-102",
+     "label": "EE-102-Gr.2",
+     "faculty": "Gagnesh, Avinash",
+     "group": "Gr.2",
+     "type": "Lab",
+     "room": "Respective Dept./Centre lab"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 15,
+     "code": "CS-111",
+     "label": "CS-111",
+     "faculty": "Tanuj",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    },
+    {
+     "day": "Friday",
+     "start": 15,
+     "end": 16,
+     "code": "EE-101",
+     "label": "EE-101",
+     "faculty": "Abhishek",
+     "group": null,
+     "type": "Lecture",
+     "room": "F2"
+    }
+   ]
+  },
+  {
+   "id": "Z",
+   "name": "Section Z",
+   "classroom": "Studio I",
+   "branches": "AR: Architecture",
+   "groups": [
+    {
+     "id": "Gr.1",
+     "rolls": "26BAR001–26BAR025"
+    },
+    {
+     "id": "Gr.2",
+     "rolls": "26BAR026–26BAR058"
+    }
+   ],
+   "classes": [
+    {
+     "day": "Monday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-112",
+     "label": "MA-112 (L)",
+     "faculty": "MS",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Monday",
+     "start": 13,
+     "end": 15,
+     "code": "AR-115",
+     "label": "AR-115 (L)",
+     "faculty": "SR",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Monday",
+     "start": 15,
+     "end": 16,
+     "code": "AR-113",
+     "label": "AR-113 (L)",
+     "faculty": "AMI",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Monday",
+     "start": 16,
+     "end": 17,
+     "code": "AR-113",
+     "label": "AR-113 (T)",
+     "faculty": "AMI",
+     "group": null,
+     "type": "Tutorial",
+     "room": "Studio I"
+    },
+    {
+     "day": "Tuesday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-112",
+     "label": "MA-112 (L)",
+     "faculty": "MS",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Tuesday",
+     "start": 11,
+     "end": 13,
+     "code": "AR-112",
+     "label": "AR-112",
+     "faculty": "SD, RS, DB, AB, AG",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Tuesday",
+     "start": 14,
+     "end": 17,
+     "code": "AR-114",
+     "label": "AR-114",
+     "faculty": "BM, DB, VS, AP, AG",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Wednesday",
+     "start": 9,
+     "end": 11,
+     "code": "AR-112",
+     "label": "AR-112",
+     "faculty": "SD, RS, VF1, DB, AB",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Wednesday",
+     "start": 11,
+     "end": 12,
+     "code": "AR-111",
+     "label": "AR-111",
+     "faculty": "RK, NK, BP, VS, MH",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Wednesday",
+     "start": 13,
+     "end": 17,
+     "code": "AR-111",
+     "label": "AR-111",
+     "faculty": "RK, NK, BP, VS, MH, VF1",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Thursday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-112",
+     "label": "MA-112 (L)",
+     "faculty": "MS",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Thursday",
+     "start": 10,
+     "end": 13,
+     "code": "AR-111",
+     "label": "AR-111",
+     "faculty": "RK, NK, BP, VS, MH",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Thursday",
+     "start": 15,
+     "end": 16,
+     "code": "AR-115",
+     "label": "AR-115 (L)",
+     "faculty": "SR",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    },
+    {
+     "day": "Thursday",
+     "start": 16,
+     "end": 17,
+     "code": "AR-115",
+     "label": "AR-115 (T)",
+     "faculty": "SR",
+     "group": null,
+     "type": "Tutorial",
+     "room": "Studio I"
+    },
+    {
+     "day": "Friday",
+     "start": 9,
+     "end": 10,
+     "code": "MA-112",
+     "label": "MA-112 (T)",
+     "faculty": "MS",
+     "group": null,
+     "type": "Tutorial",
+     "room": "Studio I"
+    },
+    {
+     "day": "Friday",
+     "start": 10,
+     "end": 13,
+     "code": "AR-114",
+     "label": "AR-114",
+     "faculty": "BM, DB, VS, AP, AG",
+     "group": null,
+     "type": "Studio",
+     "room": "Studio I"
+    },
+    {
+     "day": "Friday",
+     "start": 14,
+     "end": 16,
+     "code": "AR-113",
+     "label": "AR-113 (L)",
+     "faculty": "AMI",
+     "group": null,
+     "type": "Lecture",
+     "room": "Studio I"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CampusMate AI · Log in</title>
+    <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("cm_theme"); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+  <button class="theme-toggle theme-float" type="button"><span class="theme-label">🌙 Dark mode</span></button>
+  <main class="auth-wrap">
+    <section class="auth-hero">
+      <div class="brand"><div class="logo">C</div><div><div class="brand-name">CampusMate <span>AI</span></div><div class="brand-tag">Campus life, organized</div></div></div>
+      <h1>Your timetable, notices, assignments and syllabus, in one place.</h1>
+      <ul>
+        <li>✦ Ask Gemma 4 anything about your classes and deadlines</li>
+        <li>📢 Official notices and PDFs published by admins</li>
+        <li>💬 Campus chat for everyone</li>
+      </ul>
+    </section>
+
+    <section class="auth-card">
+      <div class="tabs auth-tabs">
+        <button class="tab active" data-auth="login">Log in</button>
+        <button class="tab" data-auth="signup">Create account</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label class="field"><span class="label">Email</span><input type="email" id="lEmail" autocomplete="email" required></label>
+        <label class="field"><span class="label">Password</span><input type="password" id="lPass" autocomplete="current-password" required></label>
+        <label class="remember"><input type="checkbox" id="lRemember" checked> Keep me logged in for 30 days</label>
+        <button class="primary" type="submit">Log in</button>
+      </form>
+
+      <form id="signupForm" class="auth-form" hidden>
+        <label class="field"><span class="label">Full name</span><input type="text" id="sName" maxlength="40" autocomplete="name" required></label>
+        <label class="field"><span class="label">Email</span><input type="email" id="sEmail" autocomplete="email" required></label>
+        <label class="field"><span class="label">Password</span><input type="password" id="sPass" autocomplete="new-password" required></label>
+        <ul class="pw-rules" id="pwRules">
+          <li data-rule="len">At least 8 characters</li>
+          <li data-rule="lower">A lowercase letter</li>
+          <li data-rule="upper">An uppercase letter</li>
+          <li data-rule="digit">A number</li>
+          <li data-rule="symbol">A symbol (@ # $ ! …)</li>
+        </ul>
+        <label class="field"><span class="label">Confirm password</span><input type="password" id="sConfirm" autocomplete="new-password" required></label>
+        <button class="primary" type="submit">Create account</button>
+        <p class="fine">New accounts are student accounts. Only the site owner can give admin access.</p>
+      </form>
+
+      <form id="otpForm" class="auth-form" hidden>
+        <h2 class="otp-title" id="otpTitle">Check your email</h2>
+        <p class="otp-sub" id="otpSub"></p>
+        <input type="text" id="otpCode" class="otp-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
+        <button class="primary" type="submit" id="otpBtn">Verify code</button>
+        <div class="otp-actions">
+          <button type="button" class="link" id="otpResend" disabled>Resend code</button>
+          <button type="button" class="link" id="otpBack">← Back</button>
+        </div>
+      </form>
+
+      <div class="alert error" id="authError" hidden></div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    document.querySelectorAll("[data-auth]").forEach((t) => t.addEventListener("click", () => {
+      document.querySelectorAll("[data-auth]").forEach((x) => x.classList.toggle("active", x === t));
+      $("loginForm").hidden = t.dataset.auth !== "login";
+      $("signupForm").hidden = t.dataset.auth !== "signup";
+      $("authError").hidden = true;
+    }));
+    const RULES = { len: (p) => p.length >= 8, lower: (p) => /[a-z]/.test(p), upper: (p) => /[A-Z]/.test(p),
+                    digit: (p) => /\d/.test(p), symbol: (p) => /[^A-Za-z0-9]/.test(p) };
+    $("sPass").addEventListener("input", () => {
+      document.querySelectorAll("#pwRules li").forEach((li) => li.classList.toggle("ok", RULES[li.dataset.rule]($("sPass").value)));
+    });
+    const showError = (m) => { $("authError").textContent = m; $("authError").hidden = false; };
+    async function post(url, body) {
+      const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "X-CampusMate": "1" }, body: JSON.stringify(body || {}) });
+      const data = await res.json().catch(() => ({ error: "Unexpected server reply." }));
+      if (!res.ok || data.error) { const err = new Error(data.error || "Something went wrong."); err.restart = data.restart; throw err; }
+      return data;
+    }
+    let resendTimer = null;
+    function showOtp(d) {
+      $("loginForm").hidden = true; $("signupForm").hidden = true; $("otpForm").hidden = false;
+      document.querySelector(".auth-tabs").hidden = true;
+      $("otpTitle").textContent = d.purpose === "signup" ? "Confirm your email" : "Confirm it's you";
+      $("otpSub").textContent = d.via === "email"
+        ? `We sent a 6-digit code to ${d.email}. It expires in 10 minutes.`
+        : `Email sending isn't set up on this server yet, so the 6-digit code for ${d.email} was printed in the server's terminal window.`;
+      $("otpCode").value = ""; $("otpCode").focus();
+      let left = 60; $("otpResend").disabled = true;
+      clearInterval(resendTimer);
+      resendTimer = setInterval(() => {
+        left -= 1;
+        $("otpResend").textContent = left > 0 ? `Resend code (${left}s)` : "Resend code";
+        if (left <= 0) { clearInterval(resendTimer); $("otpResend").disabled = false; }
+      }, 1000);
+    }
+    function backToStart() {
+      $("otpForm").hidden = true; document.querySelector(".auth-tabs").hidden = false;
+      document.querySelector("[data-auth].active").click();
+    }
+    async function send(url, body) {
+      $("authError").hidden = true;
+      try { showOtp(await post(url, body)); } catch (e) { showError(e.message); }
+    }
+    $("otpForm").addEventListener("submit", async (e) => {
+      e.preventDefault(); $("authError").hidden = true; $("otpBtn").disabled = true;
+      try { await post("/api/otp/verify", { code: $("otpCode").value }); location.href = "/"; }
+      catch (err) { showError(err.message); if (err.restart) backToStart(); }
+      finally { $("otpBtn").disabled = false; }
+    });
+    $("otpResend").addEventListener("click", async () => {
+      $("authError").hidden = true;
+      try { showOtp(await post("/api/otp/resend")); } catch (err) { showError(err.message); if (err.restart) backToStart(); }
+    });
+    $("otpBack").addEventListener("click", backToStart);
+    $("otpCode").addEventListener("input", () => { $("otpCode").value = $("otpCode").value.replace(/\D/g, "").slice(0, 6); });
+    $("loginForm").addEventListener("submit", (e) => { e.preventDefault();
+      send("/api/login", { email: $("lEmail").value, password: $("lPass").value, remember: $("lRemember").checked }); });
+    $("signupForm").addEventListener("submit", (e) => { e.preventDefault();
+      const p = $("sPass").value;
+      const failed = Object.entries(RULES).find(([, f]) => !f(p));
+      if (failed) { $("authError").textContent = "Your password does not meet all the rules yet."; $("authError").hidden = false; return; }
+      send("/api/signup", { name: $("sName").value, email: $("sEmail").value, password: p, confirm: $("sConfirm").value }); });
+
+    function cmToggleTheme() {
+      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("cm_theme", next); } catch (e) {}
+      document.querySelectorAll(".theme-label").forEach(function (el) { el.textContent = next === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+    }
+    document.querySelectorAll(".theme-toggle").forEach(function (b) { b.addEventListener("click", cmToggleTheme); });
+    document.querySelectorAll(".theme-label").forEach(function (el) {
+      el.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+  </script>
+</body>
+</html>

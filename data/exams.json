@@ -1,0 +1,495 @@
+{
+ "note": "Sample exam schedule for the demo, not the official date sheet. Always check the official notice from the examination office.",
+ "years": {
+  "1": {
+   "name": "Mid-Semester Examination, Odd Semester 2026-27",
+   "rows": [
+    {
+     "date": "2026-11-02",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "MA-111",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-02",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "MA-112",
+     "sections": [
+      "Z"
+     ],
+     "venue": "Studio I"
+    },
+    {
+     "date": "2026-11-03",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "PH-101",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-03",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "CY-101",
+     "sections": [
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-03",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "AR-113",
+     "sections": [
+      "Z"
+     ],
+     "venue": "Studio I"
+    },
+    {
+     "date": "2026-11-04",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "CS-111",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-04",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "AR-115",
+     "sections": [
+      "Z"
+     ],
+     "venue": "Studio I"
+    },
+    {
+     "date": "2026-11-05",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "ME-101",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-05",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "EE-101",
+     "sections": [
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-05",
+     "time": "2:00 PM – 3:30 PM",
+     "code": "HS-101",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-05",
+     "time": "2:00 PM – 3:30 PM",
+     "code": "EC-101",
+     "sections": [
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-06",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "HS-103",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-06",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "EN-101",
+     "sections": [
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-11-06",
+     "time": "2:00 PM – 3:30 PM",
+     "code": "MB-101",
+     "sections": [
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+     ],
+     "venue": "As per seating plan"
+    }
+   ]
+  },
+  "2": {
+   "name": "Mid-Semester Examination, Semester III",
+   "rows": [
+    {
+     "date": "2026-10-27",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Data Structures",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-28",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Discrete Mathematics",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-29",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Digital Electronics",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-30",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "OOP with Java",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-31",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Engineering Mathematics III",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    }
+   ]
+  },
+  "3": {
+   "name": "Mid-Semester Examination, Semester V",
+   "rows": [
+    {
+     "date": "2026-10-26",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Operating Systems",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-27",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Computer Networks",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-28",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Database Systems",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-29",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Theory of Computation",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-30",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Software Engineering",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    }
+   ]
+  },
+  "4": {
+   "name": "Mid-Semester Examination, Semester VII",
+   "rows": [
+    {
+     "date": "2026-10-26",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Machine Learning",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-27",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Cloud Computing",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-28",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Information Security",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-29",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Elective I",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    },
+    {
+     "date": "2026-10-30",
+     "time": "9:30 AM – 11:00 AM",
+     "code": "Project Management",
+     "sections": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "Z"
+     ],
+     "venue": "As per seating plan"
+    }
+   ]
+  }
+ },
+ "rules": [
+  "Carry your college ID card and admit card.",
+  "Reach the exam hall 15 minutes early.",
+  "Mobile phones and smart watches are not allowed."
+ ]
+}

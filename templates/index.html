@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CampusMate AI</title>
+    <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("cm_theme"); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">C</div>
+      <div>
+        <div class="brand-name">CampusMate <span>AI</span></div>
+        <div class="brand-tag">Campus life, organized</div>
+      </div>
+    </div>
+    <div class="pickers">
+      <label class="section-pick"><span>Year</span>
+        <select id="myYear"><option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year</option></select>
+      </label>
+      <label class="section-pick"><span>Section</span><select id="mySection"></select></label>
+      <label class="section-pick" id="groupPick"><span>Group</span><select id="myGroup"></select></label>
+    </div>
+    <nav class="nav">
+      <a href="#dashboard" data-page="dashboard"><span class="ico">▦</span><span>Dashboard</span></a>
+      <a href="#board" data-page="board"><span class="ico">☰</span><span>Notice Board</span></a>
+      <a href="#timetable" data-page="timetable"><span class="ico">▤</span><span>Timetable</span></a>
+      <a href="#assignments" data-page="assignments"><span class="ico">✎</span><span>Assignments</span></a>
+      <a href="#exams" data-page="exams"><span class="ico">⚑</span><span>Exam Schedule</span></a>
+      <a href="#syllabus" data-page="syllabus"><span class="ico">❒</span><span>Syllabus</span></a>
+      <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
+      <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
+      <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Hostel Helper</span></a>
+      <a href="#chat" data-page="chat"><span class="ico">💬</span><span>Campus Chat</span></a>
+      {% if me.role in ['admin', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">⬆</span><span>Publish</span></a>{% endif %}
+      {% if me.role == 'owner' %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">🛡</span><span>Manage Admins</span></a>{% endif %}
+      <a href="#about" data-page="about"><span class="ico">ⓘ</span><span>About</span></a>
+    </nav>
+    <button class="theme-toggle" type="button"><span class="theme-label">🌙 Dark mode</span><span>◐</span></button>
+    <div class="user-card">
+      <div class="avatar role-{{ me.role }}">{{ me.name[:1] | upper }}</div>
+      <div class="user-meta">
+        <strong>{{ me.name }}</strong>
+        <span class="role-tag role-{{ me.role }}">{{ {'owner': 'Owner', 'admin': 'Admin', 'user': 'Student'}[me.role] }}</span>
+      </div>
+      <button class="logout" id="logoutBtn" title="Log out">⎋</button>
+    </div>
+    <div class="model-chip">
+      <span class="dot"></span> Gemma 4 · {{ models[0] }}
+    </div>
+  </aside>
+
+  <main class="main">
+    {% if me.role in ['admin', 'owner'] %}
+    <div class="role-banner role-{{ me.role }}">
+      <span>{{ '👑 Owner mode' if me.role == 'owner' else '🛡 Admin mode' }} · You can publish notices, assignments and PDFs{{ ' and give admin access' if me.role == 'owner' else '' }}.</span>
+      <a href="#publish">Publish →</a>
+    </div>
+    {% endif %}
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="page" id="page-dashboard">
+      <header class="page-head">
+        <div>
+          <h1 id="greeting">Welcome back 👋</h1>
+          <p class="sub">Here's what needs your attention on campus.</p>
+        </div>
+      </header>
+
+      <div class="ask-card">
+        <div class="ask-head">
+          <div>
+            <h2>✦ Ask CampusMate</h2>
+            <p>Ask anything about your classes, notices, deadlines, mess or hostel. Answers come only from your campus data.</p>
+          </div>
+        </div>
+        <div class="ask-log" id="askLog" hidden></div>
+        <div class="ask-suggest" id="askSuggest">
+          <button class="ask-chip">What classes do I have tomorrow?</button>
+          <button class="ask-chip">Any deadlines or notices for my section?</button>
+          <button class="ask-chip">What's for dinner today?</button>
+          <button class="ask-chip">When are the mid-sem exams and what do I need?</button>
+          <button class="ask-chip">Which assignments are due this week?</button>
+          <button class="ask-chip">When is my next exam?</button>
+        </div>
+        <form class="ask-form" id="askForm">
+          <input type="text" id="askInput" maxlength="500" placeholder="e.g. Do I have a lab on Friday?" autocomplete="off">
+          <button type="submit" id="askBtn">Ask</button>
+        </form>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-num" id="statDeadlines">0</div><div class="stat-label">Upcoming deadlines</div></div>
+        <div class="stat"><div class="stat-num" id="statTasks">0</div><div class="stat-label">Open checklist tasks</div></div>
+        <div class="stat"><div class="stat-num" id="statNotices">0</div><div class="stat-label">Notices explained</div></div>
+      </div>
+
+      <div class="card classes-card">
+        <div class="card-head"><h2 id="dashClassesTitle">Today's classes</h2><a class="muted" href="#timetable">Full timetable →</a></div>
+        <div class="class-strip" id="dashClasses"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Due soon</h2><a class="muted" href="#assignments">Assignments →</a></div>
+          <ul class="recent" id="dashDue"></ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>New notices for you</h2><a class="muted" href="#board">Notice board →</a></div>
+          <ul class="recent" id="dashNotices"></ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Upcoming deadlines</h2></div>
+          <ul class="dl-list" id="dashDeadlines"></ul>
+          <p class="empty-line" id="dashDeadlinesEmpty">No deadlines yet. Explain a notice and its dates show up here.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Quick actions</h2></div>
+          <div class="quick">
+            <a class="quick-btn" href="#notice"><span>✦</span>Explain a notice</a>
+            <a class="quick-btn" href="#planner"><span>◷</span>Make a study plan</a>
+            <a class="quick-btn" href="#hostel"><span>⌂</span>Check mess menu</a>
+            <a class="quick-btn" href="#hostel"><span>🛠</span>Report an issue</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Recent AI results</h2><button class="ghost small" id="clearHistory">Clear</button></div>
+          <ul class="recent" id="dashRecent"></ul>
+          <p class="empty-line" id="dashRecentEmpty">Nothing yet. Try a sample notice in the Notice Explainer.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Today's study plan</h2></div>
+          <div id="dashPlan"><p class="empty-line">No plan yet. The Study Planner builds one from your exam dates.</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Hostel announcements</h2><a class="muted" href="#hostel">View all →</a></div>
+          <ul class="recent" id="dashAnnouncements"></ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Today's mess menu</h2><span class="muted" id="dashMenuDay"></span></div>
+          <div class="menu" id="dashMenu"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NOTICE BOARD ============ -->
+    <section class="page" id="page-board" hidden>
+      <header class="page-head"><div><h1>Notice Board</h1><p class="sub">Notices for your whole year, and notices only for your section. Tap <strong>Explain with AI</strong> on any notice.</p></div></header>
+      <div class="alert warn sample-note">📋 {{ campus.notices.note }}</div>
+      <div class="board">
+        <div class="board-col">
+          <div class="board-head"><h2>📢 For <span id="boardYearName">all students</span></h2><span class="count" id="countAll"></span></div>
+          <div id="boardAll"></div>
+        </div>
+        <div class="board-col">
+          <div class="board-head section-head"><h2>🎯 For <span id="boardSectionName"></span></h2><span class="count" id="countSec"></span></div>
+          <div id="boardSection"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TIMETABLE ============ -->
+    <section class="page" id="page-timetable" hidden>
+      <header class="page-head">
+        <div><h1>Class Timetable</h1><p class="sub" id="ttTitle"></p></div>
+      </header>
+      <div class="tt-controls">
+        <div class="year-tabs" id="ttYears"></div>
+        <div class="sec-tabs" id="ttTabs"></div>
+      </div>
+      <div class="alert" id="ttBadge"></div>
+      <div class="tt-info" id="ttInfo"></div>
+      <div class="card tt-card"><div class="tt-scroll"><div class="ttgrid" id="ttGrid"></div></div></div>
+      <div class="legend tt-legend">
+        <span class="tag study">Lecture</span><span class="tag practice">Lab / Practical</span><span class="tag revision">Tutorial</span><span class="tag exam">Studio</span>
+        <span class="muted" id="ttGroupHint"></span>
+      </div>
+    </section>
+
+    <!-- ============ ASSIGNMENTS ============ -->
+    <section class="page" id="page-assignments" hidden>
+      <header class="page-head"><div><h1>Assignments</h1><p class="sub" id="asSub">Assignments published for your year and section.</p></div></header>
+      <div class="alert ok sample-note">📚 {{ campus.assignments.note }}</div>
+      <div class="as-filters"><button class="chip active" data-asf="pending">Pending</button><button class="chip" data-asf="done">Submitted</button><button class="chip" data-asf="all">All</button></div>
+      <div class="as-list" id="asList"></div>
+    </section>
+
+    <!-- ============ EXAM SCHEDULE ============ -->
+    <section class="page" id="page-exams" hidden>
+      <header class="page-head row-between">
+        <div><h1>Exam Schedule</h1><p class="sub" id="exSub"></p></div>
+        <button class="primary inline" id="exPlan">◷ Make a study plan for these exams</button>
+      </header>
+      <div class="alert warn sample-note">📋 {{ campus.exams.note }}</div>
+      <div class="ex-count" id="exCount"></div>
+      <div class="card"><table class="ex-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Venue</th><th>Countdown</th></tr></thead><tbody id="exBody"></tbody></table></div>
+      <div class="card ex-rules"><h2>Exam rules</h2><ul class="bullets" id="exRules"></ul></div>
+    </section>
+
+    <!-- ============ SYLLABUS ============ -->
+    <section class="page" id="page-syllabus" hidden>
+      <header class="page-head"><div><h1>Syllabus</h1><p class="sub" id="sySub"></p></div></header>
+      <div class="alert" id="syBadge"></div>
+      <div class="sy-docs" id="syDocs"></div>
+      <div id="syMaterialsWrap" hidden>
+        <h2 class="block-title">📄 Study material published by admins</h2>
+        <div class="as-list" id="syMaterials"></div>
+      </div>
+      <div class="sy-grid" id="syGrid"></div>
+      <details class="sy-other" id="syOtherWrap">
+        <summary>Other courses this year (<span id="syOtherCount"></span>), e.g. the other semester's list</summary>
+        <div class="sy-grid" id="syOther"></div>
+      </details>
+    </section>
+
+    <!-- ============ NOTICE EXPLAINER ============ -->
+    <section class="page" id="page-notice" hidden>
+      <header class="page-head">
+        <div>
+          <h1>Notice Explainer</h1>
+          <p class="sub">Paste any circular, hostel notice or exam announcement. Gemma 4 turns it into dates, documents and a checklist.</p>
+        </div>
+      </header>
+
+      <div class="split">
+        <div class="card input-card">
+          <div class="samples">
+            <span class="label">Try a sample notice</span>
+            <div class="chips">
+              {% for s in samples %}<button class="chip" data-sample="{{ s.id }}">{{ s.label }}</button>{% endfor %}
+            </div>
+          </div>
+
+          <label class="field">
+            <span class="label">Notice text</span>
+            <textarea id="noticeText" rows="12" placeholder="Paste the notice here…"></textarea>
+          </label>
+          <div class="row-between">
+            <span class="hint" id="charCount">0 characters</span>
+            <label class="upload-link">
+              <input type="file" id="noticeFile" accept="image/*" hidden>
+              📷 <span id="fileLabel">or upload a photo</span>
+            </label>
+          </div>
+
+          <label class="toggle">
+            <input type="checkbox" id="hindiToggle" checked>
+            <span class="switch"></span>
+            <span>Also explain in Hindi</span>
+          </label>
+
+          <button class="primary" id="explainBtn">Explain notice</button>
+          <p class="fine">Use sample or public notices. Don't paste roll numbers, phone numbers or other personal data. Text is sent to Google's Gemini API to run Gemma 4.</p>
+        </div>
+
+        <div class="card result-card">
+          <div id="nEmpty" class="placeholder">
+            <div class="ph-icon">✦</div>
+            <h3>Your explanation appears here</h3>
+            <p>Summary, audience, deadlines, documents, a checklist and anything the notice left unclear.</p>
+          </div>
+          <div id="nLoading" class="placeholder" hidden>
+            <div class="spinner"></div>
+            <h3>Gemma 4 is reading the notice…</h3>
+            <p>This usually takes 5–30 seconds.</p>
+          </div>
+          <div id="nError" class="alert error" hidden></div>
+
+          <div id="nResult" hidden>
+            <div id="nCached" class="alert warn" hidden></div>
+            <div class="res-head">
+              <div>
+                <h2 id="rTitle"></h2>
+                <p class="meta-line" id="rMetaLine"></p>
+              </div>
+              <span class="urgency" id="rUrgency"></span>
+            </div>
+
+            <div class="tabs">
+              <button class="tab active" data-tab="en">Simple English</button>
+              <button class="tab" data-tab="hi" id="hiTab">हिंदी</button>
+            </div>
+
+            <div data-pane="en">
+              <p class="summary" id="rSummary"></p>
+              <p class="muted" id="rUrgencyReason"></p>
+
+              <div class="block" id="bDeadlines"><h3>📅 Dates & deadlines</h3><ul class="timeline" id="rDeadlines"></ul></div>
+              <div class="block" id="bChecklist"><h3>✅ Your checklist <span class="muted" id="rProgress"></span></h3><ul class="checklist" id="rChecklist"></ul></div>
+              <div class="block" id="bDocs"><h3>📎 Documents & items needed</h3><ul class="bullets" id="rDocs"></ul></div>
+              <div class="block" id="bFacts"><h3>🔎 Key facts <span class="muted">with the original words</span></h3><table class="facts"><tbody id="rFacts"></tbody></table></div>
+              <div class="block warn-block" id="bMissing"><h3>⚠️ Missing or unclear, please confirm</h3><ul class="bullets" id="rMissing"></ul></div>
+            </div>
+
+            <div data-pane="hi" hidden>
+              <div class="hindi">
+                <p class="summary" id="hSummary"></p>
+                <ol id="hChecklist"></ol>
+              </div>
+            </div>
+
+            <p class="foot-meta" id="rFoot"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STUDY PLANNER ============ -->
+    <section class="page" id="page-planner" hidden>
+      <header class="page-head"><div><h1>Study Planner</h1><p class="sub">Enter your subjects, exam dates and free hours. Gemma 4 builds a realistic timetable with revision and breaks.</p></div></header>
+
+      <div class="split">
+        <div class="card input-card">
+          <div class="row-between"><span class="label">Your subjects</span><button class="ghost small" id="fillSample">Fill sample</button></div>
+          <div id="subjects"></div>
+          <button class="ghost add-btn" id="addSubject">+ Add subject</button>
+
+          <div class="two-col">
+            <label class="field"><span class="label">Study hours per day</span><input type="number" id="hours" min="1" max="14" step="0.5" value="4"></label>
+            <label class="field"><span class="label">Start studying at</span><input type="time" id="startTime" value="18:00"></label>
+          </div>
+
+          <button class="primary" id="planBtn">Generate study plan</button>
+          <p class="fine">Plans cover up to 14 days, up to your last exam.</p>
+        </div>
+
+        <div class="card result-card">
+          <div id="pEmpty" class="placeholder">
+            <div class="ph-icon">◷</div>
+            <h3>Your timetable appears here</h3>
+            <p>Day-by-day sessions with priorities, revision before each exam and regular breaks.</p>
+          </div>
+          <div id="pLoading" class="placeholder" hidden>
+            <div class="spinner"></div>
+            <h3>Gemma 4 is planning your days…</h3>
+            <p>This usually takes 10–40 seconds.</p>
+          </div>
+          <div id="pError" class="alert error" hidden></div>
+          <div id="pResult" hidden>
+            <div id="pCached" class="alert warn" hidden></div>
+            <div class="res-head"><h2>Your study plan</h2><span class="muted" id="pRange"></span></div>
+            <p class="summary" id="pOverview"></p>
+            <div class="block warn-block" id="pWarnBox"><h3>⚠️ Heads up</h3><ul class="bullets" id="pWarnings"></ul></div>
+            <div class="legend">
+              <span class="tag study">Study</span><span class="tag revision">Revision</span><span class="tag practice">Practice</span><span class="tag break">Break</span><span class="tag exam">Exam</span>
+            </div>
+            <div class="days" id="pDays"></div>
+            <div class="block" id="pTipsBox"><h3>💡 Tips</h3><ul class="bullets" id="pTips"></ul></div>
+            <p class="foot-meta" id="pFoot"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOSTEL HELPER ============ -->
+    <section class="page" id="page-hostel" hidden>
+      <header class="page-head"><div><h1>Hostel Helper</h1><p class="sub">Mess menu, rules, FAQs, contacts and how to report a problem.</p></div></header>
+
+      <div class="alert warn sample-note">📋 <span id="hostelNote"></span></div>
+
+      <div class="search-wrap">
+        <input type="search" id="hostelSearch" placeholder="Search rules, FAQs, contacts… e.g. visitors, laundry, Wi-Fi">
+      </div>
+      <div class="card" id="searchResults" hidden>
+        <div class="card-head"><h2>Search results</h2><span class="muted" id="searchCount"></span></div>
+        <ul class="results" id="searchList"></ul>
+      </div>
+
+      <div id="hostelSections">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>🍽️ Mess menu</h2></div>
+            <div class="day-tabs" id="menuDays"></div>
+            <div class="menu" id="menuBody"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>📢 Announcements</h2></div>
+            <ul class="recent" id="hAnnouncements"></ul>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>📏 Hostel rules</h2></div>
+            <div id="hRules"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>❓ FAQs</h2></div>
+            <div id="hFaqs"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>📞 Important contacts</h2></div>
+            <ul class="contacts" id="hContacts"></ul>
+          </div>
+          <div class="card" id="complaintCard">
+            <div class="card-head"><h2>🛠️ Report a problem</h2></div>
+            <ol class="steps" id="hSteps"></ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CAMPUS CHAT ============ -->
+    <section class="page" id="page-chat" hidden>
+      <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate. Be kind. Admin messages are highlighted.</p></div></header>
+      <div class="card chat-card">
+        <div class="chat-log" id="chatLog"><p class="empty-line" id="chatEmpty">No messages yet. Say hello 👋</p></div>
+        <form class="chat-form" id="chatForm">
+          <input type="text" id="chatInput" maxlength="500" placeholder="Message everyone…" autocomplete="off">
+          <button type="submit" id="chatSend">Send</button>
+        </form>
+        <p class="fine" id="chatHint">Messages are visible to all logged-in users. Admins can remove messages.</p>
+      </div>
+    </section>
+
+    {% if me.role in ['admin', 'owner'] %}
+    <!-- ============ PUBLISH (admins) ============ -->
+    <section class="page" id="page-publish" hidden>
+      <header class="page-head"><div><h1>Publish</h1><p class="sub">Publish to students. Everything shows your name and the time of publishing. Students can only view.</p></div></header>
+      <div class="split">
+        <form class="card input-card" id="pubForm">
+          <span class="label">What are you publishing?</span>
+          <div class="kind-tabs" id="pubKinds">
+            <button type="button" class="chip active" data-kind="notice">📢 Notice</button>
+            <button type="button" class="chip" data-kind="announcement">📣 Announcement</button>
+            <button type="button" class="chip" data-kind="assignment">✎ Assignment</button>
+            <button type="button" class="chip" data-kind="material">📄 Study material / PDF</button>
+          </div>
+          <label class="field"><span class="label">Title</span><input type="text" id="pubTitle" maxlength="150" required></label>
+          <label class="field"><span class="label" id="pubBodyLabel">Notice text</span><textarea id="pubBody" rows="6" maxlength="8000"></textarea></label>
+          <div class="two-col">
+            <label class="field" id="pubCodeWrap"><span class="label">Subject code (optional)</span><input type="text" id="pubCode" maxlength="40" placeholder="e.g. MA-111"></label>
+            <label class="field pub-assign"><span class="label">Due date</span><input type="date" id="pubDue"></label>
+          </div>
+          <label class="field pub-assign"><span class="label">Marks (optional)</span><input type="number" id="pubMarks" min="0" max="1000"></label>
+          <span class="label">Who should see it?</span>
+          <div class="aud-pick">
+            <div><small>Years (none = all years)</small><div class="check-row" id="pubYears">
+              {% for y in [1,2,3,4] %}<label><input type="checkbox" value="{{ y }}"> {{ y }}</label>{% endfor %}</div></div>
+            <div><small>Sections (none = all sections)</small><div class="check-row" id="pubSections">
+              {% for sid in ['A','B','C','D','E','F','G','H','I','J','Z'] %}<label><input type="checkbox" value="{{ sid }}"> {{ sid }}</label>{% endfor %}</div></div>
+          </div>
+          <label class="field"><span class="label" id="pubPdfLabel">Attach PDF (optional)</span><input type="file" id="pubPdf" accept="application/pdf,.pdf"></label>
+          <button class="primary" type="submit" id="pubBtn">Publish now</button>
+          <div class="alert error" id="pubError" hidden></div>
+        </form>
+        <div class="card">
+          <div class="card-head"><h2>Published on CampusMate</h2><span class="muted" id="pubCount"></span></div>
+          <div id="pubList"></div>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    {% if me.role == 'owner' %}
+    <!-- ============ MANAGE ADMINS (owner only) ============ -->
+    <section class="page" id="page-admins" hidden>
+      <header class="page-head"><div><h1>Manage Admins</h1><p class="sub">Only you, the owner, can give or remove admin access.</p></div></header>
+      <div class="alert" id="smtpStatus" hidden></div>
+      <div class="card">
+        <input type="search" id="userSearch" class="user-search" placeholder="Search users by name or email…">
+        <table class="user-table"><thead><tr><th>User</th><th>Role</th><th>Joined</th><th></th></tr></thead><tbody id="userBody"></tbody></table>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- ============ ABOUT ============ -->
+    <section class="page" id="page-about" hidden>
+      <header class="page-head"><div><h1>About CampusMate AI</h1><p class="sub">An open-source student assistant built for a hackathon.</p></div></header>
+      <div class="grid-2">
+        <div class="card prose">
+          <h2>The problem</h2>
+          <p>Students get dozens of circulars, hostel notices and exam announcements every semester. They are long, formal and easy to misread, and missing one deadline can mean a fine, a cancelled room or a blocked admit card.</p>
+          <h2>What CampusMate does</h2>
+          <p>It turns any notice into a plain summary, the dates that matter, the documents to bring and a checklist, and it flags anything the notice forgot to say instead of guessing.</p>
+        </div>
+        <div class="card prose">
+          <h2>How the AI works</h2>
+          <p>A small Flask server sends the notice to <strong>Gemma 4</strong> (Google's open model, weights licensed under Apache 2.0) through Google's hosted Gemini API. The model returns structured JSON, which the page renders. Every fact carries the exact words from the notice so you can check it.</p>
+          <h2>Honest limits</h2>
+          <p>AI can make mistakes; always confirm important details with the issuing office. Hostel data in this demo is clearly labelled sample data. The app's own code is MIT-licensed; the hosted API is governed by Google's terms.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script id="samples-data" type="application/json">{{ samples | tojson }}</script>
+<script id="campus-data" type="application/json">{{ campus | tojson }}</script>
+<script id="me-data" type="application/json">{{ me | tojson }}</script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+    function cmToggleTheme() {
+      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("cm_theme", next); } catch (e) {}
+      document.querySelectorAll(".theme-label").forEach(function (el) { el.textContent = next === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+    }
+    document.querySelectorAll(".theme-toggle").forEach(function (b) { b.addEventListener("click", cmToggleTheme); });
+    document.querySelectorAll(".theme-label").forEach(function (el) {
+      el.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+</script>
+</body>
+</html>

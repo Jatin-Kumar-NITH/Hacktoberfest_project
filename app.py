@@ -1,0 +1,536 @@
+"""CampusMate AI - your campus life, organized by AI (Gemma 4 via the Gemini API)."""
+
+import io
+import json
+import os
+import re
+import time
+from datetime import date, datetime, timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request
+
+import accounts
+from accounts import admin_required, current_user, login_required, public_user
+from PIL import Image, ImageOps
+
+# .env next to app.py first; also read a .env in the parent folder (values already set win)
+load_dotenv(Path(__file__).resolve().parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+BASE_DIR = Path(__file__).parent
+CACHE_DIR = BASE_DIR / "cache"
+CACHE_DIR.mkdir(exist_ok=True)
+
+MODELS = [
+    m.strip()
+    for m in os.getenv("GEMMA_MODELS", "gemma-4-26b-a4b-it,gemma-4-31b-it").split(",")
+    if m.strip()
+]
+
+app = Flask(__name__)
+app.json.sort_keys = False  # keep mess menu days and meals in order
+app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024  # 12 MB (PDF uploads)
+accounts.init_app(app)
+
+_client = None
+
+
+# ------------------------------------------------------------------ AI core
+
+def get_client():
+    """Create the Gemini API client once. The key stays on the server."""
+    global _client
+    key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not key or key == "your-key-here":
+        raise RuntimeError("MISSING_KEY")
+    if _client is None:
+        from google import genai
+        _client = genai.Client(api_key=key)
+    return _client
+
+
+def parse_json(raw):
+    """Pull the JSON object out of the model reply, even if wrapped in ``` fences."""
+    raw = re.sub(r"^```(?:json)?\s*|\s*```$", "", (raw or "").strip())
+    start, end = raw.find("{"), raw.rfind("}")
+    if start == -1 or end == -1:
+        raise ValueError("BAD_JSON")
+    return json.loads(raw[start:end + 1])
+
+
+def ask_gemma(contents):
+    """Send contents to each model in turn; return (parsed_json, model_name)."""
+    from google.genai import types
+
+    last_error = None
+    for model in MODELS:
+        try:
+            resp = get_client().models.generate_content(
+                model=model,
+                contents=contents,
+                config=types.GenerateContentConfig(temperature=0.2),
+            )
+            return parse_json(resp.text), model
+        except RuntimeError:
+            raise
+        except Exception as e:
+            print(f"[CampusMate] {model} failed: {str(e)[:200]}")
+            last_error = e
+    raise last_error
+
+
+def friendly_error(e):
+    msg = str(e)
+    if "MISSING_KEY" in msg:
+        return "No API key found. Add GEMINI_API_KEY=... to the .env file and restart the server."
+    if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+        return "The free Gemma quota is used up for the moment. Wait about a minute and try again."
+    if "API key" in msg or "401" in msg or "403" in msg or "PERMISSION" in msg:
+        return "The API key was rejected. Check GEMINI_API_KEY in your .env file."
+    if "BAD_JSON" in msg or isinstance(e, json.JSONDecodeError):
+        return "The AI reply could not be read. Please try again."
+    if "500" in msg or "503" in msg or "INTERNAL" in msg or "UNAVAILABLE" in msg:
+        return "Google's AI service is busy right now. Please try again in a few seconds."
+    return "The AI service failed: " + msg[:200]
+
+
+def _list(v):
+    return v if isinstance(v, list) else []
+
+
+def cache_file(kind, sample_id, language):
+    return CACHE_DIR / f"{kind}__{sample_id}__{language.replace(' ', '_')}.json"
+
+
+# ------------------------------------------------------------------ Notice Explainer
+
+NOTICE_PROMPT = """You are CampusMate AI, helping Indian college and hostel students understand notices.
+Today's date is {today}.
+
+Read the notice {source}
+
+Reply with ONLY one JSON object, no markdown fences, no other text, in exactly this structure:
+{{
+  "title": "short name, e.g. Hostel fee payment notice",
+  "issued_by": "office or person who issued it, or null",
+  "audience": "who must act on this, e.g. All first-year hostel residents, or null if unclear",
+  "summary": "2-3 very simple sentences: what this is and what the student must do",
+  "urgency": "high | medium | low",
+  "urgency_reason": "one short sentence",
+  "deadlines": [{{"date": "as written in the notice", "date_iso": "YYYY-MM-DD or null if not certain", "what": "what must be done or what happens", "source_text": "exact words copied from the notice", "certain": true}}],
+  "required_documents": ["documents or items the student must bring or submit"],
+  "checklist": [{{"step": "one clear action", "why": "short reason", "priority": "high | medium | low", "deadline": "date or null"}}],
+  "key_facts": [{{"label": "e.g. Fee amount, Venue, Time", "value": "...", "source_text": "exact words from the notice"}}],
+  "missing_or_unclear": ["important information the notice does NOT give or states ambiguously, e.g. no venue, no time, year not given"],
+  "hindi": {hindi_block}
+}}
+
+Strict rules:
+- Use ONLY information in the notice. Never invent dates, amounts, venues, names or rules.
+- If something is missing or ambiguous, leave it out or use null, and explain it in "missing_or_unclear".
+- "source_text" must be copied word-for-word so the student can verify it.
+- Set "certain": false for any deadline you had to interpret (e.g. "next Monday", year not stated).
+- Write in simple English. Order the checklist by what to do first.
+"""
+
+HINDI_BLOCK = '{"summary": "the summary in simple Hindi (Devanagari)", "checklist": ["each checklist step in simple Hindi"]}'
+
+
+def normalize_notice(d):
+    out = {
+        "title": d.get("title") or "Notice",
+        "issued_by": d.get("issued_by"),
+        "audience": d.get("audience"),
+        "summary": d.get("summary") or "",
+        "urgency": d.get("urgency") if d.get("urgency") in ("high", "medium", "low") else "medium",
+        "urgency_reason": d.get("urgency_reason") or "",
+        "deadlines": [x for x in _list(d.get("deadlines")) if isinstance(x, dict)],
+        "required_documents": [str(x) for x in _list(d.get("required_documents"))],
+        "checklist": [x for x in _list(d.get("checklist")) if isinstance(x, dict)],
+        "key_facts": [x for x in _list(d.get("key_facts")) if isinstance(x, dict)],
+        "missing_or_unclear": [str(x) for x in _list(d.get("missing_or_unclear"))],
+        "hindi": d.get("hindi") if isinstance(d.get("hindi"), dict) else None,
+    }
+    for c in out["checklist"]:
+        if c.get("priority") not in ("high", "medium", "low"):
+            c["priority"] = "medium"
+    for dl in out["deadlines"]:
+        iso = dl.get("date_iso")
+        if not (isinstance(iso, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso)):
+            dl["date_iso"] = None
+    return out
+
+
+def prepare_image(file_storage):
+    img = ImageOps.exif_transpose(Image.open(file_storage.stream)).convert("RGB")
+    img.thumbnail((1600, 1600))
+    buf = io.BytesIO()
+    img.save(buf, "JPEG", quality=88)
+    return buf.getvalue()
+
+
+@app.post("/api/notice")
+@login_required
+def explain_notice():
+    from google.genai import types
+
+    text = (request.form.get("text") or "").strip()
+    if len(text) > 15000:
+        return jsonify(error="That notice is very long. Please paste at most about 15,000 characters."), 400
+    hindi = request.form.get("hindi") == "1"
+    sample_id = request.form.get("sample_id") or ""
+    if not re.fullmatch(r"[a-z0-9_-]{1,40}", sample_id):
+        sample_id = ""
+
+    image_bytes = None
+    upload = request.files.get("file")
+    if upload and upload.filename:
+        try:
+            image_bytes = prepare_image(upload)
+        except Exception:
+            return jsonify(error="Could not read that image. Please use JPG, PNG or WEBP."), 400
+
+    if not text and not image_bytes:
+        return jsonify(error="Paste the notice text or upload a photo of it first."), 400
+
+    if image_bytes and text:
+        source = "in the image, plus this text:\n---\n" + text + "\n---"
+    elif image_bytes:
+        source = "in the image."
+    else:
+        source = "below:\n---\n" + text + "\n---"
+    prompt = NOTICE_PROMPT.format(
+        today=date.today().strftime("%d %B %Y"),
+        source=source,
+        hindi_block=HINDI_BLOCK if hindi else "null",
+    )
+    contents = ([types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")] if image_bytes else []) + [prompt]
+
+    lang = "hi" if hindi else "en"
+    started = time.time()
+    try:
+        raw, model = ask_gemma(contents)
+        result = normalize_notice(raw)
+    except Exception as e:
+        cf = cache_file("notice", sample_id, lang) if sample_id else None
+        if cf and cf.exists():
+            saved = json.loads(cf.read_text(encoding="utf-8"))
+            return jsonify(result=saved["result"], model=saved["model"], cached=True,
+                           cached_at=saved["saved_at"], notice=friendly_error(e))
+        return jsonify(error=friendly_error(e)), 502
+
+    if sample_id:
+        cache_file("notice", sample_id, lang).write_text(json.dumps(
+            {"result": result, "model": model, "saved_at": datetime.now().strftime("%d %b %Y, %H:%M")},
+            ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return jsonify(result=result, model=model, cached=False, seconds=round(time.time() - started, 1))
+
+
+# ------------------------------------------------------------------ pages
+
+def load(name):
+    return json.loads((BASE_DIR / "data" / name).read_text(encoding="utf-8"))
+
+
+def load_campus():
+    """All campus data the website shows. Edit the JSON files in data/ to update it."""
+    return {
+        "timetables": {str(y): load(f"year{y}_timetable.json") for y in (1, 2, 3, 4)},
+        "notices": load("notices.json"),
+        "assignments": load("assignments.json"),
+        "exams": load("exams.json"),
+        "syllabus": load("syllabus.json"),
+        "hostel": load("hostel.json"),
+    }
+
+
+def for_student(item, year, section):
+    years = item.get("years") or ([item["year"]] if "year" in item else ["all"])
+    sections = item.get("sections") or ["all"]
+    year_ok = "all" in years or year in years or str(year) in [str(y) for y in years]
+    return year_ok and ("all" in sections or section in sections)
+
+
+@app.get("/")
+@login_required
+def index():
+    campus = load_campus()
+    campus["posts"] = accounts.all_posts()
+    return render_template("index.html", samples=load("sample_notices.json"), campus=campus,
+                           me=public_user(current_user()), models=MODELS)
+
+
+# ------------------------------------------------------------------ Study Planner
+
+PLAN_PROMPT = """You are CampusMate AI, a realistic study coach for Indian college students.
+
+Make a day-by-day study timetable for these exact dates: {dates}
+The student can study about {hours} hours per day, starting around {start}.
+
+Subjects:
+{subjects}
+
+Rules:
+- Plan ONLY for the dates listed. On a subject's exam date, schedule only light revision of THAT subject before the exam, and mark the exam itself as a session with type "exam".
+- Do not schedule a subject after its exam date.
+- Give more time to harder subjects and to exams that come sooner.
+- The last 1-2 days before each exam must include revision of that subject.
+- Add a short break (type "break") after every 60-90 minutes of study. Breaks do not count toward study hours.
+- Keep each day's study time close to {hours} hours. Never more than {hours} + 1.
+- Use specific topics from the student's list in "task". If the topic list is empty, write general tasks like "Revise unit notes".
+- If there is clearly not enough time to cover everything, say so in "warnings".
+
+Reply with ONLY one JSON object, no markdown fences, in exactly this structure:
+{{
+  "overview": "2 short sentences describing the strategy",
+  "warnings": ["honest warnings, or empty list"],
+  "days": [
+    {{"date": "YYYY-MM-DD", "focus": "short focus for the day",
+      "sessions": [{{"time": "e.g. 6:00-7:30 PM", "subject": "subject name or Break", "task": "specific task", "type": "study | revision | practice | break | exam"}}]}}
+  ],
+  "tips": ["2-3 short practical tips"]
+}}
+"""
+
+PLAN_TYPES = ("study", "revision", "practice", "break", "exam")
+
+
+@app.post("/api/plan")
+@login_required
+def make_plan():
+    data = request.get_json(silent=True) or {}
+    try:
+        hours = float(data.get("hours") or 0)
+    except (TypeError, ValueError):
+        hours = 0
+    if not 1 <= hours <= 14:
+        return jsonify(error="Enter study hours per day between 1 and 14."), 400
+    start = str(data.get("start") or "18:00")[:5]
+
+    today = date.today()
+    subjects, lines = [], []
+    for s in (data.get("subjects") or [])[:8]:
+        name = str(s.get("name") or "").strip()[:60]
+        if not name:
+            continue
+        try:
+            exam = date.fromisoformat(str(s.get("exam_date")))
+        except ValueError:
+            return jsonify(error=f"Please pick a valid exam date for {name}."), 400
+        if exam < today:
+            return jsonify(error=f"The exam date for {name} is in the past."), 400
+        topics = str(s.get("topics") or "").strip()[:600]
+        level = s.get("difficulty") if s.get("difficulty") in ("easy", "medium", "hard") else "medium"
+        subjects.append(exam)
+        lines.append(f"- {name}: exam on {exam.isoformat()} ({exam.strftime('%A')}), difficulty {level}, "
+                     f"topics: {topics or 'not given'}")
+    if not lines:
+        return jsonify(error="Add at least one subject with an exam date."), 400
+
+    last = max(subjects)
+    n_days = min((last - today).days + 1, 14)
+    dates = [(today + timedelta(days=i)) for i in range(n_days)]
+    date_list = ", ".join(f"{d.isoformat()} ({d.strftime('%a')})" for d in dates)
+    truncated = (last - today).days + 1 > 14
+
+    prompt = PLAN_PROMPT.format(dates=date_list, hours=hours, start=start, subjects="\n".join(lines))
+    sample = data.get("sample_id") == "demo"
+    started = time.time()
+    try:
+        raw, model = ask_gemma([prompt])
+    except Exception as e:
+        cf = cache_file("plan", "demo", "en")
+        if sample and cf.exists():
+            saved = json.loads(cf.read_text(encoding="utf-8"))
+            return jsonify(result=saved["result"], model=saved["model"], cached=True,
+                           cached_at=saved["saved_at"], notice=friendly_error(e))
+        return jsonify(error=friendly_error(e)), 502
+
+    valid_dates = {d.isoformat() for d in dates}
+    days = []
+    for d in _list(raw.get("days")):
+        if not isinstance(d, dict) or d.get("date") not in valid_dates:
+            continue
+        sessions = [x for x in _list(d.get("sessions")) if isinstance(x, dict)]
+        for x in sessions:
+            if x.get("type") not in PLAN_TYPES:
+                x["type"] = "study"
+        days.append({"date": d["date"], "focus": d.get("focus") or "", "sessions": sessions})
+    days.sort(key=lambda d: d["date"])
+    if not days:
+        return jsonify(error="The AI did not return a usable timetable. Please try again."), 502
+
+    warnings = [str(x) for x in _list(raw.get("warnings"))]
+    if truncated:
+        warnings.insert(0, "Your last exam is more than 2 weeks away, so this plan covers the next 14 days. Generate a new plan later for the rest.")
+    result = {"overview": raw.get("overview") or "", "warnings": warnings,
+              "days": days, "tips": [str(x) for x in _list(raw.get("tips"))]}
+
+    if sample:
+        cache_file("plan", "demo", "en").write_text(json.dumps(
+            {"result": result, "model": model, "saved_at": datetime.now().strftime("%d %b %Y, %H:%M")},
+            ensure_ascii=False, indent=2), encoding="utf-8")
+    return jsonify(result=result, model=model, cached=False, seconds=round(time.time() - started, 1))
+
+
+# ------------------------------------------------------------------ Ask CampusMate
+
+ASK_PROMPT = """You are CampusMate AI, a friendly assistant for a college student in {section}.
+Today is {today}. Tomorrow is {tomorrow}.
+
+Answer the student's question using ONLY the campus data below. Rules:
+- If the answer is not in the data, say so honestly and suggest who to ask (e.g. the block warden or the department office). Never invent times, dates, rooms, rules, phone numbers or menus.
+- Use the student's timetable for questions about their classes. Saturday and Sunday have no classes unless a notice says so.
+- Subjects are often written as codes (e.g. MA-111). Use the codes as given; do not guess full subject names that are not in the data.
+- Consider assignments, the exam schedule, syllabus outlines and notices. Mention a notice or assignment by its title.
+- If you use SAMPLE data (assignments, exams, syllabus, hostel), you may answer from it, but do not claim it is official.
+- Be short and practical. Use simple English, or Hindi if the student writes in Hindi.
+
+Reply with ONLY one JSON object, no markdown fences:
+{{"answer": "1-3 short sentences", "points": ["optional short bullet points, e.g. each class or each deadline"], "sources": ["which parts of the data you used, e.g. Timetable, Assignments, Exam schedule, Syllabus, Notice: <title>, Mess menu, Your study plan"], "found": true}}
+Set "found": false if the data does not contain the answer.
+
+===== CAMPUS DATA =====
+{context}
+===== END OF DATA =====
+{history}
+Student's question: {question}
+"""
+
+
+def build_ask_context(year, section_id, group, client):
+    campus = load_campus()
+    tt = campus["timetables"].get(str(year)) or campus["timetables"]["1"]
+    sec = next((s for s in tt["sections"] if s["id"] == section_id), tt["sections"][0])
+    hostel = campus["hostel"]
+    y = tt["year"]
+
+    parts = [f"## Student: Year {y}, {sec['name']}" + (f", group {group}" if group else "") +
+             (f" (branches: {sec['branches']})" if sec.get("branches") else ""),
+             f"## Class timetable – Year {y}, {sec['name']} – {tt['title']} ({'official' if tt['official'] else 'SAMPLE data'})",
+             "Lunch 13:00–14:00. Group labs (Gr.1/Gr.2/Gr.3) apply only to that group. " + tt.get("note", "")]
+    for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+        items = sorted((c for c in sec["classes"] if c["day"] == day), key=lambda c: c["start"])
+        items = [c for c in items if not group or not c["group"] or c["group"] == group]
+        parts.append(f"{day}: " + ("; ".join(
+            f"{c['start']}:00–{c['end']}:00 {c['label']} ({c['type']}, {c['room']}{', ' + c['faculty'] if c['faculty'] else ''})"
+            for c in items) or "no classes"))
+    if tt.get("classrooms"):
+        parts.append("Classroom locations: " + "; ".join(f"{k}: {v}" for k, v in tt["classrooms"].items()))
+
+    parts.append("\n## Assignments published for this student")
+    for a in campus["assignments"]["assignments"]:
+        if for_student(a, y, sec["id"]):
+            due = f"due {a['due']}" if a.get("due") else "due date not stated"
+            kind = "real assignment PDF" if a.get("official") else "sample"
+            topics = f" Topics: {', '.join(a['topics'])}." if a.get("topics") else ""
+            parts.append(f"- {a['code']}: {a['title']} ({kind}, posted {a['posted']}, {due}"
+                         f"{', ' + str(a['marks']) + ' marks' if a.get('marks') else ''}). {a['details']}{topics} Submit: {a['submit']}")
+
+    ex = campus["exams"]["years"].get(str(y))
+    if ex:
+        parts.append(f"\n## Exam schedule: {ex['name']} (sample data, not the official date sheet)")
+        parts += [f"- {r['date']} {r['time']}: {r['code']} ({r['venue']})" for r in ex["rows"] if for_student(r, y, sec["id"])]
+        parts.append("Exam rules: " + " ".join(campus["exams"]["rules"]))
+
+    codes = sorted({c["code"] for c in sec["classes"]})
+    syl = campus["syllabus"]["years"].get(str(y), {})
+    subjects = syl.get("subjects", {})
+    parts.append(f"\n## Syllabus for this section's subjects ({'official curriculum' if syl.get('official') else 'SAMPLE syllabus'})")
+    for code in codes:
+        sub = subjects.get(code)
+        if sub:
+            parts.append(f"### {code}: {sub['name']}\n{sub['text'][:650]}")
+        else:
+            parts.append(f"- {code}: {syl.get('missing', {}).get(code, 'syllabus not added yet')}")
+
+    posts = [p for p in accounts.all_posts() if for_student(p, y, sec["id"])]
+    if posts:
+        parts.append("\n## Recently published by admins on CampusMate (official uploads)")
+        for p in posts[:15]:
+            extra = (f", subject {p['code']}" if p["code"] else "") + (f", due {p['due']}" if p["due"] else "")
+            parts.append(f"- [{p['kind']}] {p['title']} (published {p['published_at']} by {p['published_by']}{extra}): {p['body'][:600]}")
+
+    parts.append("\n## Notices for this student")
+    for n in campus["notices"]["notices"]:
+        if for_student(n, y, sec["id"]):
+            parts.append(f"### Notice: {n['title']} (dated {n['date']}, from {n['from']})\n{n['text'][:1100]}")
+
+    parts.append("\n## Hostel (sample data)")
+    parts.append("Mess timings: " + "; ".join(f"{k} {v}" for k, v in hostel["mess_timings"].items()))
+    for day, meals in hostel["mess_menu"].items():
+        parts.append(f"Mess menu {day}: " + "; ".join(f"{k}: {v}" for k, v in meals.items()))
+    parts += [f"Hostel rule – {r['title']}: {r['body']}" for r in hostel["rules"]]
+    parts += [f"Hostel FAQ – {f['q']} {f['a']}" for f in hostel["faqs"]]
+    parts += [f"Contact – {c['role']}: {c['where']}, {c['hours']}, phone: {c['phone'] or 'not listed'}" for c in hostel["contacts"]]
+    parts += [f"Hostel announcement ({a['date']}) – {a['title']}: {a['body']}" for a in hostel["announcements"]]
+    parts.append("How to report a hostel problem: " + " ".join(f"{i+1}. {s['title']}: {s['body']}" for i, s in enumerate(hostel["complaint_steps"])))
+
+    deadlines = [d for d in _list(client.get("deadlines")) if isinstance(d, dict)][:20]
+    if deadlines:
+        parts.append("\n## Deadlines the student saved from explained notices")
+        parts += [f"- {str(d.get('date'))[:20]}: {str(d.get('what'))[:150]} (from: {str(d.get('from'))[:80]})" for d in deadlines]
+    plan = [d for d in _list(client.get("plan")) if isinstance(d, dict)][:14]
+    if plan:
+        parts.append("\n## The student's study plan")
+        for d in plan:
+            sessions = "; ".join(f"{str(s.get('time'))[:20]} {str(s.get('subject'))[:60]} – {str(s.get('task'))[:80]}"
+                                 for s in _list(d.get("sessions"))[:8] if isinstance(s, dict))
+            parts.append(f"{str(d.get('date'))[:10]}: {sessions}")
+    label = f"Year {y}, {sec['name']}" + (f" ({group})" if group else "")
+    return label, "\n".join(parts)
+
+
+@app.post("/api/ask")
+@login_required
+def ask():
+    data = request.get_json(silent=True) or {}
+    question = str(data.get("question") or "").strip()
+    if not question:
+        return jsonify(error="Type a question first."), 400
+    if len(question) > 500:
+        return jsonify(error="Please keep your question under 500 characters."), 400
+
+    try:
+        year = int(data.get("year") or 1)
+    except (TypeError, ValueError):
+        year = 1
+    group = str(data.get("group") or "")
+    if not re.fullmatch(r"Gr\.\d", group):
+        group = ""
+    label, context = build_ask_context(year, str(data.get("section") or ""), group, data.get("client") or {})
+    history = ""
+    turns = [t for t in _list(data.get("history")) if isinstance(t, dict)][-4:]
+    if turns:
+        history = "\nEarlier in this chat:\n" + "\n".join(
+            f"Student: {str(t.get('q'))[:300]}\nCampusMate: {str(t.get('a'))[:400]}" for t in turns) + "\n"
+
+    today = date.today()
+    prompt = ASK_PROMPT.format(
+        section=label, context=context, history=history, question=question,
+        today=today.strftime("%A, %d %B %Y"), tomorrow=(today + timedelta(days=1)).strftime("%A, %d %B %Y"),
+    )
+    started = time.time()
+    try:
+        raw, model = ask_gemma([prompt])
+    except Exception as e:
+        return jsonify(error=friendly_error(e)), 502
+    return jsonify(
+        answer=str(raw.get("answer") or "Sorry, I couldn't form an answer. Please try rephrasing."),
+        points=[str(x) for x in _list(raw.get("points"))][:12],
+        sources=[str(x) for x in _list(raw.get("sources"))][:6],
+        found=raw.get("found") is not False,
+        model=model, seconds=round(time.time() - started, 1),
+    )
+
+
+@app.errorhandler(413)
+def too_large(_):
+    return jsonify(error="That file is too big. Please keep uploads under 12 MB."), 413
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)

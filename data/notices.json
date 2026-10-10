@@ -1,0 +1,141 @@
+{
+ "note": "Sample notices for the demo. In real use, the institute offices would publish these.",
+ "notices": [
+  {
+   "id": "hostel-fee",
+   "date": "2026-10-07",
+   "title": "Hostel & mess fee for Even Semester",
+   "from": "Chief Warden",
+   "years": [
+    "all"
+   ],
+   "sections": [
+    "all"
+   ],
+   "text": "SAMPLE INSTITUTE OF TECHNOLOGY\nOffice of the Chief Warden (Boys' & Girls' Hostels)\nRef: SIT/HOSTEL/2026/118                Date: 07.10.2026\n\nNOTICE\n\nAll hostel residents are hereby informed that the hostel and mess fee for the Even Semester (January–May 2027) amounting to Rs. 42,500/- must be paid through the student ERP portal on or before 25.10.2026.\n\nStudents who fail to pay by the due date will be charged a late fine of Rs. 100 per day up to 05.11.2026. Room allotment for the Even Semester will be cancelled for students who have not paid by 05.11.2026.\n\nAfter payment, residents must submit a printout of the fee receipt along with a self-attested copy of their college ID card to the hostel office (Block A, Ground Floor) between 10:00 AM and 4:00 PM on working days.\n\nStudents availing an education loan must submit the bank sanction letter to the Accounts Section before the due date to avoid the late fine.\n\nChief Warden\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "long-notice",
+   "date": "2026-10-08",
+   "title": "Diwali vacation and hostel maintenance",
+   "from": "Hostel Administration",
+   "years": [
+    "all"
+   ],
+   "sections": [
+    "all"
+   ],
+   "text": "SAMPLE INSTITUTE OF TECHNOLOGY\nHOSTEL ADMINISTRATION\nCircular No. HA/2026-27/09                                   Date: 08 October 2026\n\nSubject: Diwali vacation, hostel closure, maintenance work and rules for residents staying back\n\nDear Residents,\n\nThis circular contains important information regarding the upcoming Diwali vacation and the annual maintenance of hostel buildings. All residents are requested to read it carefully and follow the instructions.\n\nA. Vacation and closure\n1. The institute will remain closed for Diwali vacation from 30 October 2026 to 8 November 2026 (both days inclusive). Classes will resume on 9 November 2026.\n2. Hostel Blocks C and D will be completely closed from 31 October 2026 (12:00 noon) to 7 November 2026 for electrical rewiring and painting. Residents of Blocks C and D must vacate their rooms by 11:00 AM on 31 October 2026.\n3. Blocks A and B will remain open for residents who need to stay back.\n\nB. Residents staying back\n4. Residents who wish to stay in the hostel during the vacation must fill the stay-back form on the student portal by 22 October 2026. Requests after this date will not be considered.\n5. Stay-back residents from Blocks C and D will be shifted temporarily to Block B. Room allotment lists will be displayed on 28 October 2026.\n6. Only the Block A mess will function during the vacation, with limited timings: breakfast 8:00–9:00 AM, lunch 12:30–1:30 PM, dinner 7:30–8:30 PM.\n7. Stay-back residents must carry their hostel ID card at all times. Night attendance will be taken at 10:00 PM.\n\nC. Before leaving\n8. Residents going home must switch off and unplug all electrical appliances, lock their almirahs, and remove all food items from their rooms.\n9. Valuables such as laptops and jewellery should not be left in the rooms. The hostel administration will not be responsible for any loss.\n10. Residents of Blocks C and D must pack personal belongings into their almirahs or take them home so that painting can be carried out. Items left on the floor may be moved by the maintenance team.\n11. Every resident must submit a leave form, signed by their parent or guardian, at the hostel office before leaving. Residents leaving without a leave form will be marked absent.\n\nD. Maintenance requests\n12. Residents who have pending maintenance complaints (fans, lights, taps, furniture) should register them on the hostel maintenance portal by 25 October 2026 so that they can be fixed during the closure.\n\nE. Return\n13. Hostel Blocks C and D will reopen at 10:00 AM on 8 November 2026. Residents must report to their warden on arrival.\n14. Any damage noticed in the room on return must be reported in writing within 48 hours of reopening.\n\nResidents are requested to cooperate with the hostel staff. For any queries, contact your block warden during office hours.\n\nWishing you a safe and happy Diwali.\n\nWarden-in-Charge, Hostel Administration\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "vague-notice",
+   "date": "2026-10-06",
+   "title": "Scholarship document verification",
+   "from": "Office (not specified)",
+   "years": [
+    "all"
+   ],
+   "sections": [
+    "all"
+   ],
+   "text": "URGENT NOTICE\n\nAll students are informed that the document verification for the scholarship will be conducted next week. Students must bring all original documents and photocopies. Those who do not attend will not be eligible. Contact the concerned office for details.\n\n- Office\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-midsem",
+   "date": "2026-10-09",
+   "title": "1st year mid-semester exams: admit cards and rules",
+   "from": "Examination Office",
+   "years": [
+    1
+   ],
+   "sections": [
+    "all"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\nExamination Office\nDate: 09 October 2026\n\nSUBJECT: Mid-Semester Examinations for 1st Year (Odd Semester 2026-27)\n\n1. Mid-semester examinations for all 1st year sections will be held from 2 November 2026 to 6 November 2026. The subject-wise schedule is available in the Exam Schedule section.\n2. Admit cards can be downloaded from the student portal between 26 October 2026 and 31 October 2026.\n3. Students with attendance below 75% as on 24 October 2026 will not be issued admit cards. Condonation requests with valid documents must reach the Head of Department by 26 October 2026.\n4. Students must carry their admit card and college ID card. Mobile phones, smart watches and programmable calculators are not allowed.\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "exam-schedule",
+   "date": "2026-10-05",
+   "title": "Mid-semester exam schedule – Semester III",
+   "from": "Controller of Examinations",
+   "years": [
+    2
+   ],
+   "sections": [
+    "all"
+   ],
+   "text": "SAMPLE INSTITUTE OF TECHNOLOGY\nOffice of the Controller of Examinations\nDate: 05 October 2026\n\nSUBJECT: Schedule of Mid-Semester Examinations and related activities – B.Tech Semester III\n\n1. Mid-semester examinations for B.Tech Semester III will be held from 27 October 2026 to 3 November 2026 in two shifts: 10:00 AM – 11:30 AM and 2:00 PM – 3:30 PM.\n2. The subject-wise date sheet will be displayed on the department notice boards and the student portal by 15 October 2026.\n3. Students must download their admit cards from the student portal between 20 October 2026 and 25 October 2026. No student will be allowed into the examination hall without a printed admit card and college ID card.\n4. Students with attendance below 75% as on 18 October 2026 will not be issued admit cards. Such students may submit a condonation request with valid medical documents to their Head of Department by 19 October 2026.\n5. Lab record books must be submitted to the respective lab in-charge by 24 October 2026.\n6. Mobile phones, smart watches and programmable calculators are strictly prohibited in the examination hall.\n\nController of Examinations\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-a-ph102",
+   "date": "2026-10-09",
+   "title": "PH-102 lab: record check before mid-sems",
+   "from": "Department of Physics",
+   "years": [
+    1
+   ],
+   "sections": [
+    "A"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\nDepartment of Physics\nDate: 09.10.2026\n\nNOTICE – 1st Year, Section A\n\nAll students of Section A must get their PH-102 lab records (experiments 1 to 4) checked in their group's lab slot before 15.10.2026. Students whose records are not checked will be marked incomplete for the internal assessment.\n\nBring the lab record and calculations. Graph sheets must be pasted.\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-b-extra",
+   "date": "2026-10-09",
+   "title": "Extra class: MA-111 on Saturday",
+   "from": "Department of Mathematics",
+   "years": [
+    1
+   ],
+   "sections": [
+    "B"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\nDepartment of Mathematics\n\nNOTICE – 1st Year, Section B\n\nAn extra class of MA-111 will be held on Saturday, 17 October 2026, from 10:00 AM to 12:00 noon in classroom G1 to complete the unit on multivariable calculus before the mid-semester examinations. Attendance will be counted.\n\nBring your notes and tutorial sheet 4.\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-cd-guest",
+   "date": "2026-10-07",
+   "title": "Guest lecture for Sections C and D",
+   "from": "Office of Dean Academic",
+   "years": [
+    1
+   ],
+   "sections": [
+    "C",
+    "D"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\n\nNOTICE – 1st Year, Sections C and D\n\nA guest lecture on 'Engineering in Everyday Life' will be held on Wednesday, 14 October 2026, at 5:00 PM in the Seminar Hall. Attendance is compulsory for Sections C and D.\n\nStudents should register attendance at the entrance using their college ID card.\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-ej-room",
+   "date": "2026-10-09",
+   "title": "Tutorial room change for Sections E to J",
+   "from": "Office of Dean Academic",
+   "years": [
+    1
+   ],
+   "sections": [
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\nDate: 09 October 2026\n\nNOTICE – 1st Year, Sections E, F, G, H, I and J\n\nDuring the mid-semester examination week (2–6 November 2026), classrooms F1, F2 and G1 will be used as exam halls. Any make-up classes in that week will be held in the Vivekananda Lecture Hall Complex basement. Timings remain unchanged.\n\nOffice of Dean Academic\n\n[Fictional sample notice for the CampusMate AI demo]"
+  },
+  {
+   "id": "y1-z-jury",
+   "date": "2026-10-08",
+   "title": "AR-111 studio review (jury)",
+   "from": "Department of Architecture",
+   "years": [
+    1
+   ],
+   "sections": [
+    "Z"
+   ],
+   "text": "SAMPLE INSTITUTE NOTICE\nDepartment of Architecture\nDate: 08 October 2026\n\nNOTICE – 1st Year, Section Z\n\nThe first studio review (jury) for AR-111 will be held on Monday, 19 October 2026, in Studio I. All students must pin up their basic design composition sheets by 9:00 AM. Late submissions will not be reviewed.\n\nBring all process sketches along with the final sheet.\n\n[Fictional sample notice for the CampusMate AI demo]"
+  }
+ ]
+}
