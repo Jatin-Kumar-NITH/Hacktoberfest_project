@@ -1,5 +1,5 @@
 {
- "note": "Year 1 is the official first-year curriculum. Years 2–4 are sample syllabi for the demo.",
+ "note": "Year 1 is the official first-year curriculum. Other years have not been added yet.",
  "years": {
   "1": {
    "official": true,
@@ -339,309 +339,30 @@
   },
   "2": {
    "official": false,
-   "title": "Year 2 syllabus (sample)",
-   "source": "Sample data",
-   "note": "Sample syllabus generated for the demo. Replace with the official curriculum for this year.",
+   "title": "Year 2 syllabus",
+   "source": "Not added yet",
+   "note": "The syllabus for this year has not been added yet. Admins can publish syllabus PDFs as Study material.",
    "documents": [],
    "missing": {},
-   "subjects": {
-    "Data Structures": {
-     "name": "Data Structures",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/data-structures.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Data Structures\nYear 2 · SAMPLE syllabus (not official)\n\nUnit 1: Arrays, stacks and queues; applications\nUnit 2: Linked lists: singly, doubly, circular\nUnit 3: Trees: binary trees, BST, AVL, heaps\nUnit 4: Graphs: representation, BFS, DFS, shortest paths\nUnit 5: Sorting and searching; hashing",
-     "note": null
-    },
-    "Discrete Mathematics": {
-     "name": "Discrete Mathematics",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/discrete-mathematics.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Discrete Mathematics\nYear 2 · SAMPLE syllabus (not official)\n\nUnit 1: Sets, relations and functions\nUnit 2: Propositional and predicate logic\nUnit 3: Counting: permutations, combinations, pigeonhole principle\nUnit 4: Recurrence relations and generating functions\nUnit 5: Graph theory basics",
-     "note": null
-    },
-    "Digital Electronics": {
-     "name": "Digital Electronics",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/digital-electronics.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Digital Electronics\nYear 2 · SAMPLE syllabus (not official)\n\nUnit 1: Number systems and Boolean algebra\nUnit 2: K-maps and logic minimisation\nUnit 3: Combinational circuits: adders, multiplexers, decoders\nUnit 4: Sequential circuits: flip-flops, counters, registers\nUnit 5: Introduction to memories and PLDs",
-     "note": null
-    },
-    "OOP with Java": {
-     "name": "OOP with Java",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/oop-with-java.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "OOP with Java\nYear 2 · SAMPLE syllabus (not official)\n\nUnit 1: Java basics, classes and objects\nUnit 2: Inheritance, interfaces and polymorphism\nUnit 3: Exception handling and packages\nUnit 4: Collections framework and generics\nUnit 5: Multithreading and file I/O",
-     "note": null
-    },
-    "Engineering Mathematics III": {
-     "name": "Engineering Mathematics III",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/engineering-mathematics-iii.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Engineering Mathematics III\nYear 2 · SAMPLE syllabus (not official)\n\nUnit 1: Laplace transform and applications\nUnit 2: Fourier series\nUnit 3: Fourier transform\nUnit 4: Partial differential equations\nUnit 5: Numerical methods",
-     "note": null
-    },
-    "Data Structures Lab": {
-     "name": "Data Structures Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/data-structures-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "Data Structures Lab\nYear 2 · SAMPLE syllabus (not official)\n\nExperiment 1: Implementation of stacks, queues and linked lists\nExperiment 2: Tree and graph traversal programs\nExperiment 3: Sorting algorithm comparison",
-     "note": null
-    },
-    "Java Lab": {
-     "name": "Java Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/java-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "Java Lab\nYear 2 · SAMPLE syllabus (not official)\n\nExperiment 1: Programs on classes, inheritance and interfaces\nExperiment 2: Exception handling and collections\nExperiment 3: Mini project in Java",
-     "note": null
-    },
-    "Digital Electronics Lab": {
-     "name": "Digital Electronics Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year2/digital-electronics-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "Digital Electronics Lab\nYear 2 · SAMPLE syllabus (not official)\n\nExperiment 1: Verification of logic gates\nExperiment 2: Design of adders and multiplexers\nExperiment 3: Flip-flops and counters on breadboard",
-     "note": null
-    }
-   }
+   "subjects": {}
   },
   "3": {
    "official": false,
-   "title": "Year 3 syllabus (sample)",
-   "source": "Sample data",
-   "note": "Sample syllabus generated for the demo. Replace with the official curriculum for this year.",
+   "title": "Year 3 syllabus",
+   "source": "Not added yet",
+   "note": "The syllabus for this year has not been added yet. Admins can publish syllabus PDFs as Study material.",
    "documents": [],
    "missing": {},
-   "subjects": {
-    "Operating Systems": {
-     "name": "Operating Systems",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/operating-systems.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Operating Systems\nYear 3 · SAMPLE syllabus (not official)\n\nUnit 1: Processes and threads\nUnit 2: CPU scheduling\nUnit 3: Synchronisation and deadlocks\nUnit 4: Memory management and virtual memory\nUnit 5: File systems and I/O",
-     "note": null
-    },
-    "Computer Networks": {
-     "name": "Computer Networks",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/computer-networks.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Computer Networks\nYear 3 · SAMPLE syllabus (not official)\n\nUnit 1: Network models: OSI and TCP/IP\nUnit 2: Data link layer and MAC protocols\nUnit 3: Network layer: IP addressing and routing\nUnit 4: Transport layer: TCP and UDP\nUnit 5: Application layer protocols",
-     "note": null
-    },
-    "Database Systems": {
-     "name": "Database Systems",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/database-systems.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Database Systems\nYear 3 · SAMPLE syllabus (not official)\n\nUnit 1: ER model and relational model\nUnit 2: SQL and relational algebra\nUnit 3: Normalisation\nUnit 4: Transactions and concurrency control\nUnit 5: Indexing and query processing",
-     "note": null
-    },
-    "Theory of Computation": {
-     "name": "Theory of Computation",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/theory-of-computation.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Theory of Computation\nYear 3 · SAMPLE syllabus (not official)\n\nUnit 1: Finite automata and regular languages\nUnit 2: Context-free grammars and pushdown automata\nUnit 3: Turing machines\nUnit 4: Decidability\nUnit 5: Complexity classes P and NP",
-     "note": null
-    },
-    "Software Engineering": {
-     "name": "Software Engineering",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/software-engineering.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Software Engineering\nYear 3 · SAMPLE syllabus (not official)\n\nUnit 1: Software process models\nUnit 2: Requirements engineering\nUnit 3: Design and UML\nUnit 4: Testing strategies\nUnit 5: Project management and maintenance",
-     "note": null
-    },
-    "OS Lab": {
-     "name": "OS Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/os-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "OS Lab\nYear 3 · SAMPLE syllabus (not official)\n\nExperiment 1: Shell scripting\nExperiment 2: Scheduling and synchronisation programs\nExperiment 3: Memory allocation simulation",
-     "note": null
-    },
-    "DBMS Lab": {
-     "name": "DBMS Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/dbms-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "DBMS Lab\nYear 3 · SAMPLE syllabus (not official)\n\nExperiment 1: SQL queries and joins\nExperiment 2: Views, triggers and procedures\nExperiment 3: Mini database project",
-     "note": null
-    },
-    "Networks Lab": {
-     "name": "Networks Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year3/networks-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "Networks Lab\nYear 3 · SAMPLE syllabus (not official)\n\nExperiment 1: Socket programming\nExperiment 2: Packet capture with Wireshark\nExperiment 3: Network simulation",
-     "note": null
-    }
-   }
+   "subjects": {}
   },
   "4": {
    "official": false,
-   "title": "Year 4 syllabus (sample)",
-   "source": "Sample data",
-   "note": "Sample syllabus generated for the demo. Replace with the official curriculum for this year.",
+   "title": "Year 4 syllabus",
+   "source": "Not added yet",
+   "note": "The syllabus for this year has not been added yet. Admins can publish syllabus PDFs as Study material.",
    "documents": [],
    "missing": {},
-   "subjects": {
-    "Machine Learning": {
-     "name": "Machine Learning",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/machine-learning.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Machine Learning\nYear 4 · SAMPLE syllabus (not official)\n\nUnit 1: Supervised learning: regression and classification\nUnit 2: Decision trees and ensembles\nUnit 3: Support vector machines\nUnit 4: Unsupervised learning and clustering\nUnit 5: Neural networks basics",
-     "note": null
-    },
-    "Cloud Computing": {
-     "name": "Cloud Computing",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/cloud-computing.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Cloud Computing\nYear 4 · SAMPLE syllabus (not official)\n\nUnit 1: Cloud service and deployment models\nUnit 2: Virtualisation and containers\nUnit 3: Cloud storage and databases\nUnit 4: Security in the cloud\nUnit 5: Case studies",
-     "note": null
-    },
-    "Information Security": {
-     "name": "Information Security",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/information-security.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Information Security\nYear 4 · SAMPLE syllabus (not official)\n\nUnit 1: Classical and symmetric cryptography\nUnit 2: Public-key cryptography\nUnit 3: Authentication and digital signatures\nUnit 4: Network and web security\nUnit 5: Security policies and auditing",
-     "note": null
-    },
-    "Elective I": {
-     "name": "Elective I",
-     "type": "Theory",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/elective-i.pdf",
-     "pages": [
-      1
-     ],
-     "units": 1,
-     "text": "Elective I\nYear 4 · SAMPLE syllabus (not official)\n\nUnit 1: Topics depend on the elective chosen by the student",
-     "note": null
-    },
-    "Project Management": {
-     "name": "Project Management",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/project-management.pdf",
-     "pages": [
-      1
-     ],
-     "units": 5,
-     "text": "Project Management\nYear 4 · SAMPLE syllabus (not official)\n\nExperiment 1: Project life cycle\nExperiment 2: Planning and scheduling: CPM and PERT\nExperiment 3: Cost estimation\nExperiment 4: Risk management\nExperiment 5: Team management",
-     "note": null
-    },
-    "ML Lab": {
-     "name": "ML Lab",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/ml-lab.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "ML Lab\nYear 4 · SAMPLE syllabus (not official)\n\nExperiment 1: Regression and classification experiments\nExperiment 2: Clustering experiments\nExperiment 3: Small neural network project",
-     "note": null
-    },
-    "Major Project": {
-     "name": "Major Project",
-     "type": "Lab",
-     "contact": null,
-     "pdf": "docs/syllabus/year4/major-project.pdf",
-     "pages": [
-      1
-     ],
-     "units": 3,
-     "text": "Major Project\nYear 4 · SAMPLE syllabus (not official)\n\nExperiment 1: Problem identification and literature review\nExperiment 2: Design and implementation\nExperiment 3: Report writing and presentation",
-     "note": null
-    }
-   }
+   "subjects": {}
   }
  }
 }

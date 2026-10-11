@@ -43,6 +43,7 @@ function route() {
   if (p === "assignments") renderAssignments();
   if (p === "exams") renderExams();
   if (p === "syllabus") renderSyllabus();
+  if (p === "hostel") renderHostel();
   if (p === "chat") startChat(); else stopChat();
   if (p === "publish") renderPublish();
   if (p === "admins") loadUsers();
@@ -428,112 +429,133 @@ function renderDashPlan() {
 // restore the last plan on load
 (() => { const saved = store.get("cm_plan", null); if (saved && saved.result.days.length) { renderPlan(saved.result, null); showP("result"); } })();
 
-// ========================================================== HOSTEL HELPER
+// ========================================================== HOSTEL MESS MENUS (boys / girls)
 const CAMPUS = JSON.parse($("campus-data").textContent);
 const HOSTEL = CAMPUS.hostel;
 const TODAY_NAME = DAY_NAMES[new Date().getDay()];
-$("hostelNote").textContent = HOSTEL.note;
+const WEEK7 = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const MEALS = ["Breakfast", "Lunch", "Snacks", "Dinner"];
+let myHostel = store.get("cm_hostel", "boys");
+if (!HOSTEL.hostels[myHostel]) myHostel = "boys";
+let menuEditing = false;
+const menuIsEmpty = (h) => !WEEK7.some((d) => MEALS.some((m) => (h.mess_menu[d] || {})[m]));
+const editedLine = (o) => (o && o.edited_by ? `Last edited by ${o.edited_by} · ${fmtTime(o.edited_at)}` : "");
 
-function renderMenu(target, dayName) {
+function renderHostel() {
+  const h = HOSTEL.hostels[myHostel];
+  document.querySelectorAll("[data-hostel]").forEach((b) => b.classList.toggle("active", b.dataset.hostel === myHostel));
+  $("mnTitle").textContent = `${h.name} · weekly menu`;
+  $("mnToday").textContent = `Today is ${TODAY_NAME}`;
+  $("mnEditBar").hidden = !IS_ADMIN || menuEditing;
+  $("mnEdited").textContent = editedLine(h);
+  $("mnActions").hidden = !menuEditing;
+  $("mnErr").hidden = true;
+  const empty = menuIsEmpty(h);
+  $("mnEmpty").hidden = !empty || menuEditing;
+  const table = $("mnTable"); table.replaceChildren();
+  table.hidden = empty && !menuEditing;
+  const head = el("tr"); head.appendChild(el("th", "", "Day"));
+  MEALS.forEach((m) => {
+    const th = el("th", "", m);
+    if (menuEditing) {
+      const t = el("input"); t.type = "text"; t.placeholder = "Time, e.g. 7:30–9:30 AM"; t.value = h.mess_timings[m] || ""; t.dataset.timing = m; t.maxLength = 40;
+      th.appendChild(t);
+    } else if (h.mess_timings[m]) th.appendChild(el("small", "", h.mess_timings[m]));
+    head.appendChild(th);
+  });
+  const thead = el("thead"); thead.appendChild(head); table.appendChild(thead);
+  const body = el("tbody");
+  WEEK7.forEach((d) => {
+    const tr = el("tr", d === TODAY_NAME ? "today" : "");
+    tr.appendChild(el("th", "", d === TODAY_NAME ? `${d} · today` : d));
+    MEALS.forEach((m) => {
+      const td = el("td");
+      const val = (h.mess_menu[d] || {})[m] || "";
+      if (menuEditing) {
+        const t = el("textarea"); t.rows = 2; t.maxLength = 200; t.value = val; t.dataset.day = d; t.dataset.meal = m;
+        td.appendChild(t);
+      } else td.textContent = val || "—";
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+  table.appendChild(body);
+}
+document.querySelectorAll("[data-hostel]").forEach((b) => b.addEventListener("click", () => {
+  myHostel = b.dataset.hostel; store.set("cm_hostel", myHostel); menuEditing = false; renderHostel();
+}));
+$("mnEditBtn").addEventListener("click", () => { menuEditing = true; renderHostel(); });
+$("mnCancel").addEventListener("click", () => { menuEditing = false; renderHostel(); });
+$("mnSave").addEventListener("click", async () => {
+  const mess_menu = {}, mess_timings = {};
+  WEEK7.forEach((d) => (mess_menu[d] = {}));
+  document.querySelectorAll("#mnTable textarea").forEach((t) => (mess_menu[t.dataset.day][t.dataset.meal] = t.value));
+  document.querySelectorAll("#mnTable input[data-timing]").forEach((t) => (mess_timings[t.dataset.timing] = t.value));
+  $("mnSave").disabled = true;
+  try {
+    const res = await fetch("/api/edit/menu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hostel: myHostel, mess_menu, mess_timings }) });
+    const data = await res.json().catch(() => ({ error: "Save failed." }));
+    if (!res.ok) throw new Error(data.error);
+    HOSTEL.hostels[myHostel] = data.hostel; menuEditing = false; renderHostel();
+  } catch (err) { $("mnErr").textContent = err.message; $("mnErr").hidden = false; }
+  finally { $("mnSave").disabled = false; }
+});
+
+function renderMenuMini(target, h, dayName) {
   const box = $(target); box.replaceChildren();
-  const meals = HOSTEL.mess_menu[dayName] || {};
-  const order = ["Breakfast", "Lunch", "Snacks", "Dinner"];
-  Object.entries(meals).sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).forEach(([meal, items]) => {
+  if (menuIsEmpty(h)) { box.appendChild(el("p", "empty-line", "Menu not added yet.")); return; }
+  MEALS.forEach((meal) => {
+    const items = (h.mess_menu[dayName] || {})[meal];
+    if (!items) return;
     const row = el("div", "meal");
     const name = el("div", "meal-name", meal);
-    if (HOSTEL.mess_timings[meal]) name.appendChild(el("small", "", HOSTEL.mess_timings[meal]));
+    if (h.mess_timings[meal]) name.appendChild(el("small", "", h.mess_timings[meal]));
     row.append(name, el("div", "", items));
     box.appendChild(row);
   });
 }
 
-["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].filter((d) => HOSTEL.mess_menu[d]).forEach((dayName) => {
-  const b = el("button", `day-tab${dayName === TODAY_NAME ? " active" : ""}`, dayName.slice(0, 3));
-  b.addEventListener("click", () => {
-    document.querySelectorAll(".day-tab").forEach((x) => x.classList.toggle("active", x === b));
-    renderMenu("menuBody", dayName);
-  });
-  $("menuDays").appendChild(b);
-});
-renderMenu("menuBody", TODAY_NAME);
-
-function announcementItem(a) {
-  const li = el("li");
-  const [, m, d] = a.date.split("-");
-  const badge = el("div", "date-badge", String(Number(d)));
-  badge.appendChild(el("small", "", MONTHS[Number(m) - 1]));
-  const txt = el("div", "dl-text");
-  txt.appendChild(el("strong", "", a.title));
-  txt.appendChild(el("span", "", a.body));
-  li.append(badge, txt);
-  li.style.cursor = "default";
-  return li;
-}
-HOSTEL.announcements.forEach((a) => $("hAnnouncements").appendChild(announcementItem(a)));
-
-HOSTEL.rules.forEach((r) => {
-  const d = el("details"); d.append(el("summary", "", r.title), el("p", "", r.body)); $("hRules").appendChild(d);
-});
-HOSTEL.faqs.forEach((f) => {
-  const d = el("details"); d.append(el("summary", "", f.q), el("p", "", f.a)); $("hFaqs").appendChild(d);
-});
-HOSTEL.contacts.forEach((c) => {
-  const li = el("li");
-  const left = el("div"); left.appendChild(el("strong", "", c.role)); left.appendChild(el("span", "", `${c.where} · ${c.hours}`));
-  const phone = el("div", `phone${c.phone ? "" : " missing"}`, c.phone || "Add your college's number");
-  li.append(left, phone);
-  $("hContacts").appendChild(li);
-});
-HOSTEL.complaint_steps.forEach((s) => {
-  const li = el("li"); li.appendChild(el("strong", "", s.title)); li.appendChild(document.createTextNode(s.body)); $("hSteps").appendChild(li);
-});
-
-// search across everything
-const INDEX = [
-  ...HOSTEL.rules.map((r) => ({ kind: "Rule", title: r.title, body: r.body })),
-  ...HOSTEL.faqs.map((f) => ({ kind: "FAQ", title: f.q, body: f.a })),
-  ...HOSTEL.contacts.map((c) => ({ kind: "Contact", title: c.role, body: `${c.where} · ${c.hours} · ${c.phone || "number not added yet"}` })),
-  ...HOSTEL.announcements.map((a) => ({ kind: "Announcement", title: a.title, body: a.body })),
-  ...HOSTEL.complaint_steps.map((s) => ({ kind: "Complaint guide", title: s.title, body: s.body })),
-  ...Object.entries(HOSTEL.mess_menu).flatMap(([day, meals]) =>
-    Object.entries(meals).map(([meal, items]) => ({ kind: "Mess menu", title: `${day} ${meal}`, body: items }))),
-];
-
-$("hostelSearch").addEventListener("input", (e) => {
-  const q = e.target.value.trim().toLowerCase();
-  $("searchResults").hidden = !q;
-  $("hostelSections").hidden = !!q;
-  if (!q) return;
-  const words = q.split(/\s+/);
-  const hits = INDEX.filter((i) => words.every((w) => `${i.kind} ${i.title} ${i.body}`.toLowerCase().includes(w)));
-  const list = $("searchList"); list.replaceChildren();
-  hits.slice(0, 30).forEach((h) => {
-    const li = el("li");
-    li.append(el("span", "kind", h.kind), el("strong", "", h.title), el("p", "", h.body));
-    list.appendChild(li);
-  });
-  if (!hits.length) list.appendChild(el("li", "empty-line", "No matches. Try another word, or ask your block warden."));
-  $("searchCount").textContent = `${hits.length} found`;
-});
-
 function renderDashHostel() {
+  const h = HOSTEL.hostels[myHostel];
+  $("dashMenuTitle").textContent = `Today's menu · ${h.name}`;
+  renderMenuMini("dashMenu", h, TODAY_NAME);
   const ul = $("dashAnnouncements"); ul.replaceChildren();
-  HOSTEL.announcements.slice(0, 3).forEach((a) => ul.appendChild(announcementItem(a)));
-  $("dashMenuDay").textContent = TODAY_NAME;
-  renderMenu("dashMenu", TODAY_NAME);
+  const ann = POSTS.filter((p) => p.kind === "announcement" && forStudent(p, myYear, mySection)).slice(0, 3);
+  ann.forEach((a) => {
+    const li = el("li");
+    const d = new Date(a.published_at);
+    const badge = el("div", "date-badge", String(d.getDate())); badge.appendChild(el("small", "", MONTHS[d.getMonth()]));
+    const txt = el("div", "dl-text");
+    txt.appendChild(el("strong", "", a.title));
+    txt.appendChild(el("span", "", `${a.published_by} · ${fmtTime(a.published_at)}`));
+    li.append(badge, txt); li.style.cursor = "default";
+    ul.appendChild(li);
+  });
+  if (!ann.length) ul.appendChild(el("li", "empty-line", "No announcements yet."));
 }
 
 // ========================================================== YEAR / SECTION / GROUP
 const WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const POSTS = CAMPUS.posts || [];
 POSTS.filter((p) => p.kind === "assignment").forEach((p) => CAMPUS.assignments.assignments.push({
-  id: p.id, years: p.years, sections: p.sections, code: p.code || "General", title: p.title, posted: localDate(p.published_at),
+  id: p.id, db_id: p.db_id, years: p.years, sections: p.sections, code: p.code || "General", title: p.title, posted: localDate(p.published_at),
   due: p.due, marks: p.marks, official: true, details: p.body || "See the attached PDF.", topics: [],
   submit: "Follow the instructions in the assignment.", pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role }));
 const NOTICES = CAMPUS.notices.notices.concat(POSTS.filter((p) => p.kind === "notice" || p.kind === "announcement").map((p) => ({
-  id: p.id, kind: p.kind, date: localDate(p.published_at), title: p.title, from: p.published_by, years: p.years, sections: p.sections,
+  id: p.id, db_id: p.db_id, kind: p.kind, date: localDate(p.published_at), title: p.title, from: p.published_by, years: p.years, sections: p.sections,
   text: p.body, pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role })))
   .sort((a, b) => (b.published_at || b.date).localeCompare(a.published_at || a.date));
+const canDelete = (p) => IS_ADMIN && p.db_id !== undefined && (ME.role === "owner" || p.author_role !== "owner");
+function deleteButton(p, label = "Delete") {
+  const b = el("button", "ghost small danger", `🗑 ${label}`);
+  b.addEventListener("click", async () => {
+    if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "Click again to delete"; return; }
+    b.disabled = true;
+    const res = await fetch(`/api/posts/${p.db_id}/delete`, { method: "POST" });
+    if (res.ok) { location.reload(); } else { const d = await res.json().catch(() => ({})); b.textContent = d.error || "Could not delete"; }
+  });
+  return b;
+}
 function pubLine(item, fallbackFrom) {
   const line = el("div", "pub-line");
   if (item.published_at) {
@@ -624,6 +646,7 @@ function noticeCard(n) {
   ai.addEventListener("click", () => explainFromBoard(n));
   if (n.pdf) { const a = el("a", "ghost small pdf-btn", "📄 PDF"); a.href = pdfHref(n.pdf); a.target = "_blank"; a.rel = "noopener"; actions.appendChild(a); }
   actions.append(read, ai);
+  if (canDelete(n)) actions.appendChild(deleteButton(n));
   card.appendChild(pubLine(n, n.from));
   card.appendChild(actions);
   return card;
@@ -680,6 +703,15 @@ function renderTimetable() {
   $("ttGroupHint").textContent = sec.groups && sec.groups.length
     ? (viewingMine && myGroup ? `Faded labs are for other groups (you are ${myGroup}).` : "Pick your group in the sidebar to highlight your labs.") : "";
 
+  $("ttEditBar").hidden = !IS_ADMIN || ttEditing;
+  $("ttEdited").textContent = editedLine(tt);
+  if (!sec.classes.length && !ttEditing) {
+    $("ttGrid").replaceChildren(el("p", "empty-line tt-empty", IS_ADMIN
+      ? "No classes added for this section yet. Use “Edit this section's timetable” to add them."
+      : "The timetable for this section hasn't been added yet."));
+    $("ttGrid").style.gridTemplateColumns = "1fr";
+    return;
+  }
   const hours = sec.classes.reduce((m, c) => [Math.min(m[0], c.start), Math.max(m[1], c.end)], [9, 17]);
   const first = hours[0], last = Math.max(hours[1], 18);
   const grid = $("ttGrid"); grid.replaceChildren();
@@ -714,6 +746,66 @@ function renderTimetable() {
       });
       grid.appendChild(b);
     });
+  });
+}
+
+// ---------- timetable editor (admins)
+let ttEditing = false;
+const HOUR_OPTS = Array.from({ length: 15 }, (_, i) => i + 7);   // 7..21
+function selectEl(options, value, cls) {
+  const sel = el("select", cls);
+  options.forEach(([v, label]) => { const o = el("option", "", label); o.value = v; sel.appendChild(o); });
+  sel.value = value ?? options[0][0];
+  return sel;
+}
+function ttRow(c = {}) {
+  const tr = el("tr");
+  const cell = (node) => { const td = el("td"); td.appendChild(node); tr.appendChild(td); return node; };
+  cell(selectEl(WEEK.map((d) => [d, d.slice(0, 3)]), c.day || "Monday", "r-day"));
+  cell(selectEl(HOUR_OPTS.map((h) => [h, hh(h)]), c.start ?? 9, "r-start"));
+  cell(selectEl(HOUR_OPTS.slice(1).concat([21]).filter((v, i, a) => a.indexOf(v) === i).map((h) => [h, hh(h)]), c.end ?? 10, "r-end"));
+  const code = cell(el("input", "r-code")); code.type = "text"; code.maxLength = 40; code.value = c.code || ""; code.placeholder = "e.g. MA-111";
+  cell(selectEl([["Lecture", "Lecture"], ["Lab", "Lab"], ["Tutorial", "Tutorial"], ["Studio", "Studio"], ["Free", "Free / other"]], c.type || "Lecture", "r-type"));
+  cell(selectEl([["", "All"], ["Gr.1", "Gr.1"], ["Gr.2", "Gr.2"], ["Gr.3", "Gr.3"], ["Gr.4", "Gr.4"]], c.group || "", "r-group"));
+  const fac = cell(el("input", "r-fac")); fac.type = "text"; fac.maxLength = 80; fac.value = c.faculty || "";
+  const room = cell(el("input", "r-room")); room.type = "text"; room.maxLength = 40; room.value = c.room || "";
+  const del = cell(el("button", "remove", "×")); del.title = "Remove this class";
+  del.addEventListener("click", () => tr.remove());
+  return tr;
+}
+function openTtEditor() {
+  const sec = secOf(ttYear, ttSection);
+  ttEditing = true;
+  $("ttEditorTitle").textContent = `Edit timetable · ${YEAR_NAMES[ttYear]}, ${sec.name}`;
+  $("ttClassroom").value = sec.classroom || "";
+  const rows = $("ttRows"); rows.replaceChildren();
+  const sorted = sec.classes.slice().sort((a, b) => WEEK.indexOf(a.day) - WEEK.indexOf(b.day) || a.start - b.start);
+  (sorted.length ? sorted : [{}]).forEach((c) => rows.appendChild(ttRow(c)));
+  $("ttErr").hidden = true; $("ttEditor").hidden = false;
+  renderTimetable();
+  $("ttEditor").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function closeTtEditor() { ttEditing = false; $("ttEditor").hidden = true; renderTimetable(); }
+if ($("ttEditBtn")) {
+  $("ttEditBtn").addEventListener("click", openTtEditor);
+  $("ttCancel").addEventListener("click", closeTtEditor);
+  $("ttAddRow").addEventListener("click", () => $("ttRows").appendChild(ttRow({ day: "Monday", start: 9, end: 10 })));
+  $("ttSave").addEventListener("click", async () => {
+    const classes = [...$("ttRows").children].map((tr) => ({
+      day: tr.querySelector(".r-day").value, start: Number(tr.querySelector(".r-start").value), end: Number(tr.querySelector(".r-end").value),
+      code: tr.querySelector(".r-code").value, type: tr.querySelector(".r-type").value, group: tr.querySelector(".r-group").value,
+      faculty: tr.querySelector(".r-fac").value, room: tr.querySelector(".r-room").value,
+    })).filter((c) => c.code.trim());
+    $("ttSave").disabled = true; $("ttErr").hidden = true;
+    try {
+      const res = await fetch("/api/edit/timetable", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ year: ttYear, section: ttSection, classroom: $("ttClassroom").value, classes }) });
+      const data = await res.json().catch(() => ({ error: "Save failed." }));
+      if (!res.ok) throw new Error(data.error);
+      CAMPUS.timetables[String(ttYear)] = data.timetable;
+      closeTtEditor();
+    } catch (err) { $("ttErr").textContent = err.message; $("ttErr").hidden = false; }
+    finally { $("ttSave").disabled = false; }
   });
 }
 
@@ -766,6 +858,7 @@ function renderAssignments() {
     const ai = el("button", "ai-btn", "✦ How do I start?");
     ai.addEventListener("click", () => { location.hash = "#dashboard"; setTimeout(() => askQuestion(`How should I start "${a.title}" (${a.code})? Which syllabus topics does it need and what should I revise first?`), 60); });
     actions.append(tick, ai);
+    if (canDelete(a)) actions.appendChild(deleteButton(a));
     card.appendChild(actions);
     box.appendChild(card);
   });
@@ -779,7 +872,12 @@ const myExams = () => {
 function renderExams() {
   const ex = CAMPUS.exams.years[String(myYear)];
   $("exSub").textContent = `${ex ? ex.name : "No exams scheduled"} · ${YEAR_NAMES[myYear]}, Section ${mySection}`;
-  const rows = myExams(), upcoming = rows.filter((r) => daysUntil(r.date) >= 0);
+  $("exEditBar").hidden = !IS_ADMIN || !$("exEditor").hidden;
+  $("exEdited").textContent = editedLine(ex);
+  const rows0 = myExams();
+  $("exTableCard").hidden = !rows0.length; $("exEmpty").hidden = !!rows0.length; $("exPlan").hidden = !rows0.length;
+  if (!rows0.length) $("exSub").textContent = `${YEAR_NAMES[myYear]}, Section ${mySection}`;
+  const rows = rows0, upcoming = rows.filter((r) => daysUntil(r.date) >= 0);
   $("exCount").textContent = upcoming.length ? `First exam ${daysUntilLabel(upcoming[0].date)} · ${upcoming.length} papers` : "No upcoming papers.";
   const body = $("exBody"); body.replaceChildren();
   rows.forEach((r) => {
@@ -796,6 +894,43 @@ function renderExams() {
     body.appendChild(tr);
   });
   $("exRules").replaceChildren(...CAMPUS.exams.rules.map((x) => el("li", "", x)));
+}
+function exRow(r = {}) {
+  const tr = el("tr");
+  const inp = (cls, type, val, ph, max) => { const td = el("td"); const i = el("input", cls); i.type = type; i.value = val || ""; if (ph) i.placeholder = ph; if (max) i.maxLength = max; td.appendChild(i); tr.appendChild(td); };
+  inp("e-date", "date", r.date);
+  inp("e-time", "text", r.time, "9:30–11:00 AM", 40);
+  inp("e-code", "text", r.code, "e.g. MA-111", 60);
+  inp("e-secs", "text", (r.sections || []).filter((x) => x !== "all").join(", "), "all", 40);
+  inp("e-venue", "text", r.venue, "e.g. As per seating plan", 60);
+  const td = el("td"); const del = el("button", "remove", "×"); del.addEventListener("click", () => tr.remove()); td.appendChild(del); tr.appendChild(td);
+  return tr;
+}
+if ($("exEditBtn")) {
+  $("exEditBtn").addEventListener("click", () => {
+    const ex = CAMPUS.exams.years[String(myYear)] || { name: "", rows: [] };
+    $("exEditorTitle").textContent = `Edit exam schedule · ${YEAR_NAMES[myYear]} (all sections)`;
+    $("exName").value = ex.name || "";
+    const rows = $("exRows"); rows.replaceChildren();
+    (ex.rows.length ? ex.rows : [{}]).forEach((r) => rows.appendChild(exRow(r)));
+    $("exErr").hidden = true; $("exEditor").hidden = false; renderExams();
+  });
+  $("exAddRow").addEventListener("click", () => $("exRows").appendChild(exRow()));
+  $("exCancel").addEventListener("click", () => { $("exEditor").hidden = true; renderExams(); });
+  $("exSave").addEventListener("click", async () => {
+    const rows = [...$("exRows").children].map((tr) => ({
+      date: tr.querySelector(".e-date").value, time: tr.querySelector(".e-time").value, code: tr.querySelector(".e-code").value,
+      sections: tr.querySelector(".e-secs").value.toUpperCase().split(/[\s,]+/).filter(Boolean), venue: tr.querySelector(".e-venue").value,
+    })).filter((r) => r.code.trim() || r.date);
+    $("exSave").disabled = true; $("exErr").hidden = true;
+    try {
+      const res = await fetch("/api/edit/exams", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ year: myYear, name: $("exName").value, rows }) });
+      const data = await res.json().catch(() => ({ error: "Save failed." }));
+      if (!res.ok) throw new Error(data.error);
+      CAMPUS.exams.years[String(myYear)] = data.exams; $("exEditor").hidden = true; renderExams();
+    } catch (err) { $("exErr").textContent = err.message; $("exErr").hidden = false; }
+    finally { $("exSave").disabled = false; }
+  });
 }
 $("exPlan").addEventListener("click", () => {
   const rows = myExams().filter((r) => daysUntil(r.date) >= 0).slice(0, 8);
@@ -863,11 +998,15 @@ function renderSyllabus() {
     left.appendChild(el("h3", "", m.title)); head.appendChild(left); card.appendChild(head);
     if (m.body) card.appendChild(el("p", "as-details", m.body));
     card.appendChild(pubLine(m));
-    const act = el("div", "notice-actions"); act.appendChild(pdfLink(m.pdf, "📄 Open PDF")); card.appendChild(act);
+    const act = el("div", "notice-actions"); act.appendChild(pdfLink(m.pdf, "📄 Open PDF"));
+    if (canDelete(m)) act.appendChild(deleteButton(m));
+    card.appendChild(act);
     return card;
   }));
   const codes = [...new Set(sec.classes.map((c) => c.code))].sort();
-  $("syGrid").replaceChildren(...codes.map((c) => subjectCard(c, sec, syl)));
+  $("syGrid").replaceChildren(...(codes.length ? codes.map((c) => subjectCard(c, sec, syl))
+    : [el("p", "empty-line card", Object.keys(syl.subjects).length ? "Add this section's timetable to see its subjects here."
+        : "The syllabus for this year hasn't been added yet. Admins can publish syllabus PDFs as Study material.")]));
   const others = Object.keys(syl.subjects).filter((c) => !codes.includes(c)).sort();
   $("syOtherWrap").hidden = !others.length;
   $("syOtherCount").textContent = others.length;
@@ -1011,6 +1150,27 @@ function chatMsg(m) {
   head.appendChild(el("strong", `chat-name role-${m.role}`, m.name));
   head.appendChild(el("span", `role-tag role-${m.role}`, ROLE_LABEL[m.role]));
   head.appendChild(el("span", "chat-time", fmtTime(m.created_at)));
+  const canBan = IS_ADMIN && m.user_id !== ME.id && m.role !== "owner" && (m.role !== "admin" || ME.role === "owner");
+  if (canBan) {
+    const ban = el("button", "chat-del", "Ban");
+    ban.addEventListener("click", () => {
+      if (wrap.querySelector(".ban-pick")) return;
+      const pick = el("div", "ban-pick");
+      const sel = selectEl([["1", "1 hour"], ["24", "1 day"], ["168", "7 days"], ["0", "Permanently"]], "24", "");
+      const ok = el("button", "ghost small danger", `Ban ${m.name}`);
+      const cancel = el("button", "ghost small", "Cancel");
+      ok.addEventListener("click", async () => {
+        const res = await fetch("/api/chat/ban", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ user_id: m.user_id, hours: Number(sel.value) }) });
+        const d = await res.json().catch(() => ({}));
+        if (res.ok) { pick.replaceChildren(el("span", "muted", `${m.name} is banned from chat.`)); loadBans(); }
+        else ok.textContent = d.error || "Could not ban";
+      });
+      cancel.addEventListener("click", () => pick.remove());
+      pick.append(el("span", "muted", "Ban from chat for"), sel, ok, cancel);
+      wrap.appendChild(pick);
+    });
+    head.appendChild(ban);
+  }
   if (IS_ADMIN) {
     const del = el("button", "chat-del", "Remove"); del.title = "Remove this message";
     del.addEventListener("click", async () => { await fetch(`/api/chat/${m.id}/delete`, { method: "POST" }); wrap.remove(); });
@@ -1024,6 +1184,7 @@ async function pollChat() {
     const res = await fetch(`/api/chat?after=${chatLatest}`);
     const data = await res.json();
     if (!res.ok) return;
+    showBanned(data.banned);
     const log = $("chatLog");
     const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
     data.messages.forEach((m) => { log.appendChild(chatMsg(m)); chatLatest = Math.max(chatLatest, m.id); });
@@ -1031,7 +1192,30 @@ async function pollChat() {
     if (data.messages.length && (atBottom || chatLatest === data.latest)) log.scrollTop = log.scrollHeight;
   } catch { /* offline: try again next tick */ }
 }
-function startChat() { if (!chatTimer) { pollChat(); chatTimer = setInterval(pollChat, 3000); } }
+function showBanned(b) {
+  $("chatBanned").hidden = !b;
+  $("chatInput").disabled = !!b; $("chatSend").disabled = !!b;
+  if (b) $("chatBanned").textContent = `🚫 You are banned from the campus chat${b.permanent ? "" : " until " + fmtTime(b.until)}${b.by ? " (by " + b.by + ")" : ""}. You can still read messages.`;
+}
+async function loadBans() {
+  if (!$("banList")) return;
+  const res = await fetch("/api/chat/bans");
+  if (!res.ok) return;
+  const bans = (await res.json()).bans;
+  $("banCount").textContent = bans.length;
+  const ul = $("banList"); ul.replaceChildren();
+  if (!bans.length) ul.appendChild(el("li", "empty-line", "Nobody is banned."));
+  bans.forEach((b) => {
+    const li = el("li");
+    const txt = el("div");
+    txt.append(el("strong", "", b.name), el("span", `role-tag role-${b.role}`, ROLE_LABEL[b.role]),
+      el("div", "muted", `${b.permanent ? "Permanent" : "Until " + fmtTime(b.until)} · banned by ${b.by || "admin"}`));
+    const un = el("button", "ghost small", "Unban");
+    un.addEventListener("click", async () => { await fetch("/api/chat/unban", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ user_id: b.id }) }); loadBans(); });
+    li.append(txt, un); ul.appendChild(li);
+  });
+}
+function startChat() { loadBans(); if (!chatTimer) { pollChat(); chatTimer = setInterval(pollChat, 3000); } }
 function stopChat() { clearInterval(chatTimer); chatTimer = null; }
 $("chatForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -1041,7 +1225,7 @@ $("chatForm").addEventListener("submit", async (e) => {
   try {
     const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
+    if (!res.ok) { if (data.banned) showBanned(data.banned); throw new Error(data.error); }
     $("chatInput").value = ""; $("chatHint").textContent = "Messages are visible to all logged-in users. Admins can remove messages.";
     await pollChat(); $("chatLog").scrollTop = $("chatLog").scrollHeight;
   } catch (err) { $("chatHint").textContent = err.message; }
@@ -1072,7 +1256,7 @@ function renderPublish() {
     row.appendChild(pubLine(p));
     const act = el("div", "notice-actions");
     if (p.pdf) act.appendChild(pdfLink(p.pdf, "📄 PDF"));
-    if (ME.role === "owner" || p.author_id === ME.id) {
+    if (ME.role === "owner" || p.author_role !== "owner") {
       const del = el("button", "ghost small danger", "Delete");
       del.addEventListener("click", async () => {
         if (del.dataset.confirm !== "1") { del.dataset.confirm = "1"; del.textContent = "Click again to delete"; return; }

@@ -236,8 +236,8 @@ def load(name):
 
 
 def load_campus():
-    """All campus data the website shows. Edit the JSON files in data/ to update it."""
-    return {
+    """All campus data the website shows: JSON files in data/, plus edits admins made on the site."""
+    campus = {
         "timetables": {str(y): load(f"year{y}_timetable.json") for y in (1, 2, 3, 4)},
         "notices": load("notices.json"),
         "assignments": load("assignments.json"),
@@ -245,6 +245,117 @@ def load_campus():
         "syllabus": load("syllabus.json"),
         "hostel": load("hostel.json"),
     }
+    for y in ("1", "2", "3", "4"):
+        ov = accounts.get_setting(f"timetable:{y}")
+        if ov:
+            campus["timetables"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+        ov = accounts.get_setting(f"exams:{y}")
+        if ov:
+            campus["exams"]["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+    for h in ("boys", "girls"):
+        ov = accounts.get_setting(f"menu:{h}")
+        if ov:
+            campus["hostel"]["hostels"][h].update(ov["value"])
+            campus["hostel"]["hostels"][h].update(edited_by=ov["updated_by"], edited_at=ov["updated_at"])
+    return campus
+
+
+# ------------------------------------------------------------------ admin editing (timetables, exams, menus)
+
+DAYS6 = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+DAYS7 = DAYS6 + ["Sunday"]
+MEALS = ["Breakfast", "Lunch", "Snacks", "Dinner"]
+CLASS_TYPES = ("Lecture", "Lab", "Tutorial", "Studio", "Free")
+SECTION_IDS = list("ABCDEFGHIJ") + ["Z"]
+
+
+def _txt(v, n):
+    return re.sub(r"\s+", " ", str(v or "")).strip()[:n]
+
+
+@app.post("/api/edit/timetable")
+@admin_required
+def edit_timetable():
+    data = request.get_json(silent=True) or {}
+    year = str(data.get("year"))
+    if year not in ("1", "2", "3", "4"):
+        return jsonify(error="Unknown year."), 400
+    tt = load_campus()["timetables"][year]
+    tt = {k: v for k, v in tt.items() if k not in ("edited_by", "edited_at")}
+    sec = next((x for x in tt["sections"] if x["id"] == data.get("section")), None)
+    if not sec:
+        return jsonify(error="Unknown section."), 400
+    if "classroom" in data:
+        sec["classroom"] = _txt(data.get("classroom"), 40)
+    classes = []
+    for i, c in enumerate(data.get("classes") or [], 1):
+        if not isinstance(c, dict):
+            continue
+        try:
+            start, end = int(c.get("start")), int(c.get("end"))
+        except (TypeError, ValueError):
+            return jsonify(error=f"Row {i}: choose a start and end time."), 400
+        code = _txt(c.get("code"), 40)
+        if not code:
+            return jsonify(error=f"Row {i}: enter the subject code or name."), 400
+        if c.get("day") not in DAYS6:
+            return jsonify(error=f"Row {i}: choose a day."), 400
+        if not (7 <= start < end <= 21):
+            return jsonify(error=f"Row {i}: the end time must be after the start time."), 400
+        group = c.get("group") if c.get("group") in ("Gr.1", "Gr.2", "Gr.3", "Gr.4") else None
+        ctype = c.get("type") if c.get("type") in CLASS_TYPES else "Lecture"
+        classes.append({"day": c["day"], "start": start, "end": end, "code": code,
+                        "label": f"{code}-{group}" if group else code, "faculty": _txt(c.get("faculty"), 80),
+                        "group": group, "type": ctype, "room": _txt(c.get("room"), 40) or sec.get("classroom", "")})
+    if len(classes) > 150:
+        return jsonify(error="Too many classes for one section."), 400
+    sec["classes"] = classes
+    if year != "1" or tt.get("source") == "Not added yet":
+        tt["source"] = "Added on CampusMate by admins"
+        tt["note"] = "Timetable maintained by CampusMate admins."
+    accounts.set_setting(f"timetable:{year}", tt)
+    return jsonify(ok=True, timetable=load_campus()["timetables"][year])
+
+
+@app.post("/api/edit/exams")
+@admin_required
+def edit_exams():
+    data = request.get_json(silent=True) or {}
+    year = str(data.get("year"))
+    if year not in ("1", "2", "3", "4"):
+        return jsonify(error="Unknown year."), 400
+    rows = []
+    for i, r in enumerate(data.get("rows") or [], 1):
+        if not isinstance(r, dict):
+            continue
+        d = str(r.get("date") or "")
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+            return jsonify(error=f"Row {i}: choose a date."), 400
+        code = _txt(r.get("code"), 60)
+        if not code:
+            return jsonify(error=f"Row {i}: enter the subject."), 400
+        secs = [x for x in (r.get("sections") or []) if x in SECTION_IDS] or ["all"]
+        rows.append({"date": d, "time": _txt(r.get("time"), 40), "code": code, "sections": secs,
+                     "venue": _txt(r.get("venue"), 60)})
+    if len(rows) > 80:
+        return jsonify(error="Too many exam rows."), 400
+    rows.sort(key=lambda r: (r["date"], r["time"]))
+    accounts.set_setting(f"exams:{year}", {"name": _txt(data.get("name"), 120), "rows": rows})
+    return jsonify(ok=True, exams=load_campus()["exams"]["years"][year])
+
+
+@app.post("/api/edit/menu")
+@admin_required
+def edit_menu():
+    data = request.get_json(silent=True) or {}
+    hostel = data.get("hostel")
+    if hostel not in ("boys", "girls"):
+        return jsonify(error="Unknown hostel."), 400
+    menu_in, times_in = data.get("mess_menu") or {}, data.get("mess_timings") or {}
+    menu = {d: {m: _txt((menu_in.get(d) or {}).get(m), 200) for m in MEALS} for d in DAYS7}
+    timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
+    accounts.set_setting(f"menu:{hostel}", {"mess_menu": menu, "mess_timings": timings})
+    return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
 
 
 def for_student(item, year, section):
@@ -459,15 +570,18 @@ def build_ask_context(year, section_id, group, client):
         if for_student(n, y, sec["id"]):
             parts.append(f"### Notice: {n['title']} (dated {n['date']}, from {n['from']})\n{n['text'][:1100]}")
 
-    parts.append("\n## Hostel (sample data)")
-    parts.append("Mess timings: " + "; ".join(f"{k} {v}" for k, v in hostel["mess_timings"].items()))
-    for day, meals in hostel["mess_menu"].items():
-        parts.append(f"Mess menu {day}: " + "; ".join(f"{k}: {v}" for k, v in meals.items()))
-    parts += [f"Hostel rule – {r['title']}: {r['body']}" for r in hostel["rules"]]
-    parts += [f"Hostel FAQ – {f['q']} {f['a']}" for f in hostel["faqs"]]
-    parts += [f"Contact – {c['role']}: {c['where']}, {c['hours']}, phone: {c['phone'] or 'not listed'}" for c in hostel["contacts"]]
-    parts += [f"Hostel announcement ({a['date']}) – {a['title']}: {a['body']}" for a in hostel["announcements"]]
-    parts.append("How to report a hostel problem: " + " ".join(f"{i+1}. {s['title']}: {s['body']}" for i, s in enumerate(hostel["complaint_steps"])))
+    for hid, h in campus["hostel"]["hostels"].items():
+        if any(v for day in h["mess_menu"].values() for v in day.values()):
+            parts.append(f"\n## {h['name']} mess menu")
+            timings = "; ".join(f"{k} {v}" for k, v in h["mess_timings"].items() if v)
+            if timings:
+                parts.append("Mess timings: " + timings)
+            for day, meals in h["mess_menu"].items():
+                items = "; ".join(f"{k}: {v}" for k, v in meals.items() if v)
+                if items:
+                    parts.append(f"{day}: {items}")
+        else:
+            parts.append(f"\n## {h['name']} mess menu: not added yet")
 
     deadlines = [d for d in _list(client.get("deadlines")) if isinstance(d, dict)][:20]
     if deadlines:

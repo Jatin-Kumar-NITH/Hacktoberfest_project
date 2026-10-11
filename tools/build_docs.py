@@ -233,7 +233,7 @@ def build_assignments():
                     "posted": posted, "due": None, "marks": None, "official": True, "details": details, "topics": topics,
                     "submit": "Due date and submission mode are not stated in the PDF. Confirm with your MA-111 instructor.",
                     "pdf": f"docs/assignments/{out_name}"})
-    for y, items in SAMPLE_ASSIGNMENTS.items():
+    for y, items in {}.items():  # sample assignments removed
         for i, (code, title, questions, posted, due, marks) in enumerate(items, 1):
             rel = f"docs/assignments/year{y}_{slug(code)}_{i}.pdf"
             make_pdf(ROOT / "static" / rel, f"{code}: {title}", f"Year {y} · Sample assignment · Due {due} · {marks} marks",
@@ -247,7 +247,7 @@ def build_assignments():
 
 if __name__ == "__main__":
     syllabus = {"note": "Year 1 is the official first-year curriculum. Years 2–4 are sample syllabi for the demo.",
-                "years": {"1": build_year1(), **{str(y): build_sample_year(y) for y in (2, 3, 4)}}}
+                "years": {"1": build_year1()}}
     (DATA / "syllabus.json").write_text(json.dumps(syllabus, indent=1, ensure_ascii=False), encoding="utf-8")
     assignments = build_assignments()
     (DATA / "assignments.json").write_text(json.dumps(

@@ -58,11 +58,13 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - The **official 1st-year odd-semester timetable (2026-27)**, transcribed from the Office of Dean Academic PDF: all 11 sections (A–J, Z) and 277 class entries.
 - Lecture, lab, tutorial and studio sessions are colour-coded. Two-hour practicals span two columns. Group labs (Gr.1/Gr.2/Gr.3) are listed in parallel, and **labs for other groups fade out** when you pick your group.
 - Section details: branches, classroom location, and roll-number ranges for each group.
-- Tabs for years 1–4 and every section. Years 2–4 use clearly labelled **sample** timetables until official ones are added.
+- Tabs for years 1–4 and every section. Years 2–4 start empty and show "not added yet".
+- **Admins can edit any section's timetable from the site**: add, change or remove classes, set the time, type, group, faculty and room. The page shows *Last edited by (name) · time*.
 
 ### ✎ Assignments
 - The **real MA-111 assignment PDFs** (Units 1, 2 and 3) are published to the sections that take MA-111 (A–J). Each one has a written description of what's inside, topic chips and an **Open PDF** button.
 - The PDFs don't state due dates, so the app says **"Due date not stated"** rather than inventing one.
+- Admins and the owner can **delete** a published assignment directly from its card.
 - Pending / Submitted / All filters, and a **Mark as submitted** button (saved in your browser).
 - **✦ How do I start?** asks the AI which syllabus topics the assignment needs.
 - Admins can publish new assignments with a due date, marks and a PDF.
@@ -70,7 +72,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ### ⚑ Exam Schedule
 - Exam papers for your year and section with countdowns.
 - **Make a study plan for these exams** fills the Study Planner automatically.
-- *Exam dates are sample data, not the official date sheet.*
+- **Admins enter and edit the exam schedule from the site** (date, time, subject, sections, venue). It starts empty until published.
 
 ### ❒ Syllabus
 - The **official first-year curriculum (NEP-2020)**: the full PDF, the teaching scheme (page 6) and the evaluation scheme (page 28).
@@ -80,7 +82,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
   - **✦ Summarise**: the AI explains it unit by unit
 - An expandable "Other courses this year" list with the other semester's subjects.
 - Study material PDFs published by admins appear here too.
-- Years 2–4 have generated **sample** syllabi (PDF and text).
+- Other years show "not added yet". Admins can publish syllabus PDFs as Study material.
 
 ### ✦ Notice Explainer
 - Paste a notice or upload a photo. Gemma 4 returns the title, issuer, audience, a summary, urgency, **deadlines with the exact source words**, required documents, a **checklist**, key facts and a **"Missing or unclear"** list, plus a Hindi version.
@@ -89,17 +91,20 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ### ◷ Study Planner
 - Enter subjects, exam dates, topics, difficulty and daily hours. Gemma 4 builds a **day-by-day timetable (up to 14 days)** with revision before each exam and regular breaks, and warns you honestly if there isn't enough time.
 
-### ⌂ Hostel Helper
-- Searchable mess menu, rules, FAQs, contacts, announcements and a guide to reporting problems.
-- *Sample data.* Contacts show **"Add your college's number"** rather than invented phone numbers.
+### ⌂ Mess Menu (Boys' and Girls' hostels)
+- **Separate weekly menus** for the Boys' Hostel and the Girls' Hostel. Students pick their hostel once (remembered), and today's row is highlighted.
+- **Admins edit the menu and meal timings from the site.** The menu shows *Last edited by (name) · time*.
+- The Dashboard shows today's menu for your hostel. Ask CampusMate can answer "What's for dinner today?"
 
 ### 💬 Campus Chat
 - A public chat for all logged-in users. It refreshes every 3 seconds.
 - Every message shows the sender, their role tag and the time.
 - **Admin and owner messages have coloured banners and name tags.** Admins can remove messages.
+- **Chat bans:** admins can ban a student from the chat for 1 hour, 1 day, 7 days or permanently. Only the owner can ban an admin, and the owner can't be banned. A banned user can still read but can't post. A "Banned from chat" list with **Unban** is shown to admins.
 
 ### ⬆ Publish (admins) and 🛡 Manage Admins (owner)
 - Admins publish **notices, announcements, assignments and study-material PDFs**, each targeted by year and section. Everything shows *Published by* and the *publishing time*.
+- Anything published by mistake can be **deleted** from the Notice Board, Assignments, Syllabus or Publish pages. Admins can delete any post except the owner's; the owner can delete everything.
 - Only the **owner** can give or remove admin access.
 
 ### Also
@@ -124,7 +129,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 **Honest by design.**
 - Every extracted deadline and fact carries the **exact source words** from the notice so students can verify it.
 - Uncertain dates are marked *verify*.
-- If the free quota runs out during a demo, built-in sample notices fall back to a result **saved from an earlier live run**, and the page clearly labels it as saved.
+- If the free quota runs out, notices explained before (from the Notice Board) can fall back to a result **saved from an earlier live run**, and the page clearly labels it as saved.
 - Friendly error messages cover a missing key, a rejected key, the quota limit, and service errors.
 
 ---
@@ -168,19 +173,18 @@ campusmate/
 ├── static/
 │   ├── css/style.css       # Light + dark theme
 │   ├── js/app.js           # All front-end logic
-│   └── docs/               # Assignment PDFs, per-subject syllabus PDFs, sample PDFs
+│   └── docs/               # Assignment PDFs and per-subject syllabus PDFs
 ├── data/
 │   ├── year1_timetable.json   # Official 1st-year timetable (transcribed)
-│   ├── year2..4_timetable.json# Sample timetables
+│   ├── year2..4_timetable.json# Empty, added from the site
 │   ├── syllabus.json          # Curriculum per subject (PDF link + text)
-│   ├── assignments.json       # Assignments (real MA-111 + samples)
-│   ├── exams.json             # Exam schedule (sample)
-│   ├── notices.json           # Notice board content (sample)
-│   ├── hostel.json            # Hostel helper data (sample)
-│   └── sample_notices.json    # Demo notices for the Notice Explainer
+│   ├── assignments.json       # Assignments (real MA-111 PDFs)
+│   ├── exams.json             # Exam schedule defaults (edited from the site)
+│   ├── notices.json           # Built-in notices (empty; admins publish from the site)
+│   ├── hostel.json            # Boys'/Girls' hostel menus (edited from the site)
+│   └── sample_notices.json    # Optional demo notices for the Notice Explainer (empty)
 ├── tools/
 │   ├── build_year1.py      # Rebuilds year1_timetable.json from the transcription
-│   ├── build_samples.py    # Rebuilds sample data for years 2-4, exams, notices
 │   └── build_docs.py       # Splits the curriculum PDF per subject, extracts text, builds syllabus/assignments
 └── instance/               # Created at runtime (NOT in Git): database, uploads, secret key
 ```
@@ -220,6 +224,12 @@ Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the 
 
 > **Windows tip:** run `python app.py` from the terminal *after* activating `venv`. The prompt should start with `(venv)`. If PowerShell refuses to activate it, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
 
+### Deploying to Vercel (demo)
+
+The repo includes `vercel.json`. In Vercel → *Project → Settings → Environment Variables*, add `GEMINI_API_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME` and a long random `SECRET_KEY`, then redeploy.
+
+> ⚠️ Vercel runs the app as serverless functions with a **temporary** filesystem, so CampusMate stores its SQLite database in `/tmp` there. **Accounts other than the owner, chat messages and admin uploads can disappear** when Vercel starts a fresh instance. Use Vercel for demos. For permanent data, run it on a server with a persistent disk, or move the database to a hosted one (roadmap). Without SMTP settings, OTP codes appear in Vercel's **Logs** tab.
+
 ---
 
 ## Configuration (`.env`)
@@ -231,7 +241,8 @@ Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the 
 | `OWNER_EMAIL` | ✅ | Email of the site owner. This account is always the **owner**. |
 | `OWNER_PASSWORD` | ✅ (first run) | Creates the owner account on first start if it doesn't exist. Must meet the password rules. |
 | `OWNER_NAME` | – | Display name for the owner. |
-| `SECRET_KEY` | – | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
+| `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
+| `CAMPUSMATE_DATA_DIR` | – | Where the database, uploads and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
 | `SMTP_HOST` / `SMTP_PORT` | – | Mail server, `smtp.gmail.com` with `587` (STARTTLS) or `465` (SSL). |
 | `SMTP_USER` / `SMTP_PASSWORD` | – | Gmail address and **App Password** for sending OTP codes. |
 | `SMTP_FROM` | – | Sender shown on OTP emails. |
@@ -245,7 +256,7 @@ Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the 
 | Role | Tag | Can do |
 |---|---|---|
 | **Owner** | 👑 pink-gold `OWNER` | Everything admins can, plus **Manage Admins** (give or remove admin access). There is exactly one owner, set by `OWNER_EMAIL`, and the role can't be removed or transferred from inside the app. |
-| **Admin** | 🛡 amber `ADMIN` | Publish notices, announcements, assignments and study-material PDFs to chosen years and sections, delete their own posts, and moderate the chat. |
+| **Admin** | 🛡 amber `ADMIN` | Publish notices, announcements, assignments and study-material PDFs; **edit timetables, exam schedules and mess menus**; delete posts (except the owner's); remove chat messages and ban students from chat. |
 | **Student** | grey `STUDENT` | View everything, use the AI features and post in the chat. Cannot publish or change content. |
 
 - New sign-ups are always **students**. Admin access can only be given by the owner from **Manage Admins**.
@@ -279,8 +290,8 @@ All campus content is plain JSON in `data/`. Edit it and restart the server.
 - **Timetables:** each section has `classes`, a list of `{day, start, end, code, label, faculty, group, type, room}`. Year 1 is generated by `tools/build_year1.py` from a line-by-line transcription of the official PDF.
 - **Notices:** `data/notices.json`. Each notice has `years` (e.g. `[1]` or `["all"]`) and `sections` (e.g. `["A","B"]` or `["all"]`).
 - **Assignments, exams and syllabus:** same `years` / `sections` targeting. `tools/build_docs.py` rebuilds the syllabus and assignment library from the source PDFs in `tools/source/`.
-- **Hostel:** `data/hostel.json`. Replace the sample menu, rules and contacts with real ones.
-- **Day-to-day updates** (new notices, assignments, PDFs) don't need any file editing. Admins use the **Publish** page.
+- **Hostel menus:** edit them on the Mess Menu page, or set defaults in `data/hostel.json` (`hostels.boys` / `hostels.girls`).
+- **Day-to-day updates** don't need any file editing: admins use **Publish** for notices, assignments and PDFs, and the **✎ Edit** buttons on the Timetable, Exam Schedule and Mess Menu pages. Site edits are stored in the database and take priority over the JSON files.
 
 ---
 
@@ -315,13 +326,11 @@ During development, every feature was tested end to end with a stand-in for the 
 
 ## Limitations and honest notes
 
-- **Official vs sample data**
-  - **Official:** the 1st-year timetable, the 1st-year curriculum (syllabus) and the three MA-111 assignment PDFs.
-  - **Sample:** years 2–4 timetables, syllabi and assignments, exam dates, notice-board notices and hostel data. Every sample item is labelled in the app.
+- **What's included:** the official 1st-year timetable, the official 1st-year curriculum (syllabus) and the three real MA-111 assignment PDFs. Everything else (notices, exams, mess menus, other years' timetables) starts empty and is added by admins on the site. No made-up sample data is shown.
+- Site edits (timetables, exams, menus), accounts, posts and chat are stored in SQLite. On Vercel that database is temporary and can reset; use a server with a persistent disk or a hosted database for permanent data.
 - The curriculum PDF gives Hindi text for HS-103 on pages 13–14. That text couldn't be extracted cleanly, so it's available in the PDF only. B.Arch (Section Z) courses aren't in the B.Tech curriculum PDF.
-- **AI can make mistakes.** Always confirm important details with the issuing office. Answers are grounded in the data, but they're not a replacement for official notices.
-- The Gemini API **free tier has low rate limits** for Gemma models. Heavy use needs a paid tier or self-hosting.
-- This is a single-server app with SQLite, which is ideal for a department or hostel. Large-scale use would need a production server (e.g. Gunicorn), HTTPS and a managed database.
+- **AI can make mistakes.** Always confirm important details with the issuing office.
+- The Gemini API **free tier has low rate limits** for Gemma models.
 - Campus chat uses polling every 3 seconds rather than WebSockets.
 
 ## Roadmap
@@ -329,7 +338,6 @@ During development, every feature was tested end to end with a stand-in for the 
 - Self-hosted Gemma 4 (e.g. via Ollama) so no data leaves campus
 - Calendar export (.ics) for deadlines and exams
 - Push or email reminders before deadlines
-- Admin editing of timetables from the web UI
 - More Indian languages for the Notice Explainer
 - Change-password and forgot-password screens
 

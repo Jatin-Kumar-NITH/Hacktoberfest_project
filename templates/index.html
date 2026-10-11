@@ -44,7 +44,7 @@
       <a href="#syllabus" data-page="syllabus"><span class="ico">❒</span><span>Syllabus</span></a>
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
-      <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Hostel Helper</span></a>
+      <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Mess Menu</span></a>
       <a href="#chat" data-page="chat"><span class="ico">💬</span><span>Campus Chat</span></a>
       {% if me.role in ['admin', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">⬆</span><span>Publish</span></a>{% endif %}
       {% if me.role == 'owner' %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">🛡</span><span>Manage Admins</span></a>{% endif %}
@@ -85,7 +85,7 @@
         <div class="ask-head">
           <div>
             <h2>✦ Ask CampusMate</h2>
-            <p>Ask anything about your classes, notices, deadlines, mess or hostel. Answers come only from your campus data.</p>
+            <p>Ask anything about your classes, notices, assignments, exams or mess menu. Answers come only from your campus data.</p>
           </div>
         </div>
         <div class="ask-log" id="askLog" hidden></div>
@@ -137,14 +137,14 @@
             <a class="quick-btn" href="#notice"><span>✦</span>Explain a notice</a>
             <a class="quick-btn" href="#planner"><span>◷</span>Make a study plan</a>
             <a class="quick-btn" href="#hostel"><span>⌂</span>Check mess menu</a>
-            <a class="quick-btn" href="#hostel"><span>🛠</span>Report an issue</a>
+            <a class="quick-btn" href="#chat"><span>💬</span>Campus chat</a>
           </div>
         </div>
 
         <div class="card">
           <div class="card-head"><h2>Recent AI results</h2><button class="ghost small" id="clearHistory">Clear</button></div>
           <ul class="recent" id="dashRecent"></ul>
-          <p class="empty-line" id="dashRecentEmpty">Nothing yet. Try a sample notice in the Notice Explainer.</p>
+          <p class="empty-line" id="dashRecentEmpty">Nothing yet. Explain a notice from the Notice Board or the Notice Explainer.</p>
         </div>
 
         <div class="card">
@@ -153,12 +153,12 @@
         </div>
 
         <div class="card">
-          <div class="card-head"><h2>Hostel announcements</h2><a class="muted" href="#hostel">View all →</a></div>
+          <div class="card-head"><h2>Announcements</h2><a class="muted" href="#board">Notice board →</a></div>
           <ul class="recent" id="dashAnnouncements"></ul>
         </div>
 
         <div class="card">
-          <div class="card-head"><h2>Today's mess menu</h2><span class="muted" id="dashMenuDay"></span></div>
+          <div class="card-head"><h2 id="dashMenuTitle">Today's mess menu</h2><a class="muted" href="#hostel">Full menu →</a></div>
           <div class="menu" id="dashMenu"></div>
         </div>
       </div>
@@ -192,6 +192,17 @@
       <div class="alert" id="ttBadge"></div>
       <div class="tt-info" id="ttInfo"></div>
       <div class="card tt-card"><div class="tt-scroll"><div class="ttgrid" id="ttGrid"></div></div></div>
+      <div class="edit-bar" id="ttEditBar" hidden>
+        <span class="muted" id="ttEdited"></span>
+        <button class="ai-btn" id="ttEditBtn">✎ Edit this section's timetable</button>
+      </div>
+      <div class="card editor" id="ttEditor" hidden>
+        <div class="card-head"><h2 id="ttEditorTitle">Edit timetable</h2><span class="muted">Times are hours (24-hour). Group labs: pick the group.</span></div>
+        <label class="field inline-field"><span class="label">Classroom</span><input type="text" id="ttClassroom" maxlength="40"></label>
+        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Day</th><th>Start</th><th>End</th><th>Subject code / name</th><th>Type</th><th>Group</th><th>Faculty</th><th>Room</th><th></th></tr></thead><tbody id="ttRows"></tbody></table></div>
+        <div class="ed-actions"><button class="ghost" id="ttAddRow">+ Add class</button><span class="spacer"></span><button class="ghost" id="ttCancel">Cancel</button><button class="primary inline" id="ttSave">Save timetable</button></div>
+        <div class="alert error" id="ttErr" hidden></div>
+      </div>
       <div class="legend tt-legend">
         <span class="tag study">Lecture</span><span class="tag practice">Lab / Practical</span><span class="tag revision">Tutorial</span><span class="tag exam">Studio</span>
         <span class="muted" id="ttGroupHint"></span>
@@ -212,9 +223,20 @@
         <div><h1>Exam Schedule</h1><p class="sub" id="exSub"></p></div>
         <button class="primary inline" id="exPlan">◷ Make a study plan for these exams</button>
       </header>
-      <div class="alert warn sample-note">📋 {{ campus.exams.note }}</div>
       <div class="ex-count" id="exCount"></div>
-      <div class="card"><table class="ex-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Venue</th><th>Countdown</th></tr></thead><tbody id="exBody"></tbody></table></div>
+      <div class="edit-bar" id="exEditBar" hidden>
+        <span class="muted" id="exEdited"></span>
+        <button class="ai-btn" id="exEditBtn">✎ Edit exam schedule</button>
+      </div>
+      <div class="card editor" id="exEditor" hidden>
+        <div class="card-head"><h2 id="exEditorTitle">Edit exam schedule</h2><span class="muted">Sections: leave empty for all sections, or type e.g. A, B, C</span></div>
+        <label class="field inline-field"><span class="label">Exam name</span><input type="text" id="exName" maxlength="120" placeholder="e.g. Mid-Semester Examination, Odd Semester 2026-27"></label>
+        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Sections</th><th>Venue</th><th></th></tr></thead><tbody id="exRows"></tbody></table></div>
+        <div class="ed-actions"><button class="ghost" id="exAddRow">+ Add paper</button><span class="spacer"></span><button class="ghost" id="exCancel">Cancel</button><button class="primary inline" id="exSave">Save exam schedule</button></div>
+        <div class="alert error" id="exErr" hidden></div>
+      </div>
+      <div class="card" id="exTableCard"><table class="ex-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Venue</th><th>Countdown</th></tr></thead><tbody id="exBody"></tbody></table></div>
+      <p class="empty-line card" id="exEmpty" hidden>The exam schedule for your year hasn't been published yet.</p>
       <div class="card ex-rules"><h2>Exam rules</h2><ul class="bullets" id="exRules"></ul></div>
     </section>
 
@@ -245,12 +267,12 @@
 
       <div class="split">
         <div class="card input-card">
-          <div class="samples">
+          {% if samples %}<div class="samples">
             <span class="label">Try a sample notice</span>
             <div class="chips">
               {% for s in samples %}<button class="chip" data-sample="{{ s.id }}">{{ s.label }}</button>{% endfor %}
             </div>
-          </div>
+          </div>{% endif %}
 
           <label class="field">
             <span class="label">Notice text</span>
@@ -373,54 +395,37 @@
       </div>
     </section>
 
-    <!-- ============ HOSTEL HELPER ============ -->
+    <!-- ============ HOSTEL (mess menus) ============ -->
     <section class="page" id="page-hostel" hidden>
-      <header class="page-head"><div><h1>Hostel Helper</h1><p class="sub">Mess menu, rules, FAQs, contacts and how to report a problem.</p></div></header>
-
-      <div class="alert warn sample-note">📋 <span id="hostelNote"></span></div>
-
-      <div class="search-wrap">
-        <input type="search" id="hostelSearch" placeholder="Search rules, FAQs, contacts… e.g. visitors, laundry, Wi-Fi">
+      <header class="page-head"><div><h1>Hostel Mess Menu</h1><p class="sub">Boys' and girls' hostels have separate menus. Pick your hostel.</p></div></header>
+      <div class="hostel-tabs" id="hostelTabs">
+        <button class="year-tab" data-hostel="boys">🏠 Boys' Hostel</button>
+        <button class="year-tab" data-hostel="girls">🏠 Girls' Hostel</button>
       </div>
-      <div class="card" id="searchResults" hidden>
-        <div class="card-head"><h2>Search results</h2><span class="muted" id="searchCount"></span></div>
-        <ul class="results" id="searchList"></ul>
+      <div class="edit-bar" id="mnEditBar" hidden>
+        <span class="muted" id="mnEdited"></span>
+        <button class="ai-btn" id="mnEditBtn">✎ Edit this menu</button>
       </div>
-
-      <div id="hostelSections">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-head"><h2>🍽️ Mess menu</h2></div>
-            <div class="day-tabs" id="menuDays"></div>
-            <div class="menu" id="menuBody"></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>📢 Announcements</h2></div>
-            <ul class="recent" id="hAnnouncements"></ul>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>📏 Hostel rules</h2></div>
-            <div id="hRules"></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>❓ FAQs</h2></div>
-            <div id="hFaqs"></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>📞 Important contacts</h2></div>
-            <ul class="contacts" id="hContacts"></ul>
-          </div>
-          <div class="card" id="complaintCard">
-            <div class="card-head"><h2>🛠️ Report a problem</h2></div>
-            <ol class="steps" id="hSteps"></ol>
-          </div>
-        </div>
+      <div class="card">
+        <div class="card-head"><h2 id="mnTitle">Mess menu</h2><span class="muted" id="mnToday"></span></div>
+        <p class="empty-line" id="mnEmpty" hidden>The mess menu for this hostel hasn't been added yet.</p>
+        <div class="ed-scroll"><table class="menu-table" id="mnTable"></table></div>
+        <div class="ed-actions" id="mnActions" hidden><span class="spacer"></span><button class="ghost" id="mnCancel">Cancel</button><button class="primary inline" id="mnSave">Save menu</button></div>
+        <div class="alert error" id="mnErr" hidden></div>
       </div>
+      <p class="fine">Emergency (India): call <strong>112</strong> for police, fire or ambulance.</p>
     </section>
 
     <!-- ============ CAMPUS CHAT ============ -->
     <section class="page" id="page-chat" hidden>
       <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate. Be kind. Admin messages are highlighted.</p></div></header>
+      <div class="alert error" id="chatBanned" hidden></div>
+      {% if me.role in ['admin', 'owner'] %}
+      <details class="card ban-card" id="banCard">
+        <summary>🚫 Banned from chat (<span id="banCount">0</span>)</summary>
+        <ul class="ban-list" id="banList"></ul>
+      </details>
+      {% endif %}
       <div class="card chat-card">
         <div class="chat-log" id="chatLog"><p class="empty-line" id="chatEmpty">No messages yet. Say hello 👋</p></div>
         <form class="chat-form" id="chatForm">

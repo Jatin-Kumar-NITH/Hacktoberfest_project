@@ -105,6 +105,12 @@ CREATE TABLE IF NOT EXISTS posts (
   author_id INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_by TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS otps (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT NOT NULL,
@@ -175,6 +181,11 @@ def init_app(app):
 
     conn = sqlite3.connect(DB_PATH)
     conn.executescript(SCHEMA)
+    for col in ("chat_ban_until REAL NOT NULL DEFAULT 0", "chat_ban_by TEXT"):
+        try:
+            conn.execute(f"ALTER TABLE users ADD COLUMN {col}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
     email = os.getenv("OWNER_EMAIL", "").strip().lower()
     password = os.getenv("OWNER_PASSWORD", "")
     name = os.getenv("OWNER_NAME", "").strip() or (email.split("@")[0] if email else "Owner")
@@ -333,11 +344,20 @@ def start_otp(otp_email, purpose, payload):
     conn.commit()
     try:
         via = deliver_otp(otp_email, code, purpose)
-    except Exception as e:  # SMTP problem: tell the user plainly
-        print(f"[CampusMate] Could not send OTP email: {e}")
+    except Exception as e:  # SMTP problem: tell the user plainly what went wrong
+        print(f"[CampusMate] Could not send OTP email: {e!r}", flush=True)
         conn.execute("DELETE FROM otps WHERE id = ?", (cur.lastrowid,))
         conn.commit()
-        return None, "Could not send the code email. Check the SMTP settings in .env (see README)."
+        text = str(e)
+        if isinstance(e, smtplib.SMTPAuthenticationError) or "535" in text or "Username and Password not accepted" in text:
+            why = "Gmail rejected the login. SMTP_PASSWORD must be a Gmail App Password (not your normal password) and 2-Step Verification must be on."
+        elif "timed out" in text.lower() or isinstance(e, TimeoutError):
+            why = "Timed out connecting to the mail server. Try SMTP_PORT=465 (or 587)."
+        elif "refused" in text.lower() or "unreachable" in text.lower():
+            why = "The mail server refused the connection. Check SMTP_HOST and SMTP_PORT."
+        else:
+            why = f"Mail error: {type(e).__name__}."
+        return None, "Could not send the code email. " + why
     session["otp_id"] = cur.lastrowid
     return {"otp": True, "via": via, "email": mask_email(otp_email), "purpose": purpose}, None
 
@@ -484,6 +504,23 @@ def api_set_role(uid):
     return jsonify(ok=True)
 
 
+# ------------------------------------------------------------------ site-editable data (timetables, exams, menus)
+
+def get_setting(key):
+    row = db().execute("SELECT value, updated_by, updated_at FROM settings WHERE key = ?", (key,)).fetchone()
+    if not row:
+        return None
+    return {"value": json.loads(row["value"]), "updated_by": row["updated_by"], "updated_at": row["updated_at"]}
+
+
+def set_setting(key, value):
+    u = current_user()
+    db().execute("""INSERT INTO settings (key, value, updated_by, updated_at) VALUES (?,?,?,?)
+                    ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_by=excluded.updated_by,
+                    updated_at=excluded.updated_at""", (key, json.dumps(value, ensure_ascii=False), u["name"], now_iso()))
+    db().commit()
+
+
 # ------------------------------------------------------------------ posts (admin publishing)
 
 def post_to_dict(r):
@@ -559,8 +596,9 @@ def api_delete_post(pid):
     if not row:
         return jsonify(error="Post not found."), 404
     u = current_user()
-    if u["role"] != "owner" and row["author_id"] != u["id"]:
-        return jsonify(error="Admins can only delete their own posts."), 403
+    author = db().execute("SELECT role FROM users WHERE id = ?", (row["author_id"],)).fetchone()
+    if u["role"] != "owner" and author and author["role"] == "owner":
+        return jsonify(error="Only the owner can delete the owner's posts."), 403
     db().execute("DELETE FROM posts WHERE id = ?", (pid,))
     db().commit()
     if row["pdf"]:
@@ -595,7 +633,8 @@ def api_chat():
                            JOIN users u ON u.id = m.user_id WHERE m.id > ? ORDER BY m.id DESC LIMIT 100""",
                         (after,)).fetchall()
     latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages").fetchone()[0]
-    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest)
+    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest,
+                   banned=ban_status(current_user()["id"]))
 
 
 @bp.post("/api/chat")
@@ -607,6 +646,9 @@ def api_chat_send():
     if len(body) > 500:
         return jsonify(error="Messages can be at most 500 characters."), 400
     u = current_user()
+    ban = ban_status(u["id"])
+    if ban:
+        return jsonify(error=ban["message"], banned=ban), 403
     if time.time() - _LAST_MSG.get(u["id"], 0) < 1.5:
         return jsonify(error="You're sending messages too fast. Wait a second."), 429
     _LAST_MSG[u["id"]] = time.time()
@@ -621,3 +663,67 @@ def api_chat_delete(mid):
     db().execute("DELETE FROM messages WHERE id = ?", (mid,))
     db().commit()
     return jsonify(ok=True)
+
+
+# ------------------------------------------------------------------ chat bans
+
+PERMANENT = 4102444800  # year 2100 = "permanent"
+
+
+def ban_status(uid):
+    row = db().execute("SELECT chat_ban_until, chat_ban_by FROM users WHERE id = ?", (uid,)).fetchone()
+    if not row or not row["chat_ban_until"] or row["chat_ban_until"] < time.time():
+        return None
+    permanent = row["chat_ban_until"] >= PERMANENT
+    until = datetime.fromtimestamp(row["chat_ban_until"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {"until": None if permanent else until, "permanent": permanent, "by": row["chat_ban_by"],
+            "message": "You have been banned from the campus chat" + ("." if permanent else " until the time shown.")}
+
+
+def _can_ban(actor, target):
+    if target["role"] == "owner":
+        return "The owner cannot be banned."
+    if target["role"] == "admin" and actor["role"] != "owner":
+        return "Only the owner can ban an admin."
+    if target["id"] == actor["id"]:
+        return "You cannot ban yourself."
+    return None
+
+
+@bp.post("/api/chat/ban")
+@admin_required
+def api_chat_ban():
+    data = request.get_json(silent=True) or {}
+    target = db().execute("SELECT id, name, role FROM users WHERE id = ?", (data.get("user_id"),)).fetchone()
+    if not target:
+        return jsonify(error="User not found."), 404
+    problem = _can_ban(current_user(), target)
+    if problem:
+        return jsonify(error=problem), 403
+    hours = data.get("hours")
+    until = PERMANENT if hours in (0, "0", None, "permanent") else time.time() + float(hours) * 3600
+    if until != PERMANENT and not 0 < float(hours) <= 24 * 365:
+        return jsonify(error="Choose a valid ban duration."), 400
+    db().execute("UPDATE users SET chat_ban_until = ?, chat_ban_by = ? WHERE id = ?", (until, current_user()["name"], target["id"]))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.post("/api/chat/unban")
+@admin_required
+def api_chat_unban():
+    uid = (request.get_json(silent=True) or {}).get("user_id")
+    db().execute("UPDATE users SET chat_ban_until = 0, chat_ban_by = NULL WHERE id = ?", (uid,))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.get("/api/chat/bans")
+@admin_required
+def api_chat_bans():
+    rows = db().execute("SELECT id, name, email, role, chat_ban_until, chat_ban_by FROM users WHERE chat_ban_until > ? ORDER BY name",
+                        (time.time(),)).fetchall()
+    return jsonify(bans=[{"id": r["id"], "name": r["name"], "role": r["role"], "by": r["chat_ban_by"],
+                          "permanent": r["chat_ban_until"] >= PERMANENT,
+                          "until": datetime.fromtimestamp(r["chat_ban_until"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+                         for r in rows])
