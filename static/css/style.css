@@ -746,3 +746,9 @@ html[data-theme="dark"] .board-head:not(.section-head) { background: #222a60; }
 
 html[data-theme="dark"] .menu-table tr.today { background: #1d1b45; }
 html[data-theme="dark"] .editor { border-color: #8a5a00; }
+
+/* chat: never squash messages when there are many */
+.chat-msg { flex-shrink: 0; }
+.chat-log > * { flex-shrink: 0; }
+.user-count { margin: 0 0 8px; }
+.banned-cell { color: var(--high); font-weight: 700; font-size: 13px; }

@@ -99,7 +99,7 @@
       document.querySelector(".auth-tabs").hidden = true;
       $("otpTitle").textContent = d.purpose === "signup" ? "Confirm your email" : "Confirm it's you";
       $("otpSub").textContent = d.via === "email"
-        ? `We sent a 6-digit code to ${d.email}. It expires in 10 minutes.`
+        ? `We sent a 6-digit code to ${d.email}. It expires in 10 minutes. Can't find it? Check your Spam or Promotions folder and mark it "Not spam".`
         : `Email sending isn't set up on this server yet, so the 6-digit code for ${d.email} was printed in the server's terminal window.`;
       $("otpCode").value = ""; $("otpCode").focus();
       let left = 60; $("otpResend").disabled = true;

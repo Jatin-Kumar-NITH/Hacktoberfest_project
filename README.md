@@ -161,7 +161,8 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ```
 campusmate/
 ├── app.py                  # Flask app: pages, Notice Explainer, Study Planner, Ask CampusMate, Gemma calls
-├── accounts.py             # Login, OTP, roles, admin publishing, uploads, campus chat (SQLite)
+├── accounts.py             # Login, OTP, roles, admin publishing, uploads, campus chat, bans
+├── db.py                   # Database layer: SQLite locally, Postgres when DATABASE_URL is set
 ├── setup_email.py          # One-time Gmail setup for OTP emails (sends a test email)
 ├── requirements.txt
 ├── .env.example            # Template for your secrets (copy to .env)
@@ -224,11 +225,15 @@ Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the 
 
 > **Windows tip:** run `python app.py` from the terminal *after* activating `venv`. The prompt should start with `(venv)`. If PowerShell refuses to activate it, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
 
-### Deploying to Vercel (demo)
+### Deploying to Vercel
 
-The repo includes `vercel.json`. In Vercel → *Project → Settings → Environment Variables*, add `GEMINI_API_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME` and a long random `SECRET_KEY`, then redeploy.
+The repo includes `vercel.json`. In Vercel → *Project → Settings → Environment Variables*, add `GEMINI_API_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME`, a long random `SECRET_KEY`, and the `SMTP_*` settings for email OTP.
 
-> ⚠️ Vercel runs the app as serverless functions with a **temporary** filesystem, so CampusMate stores its SQLite database in `/tmp` there. **Accounts other than the owner, chat messages and admin uploads can disappear** when Vercel starts a fresh instance. Use Vercel for demos. For permanent data, run it on a server with a persistent disk, or move the database to a hosted one (roadmap). Without SMTP settings, OTP codes appear in Vercel's **Logs** tab.
+**Connect a permanent database (required on Vercel).** Vercel's disk is temporary, so without a database, accounts, chat, posts and edits disappear when the app restarts.
+1. In your Vercel project open **Storage → Create Database → Neon (Postgres)** (free plan) and connect it to the project. Vercel adds `DATABASE_URL` (or `POSTGRES_URL`) automatically. Any other Postgres works too: set `DATABASE_URL=postgresql://…`.
+2. **Redeploy.** Tables are created automatically on first start; the startup log says `Database: Postgres (DATABASE_URL) - permanent`.
+
+Uploaded PDFs are stored in the database too. Vercel limits a single request to about 4.5 MB, so keep uploads under that size there.
 
 ---
 
@@ -242,7 +247,8 @@ The repo includes `vercel.json`. In Vercel → *Project → Settings → Environ
 | `OWNER_PASSWORD` | ✅ (first run) | Creates the owner account on first start if it doesn't exist. Must meet the password rules. |
 | `OWNER_NAME` | – | Display name for the owner. |
 | `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
-| `CAMPUSMATE_DATA_DIR` | – | Where the database, uploads and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
+| `DATABASE_URL` | ✅ on Vercel | Postgres connection string (e.g. from Neon). If set, all data (accounts, posts, PDFs, chat, edits) is stored there permanently. If empty, a local SQLite file is used. `POSTGRES_URL` also works. |
+| `CAMPUSMATE_DATA_DIR` | – | Where the SQLite file and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
 | `SMTP_HOST` / `SMTP_PORT` | – | Mail server, `smtp.gmail.com` with `587` (STARTTLS) or `465` (SSL). |
 | `SMTP_USER` / `SMTP_PASSWORD` | – | Gmail address and **App Password** for sending OTP codes. |
 | `SMTP_FROM` | – | Sender shown on OTP emails. |
@@ -327,7 +333,7 @@ During development, every feature was tested end to end with a stand-in for the 
 ## Limitations and honest notes
 
 - **What's included:** the official 1st-year timetable, the official 1st-year curriculum (syllabus) and the three real MA-111 assignment PDFs. Everything else (notices, exams, mess menus, other years' timetables) starts empty and is added by admins on the site. No made-up sample data is shown.
-- Site edits (timetables, exams, menus), accounts, posts and chat are stored in SQLite. On Vercel that database is temporary and can reset; use a server with a persistent disk or a hosted database for permanent data.
+- Accounts, posts, uploaded PDFs, chat and site edits are stored in **Postgres** when `DATABASE_URL` is set (recommended, required on Vercel), otherwise in a local **SQLite** file.
 - The curriculum PDF gives Hindi text for HS-103 on pages 13–14. That text couldn't be extracted cleanly, so it's available in the PDF only. B.Arch (Section Z) courses aren't in the B.Tech curriculum PDF.
 - **AI can make mistakes.** Always confirm important details with the issuing office.
 - The Gemini API **free tier has low rate limits** for Gemma models.

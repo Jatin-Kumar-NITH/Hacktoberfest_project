@@ -15,12 +15,14 @@ import re
 import secrets
 import sqlite3
 import time
+
+import db as database
 import uuid
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
 
-from flask import (Blueprint, abort, current_app, g, jsonify, redirect, render_template, request,
+from flask import (Blueprint, Response, abort, current_app, g, jsonify, redirect, render_template, request,
                    send_from_directory, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -69,9 +71,7 @@ EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
 
 def db():
     if "db" not in g:
-        g.db = sqlite3.connect(DB_PATH)
-        g.db.row_factory = sqlite3.Row
-        g.db.execute("PRAGMA foreign_keys = ON")
+        g.db = database.connect(DB_PATH)
     return g.db
 
 
@@ -82,52 +82,7 @@ def close_db(_exc):
         conn.close()
 
 
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  password_hash TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user',
-  created_at TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS posts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  kind TEXT NOT NULL,
-  title TEXT NOT NULL,
-  body TEXT NOT NULL DEFAULT '',
-  code TEXT,
-  due TEXT,
-  marks INTEGER,
-  years TEXT NOT NULL,
-  sections TEXT NOT NULL,
-  pdf TEXT,
-  author_id INTEGER NOT NULL REFERENCES users(id),
-  created_at TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS settings (
-  key TEXT PRIMARY KEY,
-  value TEXT NOT NULL,
-  updated_by TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS otps (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL,
-  purpose TEXT NOT NULL,
-  code_hash TEXT NOT NULL,
-  payload TEXT NOT NULL,
-  expires_at REAL NOT NULL,
-  attempts INTEGER NOT NULL DEFAULT 0,
-  sent_at REAL NOT NULL
-);
-CREATE TABLE IF NOT EXISTS messages (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  body TEXT NOT NULL,
-  created_at TEXT NOT NULL
-);
-"""
+# Table definitions live in db.py (SQLite locally, Postgres when DATABASE_URL is set).
 
 
 def now_iso():
@@ -179,13 +134,8 @@ def init_app(app):
         PERMANENT_SESSION_LIFETIME=timedelta(days=30),   # "stay logged in"
     )
 
-    conn = sqlite3.connect(DB_PATH)
-    conn.executescript(SCHEMA)
-    for col in ("chat_ban_until REAL NOT NULL DEFAULT 0", "chat_ban_by TEXT"):
-        try:
-            conn.execute(f"ALTER TABLE users ADD COLUMN {col}")
-        except sqlite3.OperationalError:
-            pass  # column already exists
+    conn = database.connect(DB_PATH)
+    database.create_schema(conn)
     email = os.getenv("OWNER_EMAIL", "").strip().lower()
     password = os.getenv("OWNER_PASSWORD", "")
     name = os.getenv("OWNER_NAME", "").strip() or (email.split("@")[0] if email else "Owner")
@@ -206,7 +156,10 @@ def init_app(app):
     users = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
     conn.close()
     print("[CampusMate] ----------------------------------------------")
-    print(f"[CampusMate] Database: {DB_PATH} ({users} account(s))")
+    where = "Postgres (DATABASE_URL) - permanent" if database.using_postgres() else str(DB_PATH)
+    print(f"[CampusMate] Database: {where} ({users} account(s))")
+    if os.getenv("VERCEL") and not database.using_postgres():
+        print("[CampusMate] WARNING: on Vercel without DATABASE_URL, accounts and data are temporary. Connect a Postgres database (see README).")
     print(f"[CampusMate] Owner email: {email or 'NOT SET - add OWNER_EMAIL to .env'}")
     print(f"[CampusMate] Email OTP: {'sending via ' + os.getenv('SMTP_HOST', 'smtp.gmail.com') if smtp_ready() else 'SMTP not set - OTP codes will be printed here in this window'}")
     print("[CampusMate] ----------------------------------------------")
@@ -424,12 +377,13 @@ def api_otp_verify():
         try:
             cur = db().execute("INSERT INTO users (email, name, password_hash, role, created_at) VALUES (?,?,?,?,?)",
                                (payload["email"], payload["name"], payload["pw"], "user", now_iso()))
-        except sqlite3.IntegrityError:
-            db().commit()
+        except database.integrity_errors():
+            db().rollback()
             return jsonify(error="An account with this email already exists. Use Log in instead.", restart=True), 409
         uid, remember = cur.lastrowid, True
     else:
         uid, remember = payload["uid"], payload.get("remember", True)
+    db().execute("UPDATE users SET last_login_at = ? WHERE id = ?", (now_iso(), uid))
     db().commit()
     sync_owner(db())
     session.clear()
@@ -484,7 +438,10 @@ def api_change_password():
 @bp.get("/api/users")
 @owner_required
 def api_users():
-    rows = db().execute("SELECT id, name, email, role, created_at FROM users ORDER BY role = 'user', name").fetchall()
+    rows = db().execute("""SELECT id, name, email, role, created_at, last_login_at,
+                           CASE WHEN chat_ban_until > ? THEN 1 ELSE 0 END AS chat_banned
+                           FROM users ORDER BY CASE role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, name""",
+                        (time.time(),)).fetchall()
     return jsonify(users=[dict(r) for r in rows], smtp=smtp_ready())
 
 
@@ -577,7 +534,7 @@ def api_create_post():
         if not upload.filename.lower().endswith(".pdf") or head != b"%PDF-":
             return jsonify(error="Only PDF files can be uploaded."), 400
         pdf_name = f"{uuid.uuid4().hex}.pdf"
-        upload.save(UPLOADS / pdf_name)
+        db().execute("INSERT INTO files (name, data, created_at) VALUES (?,?,?)", (pdf_name, upload.read(), now_iso()))
     if kind == "material" and not pdf_name:
         return jsonify(error="Study material needs a PDF file."), 400
 
@@ -602,7 +559,9 @@ def api_delete_post(pid):
     db().execute("DELETE FROM posts WHERE id = ?", (pid,))
     db().commit()
     if row["pdf"]:
-        (UPLOADS / row["pdf"]).unlink(missing_ok=True)
+        db().execute("DELETE FROM files WHERE name = ?", (row["pdf"],))
+        db().commit()
+        (UPLOADS / row["pdf"]).unlink(missing_ok=True)  # older versions stored files on disk
     return jsonify(ok=True)
 
 
@@ -611,7 +570,13 @@ def api_delete_post(pid):
 def uploaded_file(name):
     if not re.fullmatch(r"[0-9a-f]{32}\.pdf", name):
         abort(404)
-    return send_from_directory(UPLOADS, name, mimetype="application/pdf")
+    row = db().execute("SELECT data FROM files WHERE name = ?", (name,)).fetchone()
+    if row:
+        return Response(bytes(row["data"]), mimetype="application/pdf",
+                        headers={"Content-Disposition": f'inline; filename="{name}"', "Cache-Control": "private, max-age=3600"})
+    if (UPLOADS / name).exists():  # older versions stored files on disk
+        return send_from_directory(UPLOADS, name, mimetype="application/pdf")
+    abort(404)
 
 
 # ------------------------------------------------------------------ public chat

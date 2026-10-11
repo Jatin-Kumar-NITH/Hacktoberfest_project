@@ -1311,11 +1311,15 @@ async function loadUsers() {
 function renderUsers() {
   const q = ($("userSearch").value || "").toLowerCase();
   const body = $("userBody"); body.replaceChildren();
+  const admins = USERS.filter((u) => u.role !== "user").length;
+  $("userCount").textContent = `${USERS.length} account${USERS.length === 1 ? "" : "s"} · ${admins} owner/admin · ${USERS.length - admins} student${USERS.length - admins === 1 ? "" : "s"}`;
   USERS.filter((u) => `${u.name} ${u.email}`.toLowerCase().includes(q)).forEach((u) => {
     const tr = el("tr");
     const who = el("td"); who.append(el("strong", "", u.name), el("div", "muted", u.email)); tr.appendChild(who);
     const rt = el("td"); rt.appendChild(el("span", `role-tag role-${u.role}`, ROLE_LABEL[u.role])); tr.appendChild(rt);
     tr.appendChild(el("td", "muted", fmtTime(u.created_at)));
+    tr.appendChild(el("td", "muted", u.last_login_at ? fmtTime(u.last_login_at) : "—"));
+    tr.appendChild(el("td", u.chat_banned ? "banned-cell" : "muted", u.chat_banned ? "🚫 Banned" : "OK"));
     const act = el("td");
     if (u.role !== "owner") {
       const make = u.role === "user";
