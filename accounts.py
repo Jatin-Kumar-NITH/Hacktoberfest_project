@@ -25,7 +25,35 @@ from flask import (Blueprint, abort, current_app, g, jsonify, redirect, render_t
 from werkzeug.security import check_password_hash, generate_password_hash
 
 BASE_DIR = Path(__file__).parent
-INSTANCE = BASE_DIR / "instance"
+
+
+def _writable(path):
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / ".write_test"
+        probe.write_text("ok")
+        probe.unlink()
+        return True
+    except OSError:
+        return False
+
+
+def runtime_dir():
+    """Where the app may write files. Serverless hosts (Vercel) only allow writing to /tmp,
+    so we test the preferred folder and fall back to the system temp folder if it is read-only."""
+    import tempfile
+    custom = os.getenv("CAMPUSMATE_DATA_DIR", "").strip()
+    candidates = [Path(custom)] if custom else []
+    if not os.getenv("VERCEL"):
+        candidates.append(BASE_DIR / "instance")
+    candidates.append(Path(tempfile.gettempdir()) / "campusmate")
+    for c in candidates:
+        if _writable(c):
+            return c
+    return candidates[-1]
+
+
+INSTANCE = runtime_dir()          # recomputed in init_app() after .env is loaded
 UPLOADS = INSTANCE / "uploads"
 DB_PATH = INSTANCE / "campusmate.db"
 
@@ -120,11 +148,20 @@ def smtp_ready():
 
 def init_app(app):
     """Create folders, database tables, the secret key and the owner account."""
-    INSTANCE.mkdir(exist_ok=True)
-    UPLOADS.mkdir(exist_ok=True)
+    global INSTANCE, UPLOADS, DB_PATH
+    INSTANCE = runtime_dir()
+    UPLOADS = INSTANCE / "uploads"
+    DB_PATH = INSTANCE / "campusmate.db"
+    INSTANCE.mkdir(parents=True, exist_ok=True)
+    UPLOADS.mkdir(parents=True, exist_ok=True)
 
     key = os.getenv("SECRET_KEY", "").strip()
     key_file = INSTANCE / "secret_key"
+    if not key and os.getenv("VERCEL"):
+        # every serverless instance must share one key, or users get logged out between requests
+        seed = os.getenv("GEMINI_API_KEY", "") + os.getenv("OWNER_PASSWORD", "") + os.getenv("OWNER_EMAIL", "")
+        key = hashlib.sha256(("campusmate:" + seed).encode()).hexdigest()
+        print("[CampusMate] SECRET_KEY not set; derived one from other secrets. Set SECRET_KEY in Vercel for best security.")
     if not key:
         if not key_file.exists():
             key_file.write_text(secrets.token_hex(32))

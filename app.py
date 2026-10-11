@@ -20,8 +20,8 @@ load_dotenv(Path(__file__).resolve().parent / ".env")
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 BASE_DIR = Path(__file__).parent
-CACHE_DIR = BASE_DIR / "cache"
-CACHE_DIR.mkdir(exist_ok=True)
+CACHE_DIR = accounts.runtime_dir() / "cache"   # writable location (/tmp on Vercel)
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 MODELS = [
     m.strip()
