@@ -41,8 +41,6 @@
       <a href="#timetable" data-page="timetable"><span class="ico">▤</span><span>Timetable</span></a>
       <a href="#assignments" data-page="assignments"><span class="ico">✎</span><span>Assignments</span></a>
       <a href="#exams" data-page="exams"><span class="ico">⚑</span><span>Exam Schedule</span></a>
-      <a href="#calendar" data-page="calendar"><span class="ico">📅</span><span>Academic Calendar</span></a>
-      <a href="#attendance" data-page="attendance"><span class="ico">✓</span><span>My Attendance</span></a>
       <a href="#syllabus" data-page="syllabus"><span class="ico">❒</span><span>Syllabus</span></a>
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
@@ -98,8 +96,6 @@
           <button class="ask-chip">When are the mid-sem exams and what do I need?</button>
           <button class="ask-chip">Which assignments are due this week?</button>
           <button class="ask-chip">When is my next exam?</button>
-          <button class="ask-chip">When is the next holiday?</button>
-          <button class="ask-chip">In which subjects is my attendance low?</button>
         </div>
         <form class="ask-form" id="askForm">
           <input type="text" id="askInput" maxlength="500" placeholder="e.g. Do I have a lab on Friday?" autocomplete="off">
@@ -133,16 +129,6 @@
           <div class="card-head"><h2>Upcoming deadlines</h2></div>
           <ul class="dl-list" id="dashDeadlines"></ul>
           <p class="empty-line" id="dashDeadlinesEmpty">No deadlines yet. Explain a notice and its dates show up here.</p>
-        </div>
-
-        <div class="card">
-          <div class="card-head"><h2>My attendance</h2><a class="muted" href="#attendance">Mark attendance →</a></div>
-          <div id="dashAttendance"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-head"><h2>Upcoming holidays</h2><a class="muted" href="#calendar">Academic calendar →</a></div>
-          <ul class="recent" id="dashHolidays"></ul>
         </div>
 
         <div class="card">
@@ -252,96 +238,6 @@
       <div class="card" id="exTableCard"><table class="ex-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Venue</th><th>Countdown</th></tr></thead><tbody id="exBody"></tbody></table></div>
       <p class="empty-line card" id="exEmpty" hidden>The exam schedule for your year hasn't been published yet.</p>
       <div class="card ex-rules"><h2>Exam rules</h2><ul class="bullets" id="exRules"></ul></div>
-    </section>
-
-    <!-- ============ ACADEMIC CALENDAR ============ -->
-    <section class="page" id="page-calendar" hidden>
-      <header class="page-head"><div><h1>Academic Calendar</h1><p class="sub" id="calSub"></p></div></header>
-      <div class="alert ok sample-note" id="calNote"></div>
-      <div class="cal-summary" id="calSummary"></div>
-      <div class="edit-bar" id="calEditBar" hidden>
-        <span class="muted" id="calEdited"></span>
-        <button class="ai-btn" id="calEditBtn">✎ Edit academic calendar</button>
-      </div>
-      <div class="card editor" id="calEditor" hidden>
-        <div class="card-head"><h2>Edit academic calendar</h2><span class="muted">One row per holiday or event. Leave “End” empty for a single day.</span></div>
-        <label class="field inline-field"><span class="label">Calendar name</span><input type="text" id="calName" maxlength="120" placeholder="e.g. Academic Calendar 2026-27 (Odd Semester)"></label>
-        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Start</th><th>End</th><th>Title</th><th>Type</th><th>Note (optional)</th><th></th></tr></thead><tbody id="calRows"></tbody></table></div>
-        <div class="ed-actions"><button class="ghost" id="calAddRow">+ Add date</button><span class="spacer"></span><button class="ghost" id="calCancel">Cancel</button><button class="primary inline" id="calSave">Save calendar</button></div>
-        <div class="alert error" id="calErr" hidden></div>
-      </div>
-      <div class="cal-layout">
-        <div class="card cal-card">
-          <div class="cal-nav">
-            <button class="ghost cal-arrow" id="calPrev" title="Previous month">‹</button>
-            <h2 id="calMonth"></h2>
-            <button class="ghost cal-arrow" id="calNext" title="Next month">›</button>
-            <span class="spacer"></span>
-            <button class="ghost small" id="calToday">Today</button>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-          <div class="legend cal-legend">
-            <span class="tag cal-holiday">Holiday</span><span class="tag cal-exam">Exam</span><span class="tag cal-event">Event</span><span class="tag cal-semester">Semester</span>
-          </div>
-          <div class="cal-day" id="calDay" hidden></div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h2>Dates</h2></div>
-          <div class="as-filters" id="calFilters">
-            <button class="chip active" data-calf="upcoming">Upcoming</button>
-            <button class="chip" data-calf="holiday">Holidays</button>
-            <button class="chip" data-calf="all">All dates</button>
-          </div>
-          <ul class="cal-list" id="calList"></ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ MY ATTENDANCE ============ -->
-    <section class="page" id="page-attendance" hidden>
-      <header class="page-head row-between">
-        <div><h1>My Attendance</h1><p class="sub">Track your own attendance for every subject. Only you can see it, and it's saved to your account.</p></div>
-        <label class="att-target">Target
-          <select id="attTarget"><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option></select>
-        </label>
-      </header>
-      <div class="alert error" id="attErr" hidden></div>
-      <div class="stats">
-        <div class="stat"><div class="stat-num" id="attOverall">–</div><div class="stat-label">Overall attendance</div></div>
-        <div class="stat"><div class="stat-num" id="attCount">0 / 0</div><div class="stat-label">Classes attended / held</div></div>
-        <div class="stat"><div class="stat-num" id="attLow">0</div><div class="stat-label">Subjects below target</div></div>
-      </div>
-      <div class="split att-split">
-        <div class="card">
-          <div class="card-head"><h2>Mark attendance</h2><span class="muted" id="attSaved"></span></div>
-          <div class="att-date">
-            <button class="ghost cal-arrow" id="attPrev" title="Previous day">‹</button>
-            <input type="date" id="attDate">
-            <button class="ghost cal-arrow" id="attNext" title="Next day">›</button>
-            <button class="ghost small" id="attToday">Today</button>
-          </div>
-          <p class="muted" id="attDayLabel"></p>
-          <div class="alert ok" id="attHoliday" hidden></div>
-          <ul class="att-classes" id="attClasses"></ul>
-          <p class="fine" id="attGroupHint" hidden>Tip: pick your lab group in the sidebar so only your own labs show here.</p>
-          <div class="att-extra">
-            <span class="label">Extra or rescheduled class</span>
-            <div class="att-extra-row">
-              <select id="attExtraCode"></select>
-              <button class="ghost small att-p" id="attExtraP">+ Present</button>
-              <button class="ghost small att-a" id="attExtraA">+ Absent</button>
-            </div>
-            <div class="att-extra-row">
-              <input type="text" id="attNewSubject" maxlength="40" placeholder="Add a subject not in your timetable, e.g. NCC">
-              <button class="ghost small" id="attAddSubject">Add subject</button>
-            </div>
-          </div>
-          <p class="fine">Each class session counts once (a 2-hour lab = 1 class). “Cancelled” classes don't count. This is your own record — the official attendance is the one your teachers keep.</p>
-        </div>
-        <div>
-          <div class="att-grid" id="attSubjects"></div>
-        </div>
-      </div>
     </section>
 
     <!-- ============ SYLLABUS ============ -->

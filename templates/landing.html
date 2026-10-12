@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collegemateai | Streamline Campus Life</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased flex flex-col min-h-screen">
+
+    <nav class="w-full px-8 py-4 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-200 fixed top-0 z-50">
+        <div class="font-bold text-xl tracking-tight text-black">
+            Collegemate<span class="text-gray-400 font-normal">ai</span>
+        </div>
+        <div id="google-button-nav"></div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-6 pt-32 pb-20">
+        <h1 class="text-5xl md:text-6xl font-semibold tracking-tight leading-tight mb-6">
+            Your campus essentials,<br>
+            <span class="text-gray-400">effortlessly organized.</span>
+        </h1>
+        
+        <p class="text-lg text-gray-600 max-w-2xl mb-10">
+            A single, minimalist hub to navigate your daily schedules, course syllabi, assignments, and campus notices without friction.
+        </p>
+
+        <div id="google-button-center"></div>
+        <p class="text-sm text-gray-400 mt-4">Sign in with your institutional Google ID</p>
+
+        <div id="login-success-message" class="hidden mt-8 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 font-medium">
+            <!-- Message injects here -->
+        </div>
+    </main>
+
+    <!-- Connects to the Client ID you set in your .env file -->
+    <div id="g_id_onload"
+         data-client_id="172975052026-pcjpo26s8o788puo3l37u29qd99icts7.apps.googleusercontent.com"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false">
+    </div>
+
+    <script>
+        window.onload = function () {
+            google.accounts.id.renderButton(
+                document.getElementById("google-button-center"),
+                { theme: "outline", size: "large", shape: "pill" }
+            );
+            google.accounts.id.renderButton(
+                document.getElementById("google-button-nav"),
+                { theme: "outline", size: "medium", shape: "pill" }
+            );
+        }
+
+       
+            function handleGoogleLogin(response) {
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CampusMate': '1'  // <-- This is the required security handshake!
+                },
+                body: JSON.stringify({ credential: response.credential })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.message === "Login successful") {
+                    document.getElementById("google-button-center").style.display = "none";
+                    document.getElementById("google-button-nav").style.display = "none";
+                    
+                    const msgBox = document.getElementById("login-success-message");
+                    msgBox.classList.remove("hidden");
+                    msgBox.innerText = "Welcome back, " + data.name + "! Opening dashboard...";
+                    
+                    // Instantly refresh the page. Since you are now logged in, 
+                    // app.py will automatically load index.html (the dashboard)
+                    setTimeout(() => { window.location.reload(); }, 1000);
+                } else {
+                    alert("Login failed: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred connecting to the server.");
+            });
+        }
+    </script>
+</body>
+</html>
