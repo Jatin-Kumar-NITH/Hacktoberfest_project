@@ -266,12 +266,24 @@ def load_campus():
         if ov:
             edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
             syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in syl["subjects"].items() if c not in gone}
+    # menu:<hostel> is the "All years" menu; menu:<hostel>:<year> is a year's own menu and wins for that year
     for h in ("boys", "girls"):
+        hostel = campus["hostel"]["hostels"][h]
         ov = accounts.get_setting(f"menu:{h}")
         if ov:
-            campus["hostel"]["hostels"][h].update(ov["value"])
-            campus["hostel"]["hostels"][h].update(edited_by=ov["updated_by"], edited_at=ov["updated_at"])
+            hostel.update(ov["value"])
+            hostel.update(edited_by=ov["updated_by"], edited_at=ov["updated_at"])
+        hostel["years"] = {}
+        for y in ("1", "2", "3", "4"):
+            ov = accounts.get_setting(f"menu:{h}:{y}")
+            if ov:
+                hostel["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
     return campus
+
+
+def menu_for_year(hostel, year):
+    """The menu students of `year` see: that year's own menu, else the All years menu."""
+    return hostel.get("years", {}).get(str(year)) or hostel
 
 
 # ------------------------------------------------------------------ admin editing (timetables, exams, menus)
@@ -361,14 +373,25 @@ def edit_exams():
 @app.post("/api/edit/menu")
 @admin_required
 def edit_menu():
+    """Save a hostel's menu for "all" years (the fallback) or for one year (1-4).
+    {"clear": true} on a year removes its own menu so it goes back to the All years one."""
     data = request.get_json(silent=True) or {}
     hostel = data.get("hostel")
     if hostel not in ("boys", "girls"):
         return jsonify(error="Unknown hostel."), 400
-    menu_in, times_in = data.get("mess_menu") or {}, data.get("mess_timings") or {}
-    menu = {d: {m: _txt((menu_in.get(d) or {}).get(m), 200) for m in MEALS} for d in DAYS7}
-    timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
-    accounts.set_setting(f"menu:{hostel}", {"mess_menu": menu, "mess_timings": timings})
+    year = str(data.get("year") or "all")
+    if year not in ("all", "1", "2", "3", "4"):
+        return jsonify(error="Unknown year."), 400
+    key = f"menu:{hostel}" if year == "all" else f"menu:{hostel}:{year}"
+    if data.get("clear"):
+        if year == "all":
+            return jsonify(error="The All years menu can't be removed, only edited."), 400
+        accounts.delete_setting(key)
+    else:
+        menu_in, times_in = data.get("mess_menu") or {}, data.get("mess_timings") or {}
+        menu = {d: {m: _txt((menu_in.get(d) or {}).get(m), 200) for m in MEALS} for d in DAYS7}
+        timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
+        accounts.set_setting(key, {"mess_menu": menu, "mess_timings": timings})
     return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
 
 
@@ -839,9 +862,10 @@ def build_ask_context(year, section_id, group, client):
         if for_student(n, y, sec["id"]):
             parts.append(f"### Notice: {n['title']} (dated {n['date']}, from {n['from']})\n{n['text'][:1100]}")
 
-    for hid, h in campus["hostel"]["hostels"].items():
+    for hid, hostel in campus["hostel"]["hostels"].items():
+        h = menu_for_year(hostel, y)
         if any(v for day in h["mess_menu"].values() for v in day.values()):
-            parts.append(f"\n## {h['name']} mess menu")
+            parts.append(f"\n## {hostel['name']} mess menu (Year {y})")
             timings = "; ".join(f"{k} {v}" for k, v in h["mess_timings"].items() if v)
             if timings:
                 parts.append("Mess timings: " + timings)
@@ -850,7 +874,7 @@ def build_ask_context(year, section_id, group, client):
                 if items:
                     parts.append(f"{day}: {items}")
         else:
-            parts.append(f"\n## {h['name']} mess menu: not added yet")
+            parts.append(f"\n## {hostel['name']} mess menu: not added yet")
 
     deadlines = [d for d in _list(client.get("deadlines")) if isinstance(d, dict)][:20]
     if deadlines:

@@ -335,6 +335,11 @@ def set_setting(key, value):
     db().commit()
 
 
+def delete_setting(key):
+    db().execute("DELETE FROM settings WHERE key = ?", (key,))
+    db().commit()
+
+
 # ------------------------------------------------------------------ private per-user data (e.g. self attendance)
 
 def get_user_data(user_id, key):
