@@ -33,7 +33,7 @@ let currentId = null;
 // ---------------------------------------------------------- routing
 function route() {
   const page = (location.hash || "#dashboard").slice(1);
-  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "syllabus", "notice", "planner", "hostel", "chat", "publish", "admins", "about"].filter((v) => $(`page-${v}`));
+  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "syllabus", "notice", "planner", "hostel", "chat", "publish", "admins", "about"].filter((v) => $(`page-${v}`));
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
@@ -42,6 +42,8 @@ function route() {
   if (p === "timetable") renderTimetable();
   if (p === "assignments") renderAssignments();
   if (p === "exams") renderExams();
+  if (p === "calendar") renderCalendar();
+  if (p === "attendance") renderAttendance();
   if (p === "syllabus") renderSyllabus();
   if (p === "hostel") renderHostel();
   if (p === "chat") startChat(); else stopChat();
@@ -285,6 +287,8 @@ function renderDashboard() {
   renderDashPlan();
   renderDashHostel();
   renderDashSection();
+  renderDashAttendance();
+  renderDashHolidays();
 }
 
 $("clearHistory").addEventListener("click", () => {
@@ -1026,13 +1030,19 @@ function classChip(c) {
 
 function renderDashSection() {
   const sec = secOf(myYear, mySection);
-  const todayIdx = new Date().getDay();
-  let label = "Today's classes", classes = dayClasses(sec, DAY_NAMES[todayIdx], myGroup);
+  const today = todayISO(), hol = holidayOn(today);
+  let label = "Today's classes", classes = hol ? [] : dayClasses(sec, DAY_NAMES[new Date().getDay()], myGroup);
   if (!classes.length) {
-    for (let i = 1; i <= 7; i++) {
-      const name = DAY_NAMES[(todayIdx + i) % 7];
+    for (let i = 1; i <= 21; i++) {
+      const iso = shiftISO(today, i);
+      if (holidayOn(iso)) continue;
+      const name = DAY_NAMES[new Date(iso + "T00:00:00").getDay()];
       const c = dayClasses(sec, name, myGroup);
-      if (c.length) { classes = c; label = `No classes today 🎉 · ${name}'s classes`; break; }
+      if (c.length) {
+        classes = c;
+        label = `${hol ? `🎉 Holiday today: ${hol.title}` : "No classes today 🎉"} · ${i === 1 ? "Tomorrow" : `${name}, ${dmy(iso)}`}'s classes`;
+        break;
+      }
     }
   }
   $("dashClassesTitle").textContent = `${label} · ${myLabel()}`;
@@ -1080,6 +1090,449 @@ function renderDashSection() {
   if (!due.children.length) due.appendChild(el("li", "empty-line", "Nothing due. 🎉"));
 }
 
+// ========================================================== ACADEMIC CALENDAR (everyone views, admins edit)
+const CAL_TYPES = { holiday: "Holiday", exam: "Exam", event: "Event", semester: "Semester" };
+const FULL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let CAL = CAMPUS.calendar || { name: "Academic Calendar", events: [] };
+CAL.events = CAL.events || [];
+let calView = todayISO().slice(0, 7), calFilter = "upcoming", calSelected = null, calEditing = false;
+const isoOf = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const shiftISO = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return isoOf(d); };
+const eventsOn = (iso) => CAL.events.filter((e) => e.date <= iso && iso <= e.end);
+const holidayOn = (iso) => CAL.events.find((e) => e.type === "holiday" && e.date <= iso && iso <= e.end);
+const spanDays = (e) => Math.round((new Date(e.end) - new Date(e.date)) / 86400000) + 1;
+const rangeLabel = (e) => (e.end === e.date ? niceDate(e.date) : `${niceDate(e.date)} – ${niceDate(e.end)}`);
+function whenLabel(e) {
+  const t = todayISO();
+  if (e.date <= t && t <= e.end) return "on now";
+  return e.end < t ? "past" : daysUntilLabel(e.date);
+}
+
+function renderCalendar() {
+  $("calSub").textContent = `${CAL.name || "Academic Calendar"} · confirmed holidays and important dates for everyone`;
+  $("calNote").textContent = `📅 ${CAL.note || "Holidays and important dates are confirmed by CampusMate admins."}`;
+  $("calEditBar").hidden = !IS_ADMIN || calEditing;
+  $("calEdited").textContent = editedLine(CAL);
+  const today = todayISO();
+  const left = CAL.events.filter((e) => e.type === "holiday" && e.end >= today);
+  const sum = $("calSummary"); sum.replaceChildren();
+  const pill = (big, small, cls = "") => { const d = el("div", `cal-pill ${cls}`); d.append(el("strong", "", big), el("span", "", small)); sum.appendChild(d); };
+  const now = holidayOn(today);
+  if (!CAL.events.length) pill("No dates added yet", IS_ADMIN ? "Use “Edit academic calendar” to add holidays." : "Admins will add confirmed holidays here.");
+  else {
+    if (now) pill(`🎉 Today: ${now.title}`, "Holiday · no classes", "hol");
+    const next = left.find((e) => e.date > today);
+    if (next) pill(`Next holiday: ${next.title}`, `${rangeLabel(next)} · ${daysUntilLabel(next.date)}`, "hol");
+    pill(String(left.length), left.length === 1 ? "holiday left this calendar" : "holidays left this calendar");
+  }
+  renderCalGrid(); renderCalList(); renderCalDay();
+}
+
+function renderCalGrid() {
+  const [y, m] = calView.split("-").map(Number);
+  $("calMonth").textContent = `${FULL_MONTHS[m - 1]} ${y}`;
+  const grid = $("calGrid"); grid.replaceChildren();
+  ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach((d) => grid.appendChild(el("div", "cal-dow", d)));
+  const lead = (new Date(y, m - 1, 1).getDay() + 6) % 7;
+  const daysIn = new Date(y, m, 0).getDate();
+  const today = todayISO();
+  for (let i = 0; i < lead; i++) grid.appendChild(el("div", "cal-cell blank"));
+  for (let d = 1; d <= daysIn; d++) {
+    const iso = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const evs = eventsOn(iso);
+    const hol = evs.some((e) => e.type === "holiday");
+    const sun = new Date(y, m - 1, d).getDay() === 0;
+    const cell = el("button", `cal-cell${hol ? " holiday" : ""}${sun ? " sunday" : ""}${iso === today ? " today" : ""}${iso === calSelected ? " selected" : ""}`);
+    cell.type = "button";
+    cell.appendChild(el("span", "cal-num", String(d)));
+    evs.slice(0, 2).forEach((e) => cell.appendChild(el("span", `cal-ev cal-${e.type}`, e.title)));
+    if (evs.length > 2) cell.appendChild(el("span", "cal-more", `+${evs.length - 2} more`));
+    if (evs.length) cell.appendChild(el("span", "cal-dots", "•".repeat(Math.min(evs.length, 3))));
+    cell.title = evs.map((e) => `${CAL_TYPES[e.type]}: ${e.title}`).join("\n");
+    cell.addEventListener("click", () => { calSelected = calSelected === iso ? null : iso; renderCalGrid(); renderCalDay(); });
+    grid.appendChild(cell);
+  }
+}
+
+function renderCalDay() {
+  const box = $("calDay");
+  box.hidden = !calSelected;
+  if (!calSelected) return;
+  box.replaceChildren();
+  const d = new Date(calSelected + "T00:00:00");
+  box.appendChild(el("h3", "", `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${FULL_MONTHS[d.getMonth()]} ${d.getFullYear()}`));
+  const evs = eventsOn(calSelected);
+  if (!evs.length) box.appendChild(el("p", "empty-line", d.getDay() === 0 ? "Sunday · no holidays or events added." : "No holidays or events on this day."));
+  evs.forEach((e) => {
+    const row = el("div", "cal-day-row");
+    row.appendChild(el("span", `tag cal-${e.type}`, CAL_TYPES[e.type]));
+    const txt = el("div");
+    txt.appendChild(el("strong", "", e.title));
+    txt.appendChild(el("span", "muted", ` ${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""}`));
+    if (e.note) txt.appendChild(el("p", "cal-note", e.note));
+    row.appendChild(txt);
+    box.appendChild(row);
+  });
+}
+
+function calItem(e) {
+  const li = el("li", `cal-item${e.end < todayISO() ? " past" : ""}`);
+  const [, mm, dd] = e.date.split("-");
+  const badge = el("div", `date-badge${e.type === "holiday" ? " soon" : ""}`, String(Number(dd)));
+  badge.appendChild(el("small", "", MONTHS[Number(mm) - 1]));
+  const txt = el("div", "dl-text");
+  txt.appendChild(el("strong", "", e.title));
+  txt.appendChild(el("span", "", `${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""} · ${whenLabel(e)}`));
+  if (e.note) txt.appendChild(el("span", "cal-note", e.note));
+  li.append(badge, txt, el("span", `tag cal-${e.type}`, CAL_TYPES[e.type]));
+  li.addEventListener("click", () => { calView = e.date.slice(0, 7); calSelected = e.date; renderCalGrid(); renderCalDay(); $("calGrid").scrollIntoView({ behavior: "smooth", block: "center" }); });
+  return li;
+}
+
+function renderCalList() {
+  const today = todayISO();
+  const list = CAL.events.filter((e) => calFilter === "all" || (calFilter === "holiday" ? e.type === "holiday" : e.end >= today));
+  $("calList").replaceChildren(...(list.length ? list.map(calItem)
+    : [el("li", "empty-line", calFilter === "upcoming" ? "No upcoming dates added yet." : "Nothing added yet.")]));
+}
+
+document.querySelectorAll("[data-calf]").forEach((b) => b.addEventListener("click", () => {
+  calFilter = b.dataset.calf;
+  document.querySelectorAll("[data-calf]").forEach((x) => x.classList.toggle("active", x === b));
+  renderCalList();
+}));
+function moveMonth(n) { const [y, m] = calView.split("-").map(Number); calView = isoOf(new Date(y, m - 1 + n, 1)).slice(0, 7); renderCalGrid(); }
+$("calPrev").addEventListener("click", () => moveMonth(-1));
+$("calNext").addEventListener("click", () => moveMonth(1));
+$("calToday").addEventListener("click", () => { calView = todayISO().slice(0, 7); calSelected = todayISO(); renderCalGrid(); renderCalDay(); });
+
+// ---------- calendar editor (admins and owner)
+function calRow(e = {}) {
+  const tr = el("tr");
+  const td = (node) => { const c = el("td"); c.appendChild(node); tr.appendChild(c); return node; };
+  const inp = (cls, type, val, ph, max) => { const i = el("input", cls); i.type = type; i.value = val || ""; if (ph) i.placeholder = ph; if (max) i.maxLength = max; return td(i); };
+  inp("c-date", "date", e.date);
+  inp("c-end", "date", e.end && e.end !== e.date ? e.end : "");
+  inp("c-title", "text", e.title, "e.g. Diwali", 120);
+  td(selectEl(Object.entries(CAL_TYPES), e.type || "holiday", "c-type"));
+  inp("c-note", "text", e.note, "e.g. Classes resume on Monday", 200);
+  const del = td(el("button", "remove", "×")); del.title = "Remove"; del.addEventListener("click", () => tr.remove());
+  return tr;
+}
+if ($("calEditBtn")) {
+  $("calEditBtn").addEventListener("click", () => {
+    calEditing = true;
+    $("calName").value = CAL.name || "";
+    $("calRows").replaceChildren(...(CAL.events.length ? CAL.events : [{}]).map(calRow));
+    $("calErr").hidden = true; $("calEditor").hidden = false;
+    renderCalendar();
+    $("calEditor").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("calAddRow").addEventListener("click", () => $("calRows").appendChild(calRow()));
+  $("calCancel").addEventListener("click", () => { calEditing = false; $("calEditor").hidden = true; renderCalendar(); });
+  $("calSave").addEventListener("click", async () => {
+    const events = [...$("calRows").children].map((tr) => ({
+      date: tr.querySelector(".c-date").value, end: tr.querySelector(".c-end").value, title: tr.querySelector(".c-title").value,
+      type: tr.querySelector(".c-type").value, note: tr.querySelector(".c-note").value,
+    })).filter((e) => e.date || e.title.trim());
+    $("calSave").disabled = true; $("calErr").hidden = true;
+    try {
+      const res = await fetch("/api/edit/calendar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: $("calName").value, events }) });
+      const data = await res.json().catch(() => ({ error: "Save failed." }));
+      if (!res.ok) throw new Error(data.error);
+      CAL = data.calendar; calEditing = false; $("calEditor").hidden = true; renderCalendar();
+    } catch (err) { $("calErr").textContent = err.message; $("calErr").hidden = false; }
+    finally { $("calSave").disabled = false; }
+  });
+}
+
+function renderDashHolidays() {
+  const today = todayISO();
+  const ul = $("dashHolidays"); ul.replaceChildren();
+  const hols = CAL.events.filter((e) => e.type === "holiday" && e.end >= today).slice(0, 3);
+  hols.forEach((e) => {
+    const li = el("li");
+    const [, mm, dd] = e.date.split("-");
+    const badge = el("div", `date-badge${daysUntil(e.date) <= 3 ? " soon" : ""}`, String(Number(dd)));
+    badge.appendChild(el("small", "", MONTHS[Number(mm) - 1]));
+    const txt = el("div", "dl-text");
+    txt.appendChild(el("strong", "", e.title));
+    txt.appendChild(el("span", "", `${rangeLabel(e)} · ${whenLabel(e)}`));
+    li.append(badge, txt);
+    li.addEventListener("click", () => { calView = e.date.slice(0, 7); calSelected = e.date; location.hash = "#calendar"; });
+    ul.appendChild(li);
+  });
+  if (!hols.length) ul.appendChild(el("li", "empty-line", "No upcoming holidays added yet."));
+}
+
+// ========================================================== MY ATTENDANCE (private, saved to the account)
+const ATT_KEY = `cm_attendance_${ME.id}`;
+const attEmpty = () => ({ target: 75, records: [], base: {}, subjects: [] });
+const attNorm = (a) => ({ ...attEmpty(), ...(a || {}), base: (a && a.base) || {}, records: (a && a.records) || [], subjects: (a && a.subjects) || [] });
+let ATT = attNorm(store.get(ATT_KEY, null));
+let attDate = todayISO(), attDirty = false, attTimer = null, attOpen = null;
+
+async function loadAttendance() {
+  try {
+    const res = await fetch("/api/attendance");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Could not load attendance.");
+    if (attDirty) return; // the student already changed something; their newer copy is being saved
+    ATT = attNorm(data.attendance);
+    store.set(ATT_KEY, ATT);
+  } catch (err) {
+    $("attErr").textContent = `Couldn't load your saved attendance (${err.message}). Showing the copy in this browser.`;
+    $("attErr").hidden = false;
+  }
+  if (!$("page-attendance").hidden) renderAttendance();
+  if (!$("page-dashboard").hidden) renderDashAttendance();
+}
+
+function saveAttendance() {
+  store.set(ATT_KEY, ATT);
+  $("attSaved").textContent = "Saving…";
+  clearTimeout(attTimer);
+  attTimer = setTimeout(async () => {
+    try {
+      const res = await fetch("/api/attendance", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(ATT) });
+      const data = await res.json().catch(() => ({ error: "Save failed." }));
+      if (!res.ok) throw new Error(data.error || "Save failed.");
+      $("attSaved").textContent = "Saved to your account ✓";
+      $("attErr").hidden = true;
+    } catch (err) {
+      $("attSaved").textContent = "";
+      $("attErr").textContent = `Couldn't save to your account: ${err.message} Your marks are kept in this browser and will be saved the next time you mark something.`;
+      $("attErr").hidden = false;
+    }
+  }, 500);
+}
+function attChanged() { attDirty = true; saveAttendance(); renderAttendance(); }
+
+function attSubjects() {
+  const sec = secOf(myYear, mySection);
+  const codes = [...new Set(sec.classes.filter((c) => c.type !== "Free").map((c) => c.code))].sort();
+  [...ATT.subjects, ...Object.keys(ATT.base), ...ATT.records.map((r) => r.code)].forEach((c) => { if (!codes.includes(c)) codes.push(c); });
+  return codes;
+}
+
+function attStats(code) {
+  const b = ATT.base[code] || { attended: 0, total: 0 };
+  let attended = b.attended, total = b.total;
+  ATT.records.forEach((r) => { if (r.code !== code || r.status === "cancelled") return; total++; if (r.status === "present") attended++; });
+  const t = ATT.target / 100, pct = total ? (attended / total) * 100 : null;
+  let advice;
+  if (!total) advice = "No classes marked yet.";
+  else if (pct >= ATT.target) {
+    const k = Math.floor(attended / t - total + 1e-9);
+    advice = k > 0 ? `You can miss ${k} more class${k === 1 ? "" : "es"} and stay at ${ATT.target}%.` : "You're right at the line. Don't miss the next class.";
+  } else if (t >= 1) advice = "You can't reach 100% any more.";
+  else {
+    const need = Math.ceil((t * total - attended) / (1 - t) - 1e-9);
+    advice = `Attend the next ${need} class${need === 1 ? "" : "es"} in a row to reach ${ATT.target}%.`;
+  }
+  return { code, attended, total, pct, advice, ok: pct === null || pct >= ATT.target };
+}
+const attLevel = (s) => (s.pct === null ? "none" : s.pct >= ATT.target ? "good" : s.pct >= ATT.target - 10 ? "warn" : "bad");
+const fmtPct = (p) => (p === null ? "–" : `${Number.isInteger(p) ? p : p.toFixed(1)}%`);
+
+function attButtons(current, onPick, withCancel = true) {
+  const box = el("div", "att-btns");
+  [["present", "✓ Present"], ["absent", "✗ Absent"], ...(withCancel ? [["cancelled", "Cancelled"]] : [])].forEach(([s, label]) => {
+    const b = el("button", `att-btn ${s}${current === s ? " active" : ""}`, label);
+    b.type = "button";
+    b.addEventListener("click", () => onPick(current === s ? "" : s));
+    box.appendChild(b);
+  });
+  return box;
+}
+function setMark(id, info, status) {
+  ATT.records = ATT.records.filter((r) => r.id !== id);
+  if (status) ATT.records.push({ id, ...info, status });
+  attChanged();
+}
+function attRow(title, sub, time, rec, onPick, extra) {
+  const li = el("li", `att-row${rec ? " " + rec.status : ""}`);
+  const info = el("div", "att-info");
+  info.appendChild(el("small", "", time));
+  info.appendChild(el("strong", "", title));
+  if (sub) info.appendChild(el("span", "", sub));
+  li.append(info, attButtons(rec ? rec.status : "", onPick, !extra));
+  return li;
+}
+
+function renderAttendance() {
+  if (![...$("attTarget").options].some((o) => Number(o.value) === ATT.target)) {
+    const o = el("option", "", `${ATT.target}%`); o.value = ATT.target; $("attTarget").appendChild(o);
+  }
+  $("attTarget").value = String(ATT.target);
+  $("attDate").value = attDate;
+  const sec = secOf(myYear, mySection);
+  const dayName = DAY_NAMES[new Date(attDate + "T00:00:00").getDay()];
+  const hol = holidayOn(attDate);
+  $("attDayLabel").textContent = `${dayName}, ${dmy(attDate)}${attDate === todayISO() ? " · today" : ""} · ${myLabel()}`;
+  $("attHoliday").hidden = !hol;
+  if (hol) $("attHoliday").textContent = `🎉 ${hol.title}: holiday in the academic calendar, so no regular classes.`;
+  const classes = hol ? [] : dayClasses(sec, dayName, myGroup).filter((c) => c.type !== "Free");
+  $("attGroupHint").hidden = !!myGroup || !classes.some((c) => c.group);
+
+  const ul = $("attClasses"); ul.replaceChildren();
+  classes.forEach((c) => {
+    const slot = `${c.start}${c.group ? "-" + c.group : ""}`;
+    const id = `${attDate}|${c.code}|${slot}`;
+    const rec = ATT.records.find((r) => r.id === id);
+    ul.appendChild(attRow(c.label, [c.type, subjName(myYear, c.code)].filter(Boolean).join(" · "), span(c), rec,
+      (status) => setMark(id, { date: attDate, code: c.code, slot, type: c.type }, status)));
+  });
+  ATT.records.filter((r) => r.date === attDate && r.slot.startsWith("x")).forEach((r) => {
+    ul.appendChild(attRow(r.code, ["Extra class", subjName(myYear, r.code)].filter(Boolean).join(" · "), "Extra", r,
+      (status) => setMark(r.id, { date: r.date, code: r.code, slot: r.slot, type: r.type }, status), true));
+  });
+  if (!ul.children.length) {
+    ul.appendChild(el("li", "empty-line", hol ? "Enjoy the holiday! 🎉"
+      : sec.classes.length ? `No classes on ${dayName} in your timetable.`
+      : "Your section's timetable hasn't been added yet. You can still add subjects and extra classes below."));
+  }
+
+  const subs = attSubjects();
+  $("attExtraCode").replaceChildren(...subs.map((c) => { const o = el("option", "", subjName(myYear, c) ? `${c} · ${subjName(myYear, c)}` : c); o.value = c; return o; }));
+  $("attExtraCode").disabled = $("attExtraP").disabled = $("attExtraA").disabled = !subs.length;
+  renderAttSummary(subs);
+}
+
+function renderAttSummary(subs) {
+  const stats = subs.map(attStats);
+  const a = stats.reduce((n, s) => n + s.attended, 0), t = stats.reduce((n, s) => n + s.total, 0);
+  $("attOverall").textContent = fmtPct(t ? (a / t) * 100 : null);
+  $("attCount").textContent = `${a} / ${t}`;
+  $("attLow").textContent = stats.filter((s) => !s.ok).length;
+  const grid = $("attSubjects"); grid.replaceChildren();
+  if (!stats.length) grid.appendChild(el("p", "empty-line card", "No subjects yet. Your timetable's subjects appear here automatically, or add one on the left."));
+  stats.forEach((s) => grid.appendChild(attCard(s)));
+}
+
+function attCard(s) {
+  const card = el("div", `att-card ${attLevel(s)}`);
+  const head = el("div", "att-head");
+  const left = el("div");
+  left.appendChild(el("span", "as-code", s.code));
+  const nm = subjName(myYear, s.code);
+  if (nm) left.appendChild(el("div", "att-name", nm));
+  head.append(left, el("div", "att-pct", s.pct === null ? "Not marked" : fmtPct(s.pct)));
+  card.appendChild(head);
+  const bar = el("div", "att-bar");
+  const fill = el("span"); fill.style.width = `${s.pct ?? 0}%`;
+  const mark = el("i"); mark.style.left = `${ATT.target}%`; mark.title = `Target ${ATT.target}%`;
+  bar.append(fill, mark);
+  card.appendChild(bar);
+  card.appendChild(el("div", "att-count", `${s.attended} of ${s.total} classes attended`));
+  card.appendChild(el("p", "att-advice", s.advice));
+  const actions = el("div", "notice-actions");
+  const hist = el("button", "ghost small", "History");
+  const base = el("button", "ghost small", "Starting count");
+  actions.append(hist, base);
+  if (ATT.subjects.includes(s.code) && !ATT.records.some((r) => r.code === s.code) && !ATT.base[s.code]) {
+    const rm = el("button", "ghost small danger", "Remove");
+    rm.addEventListener("click", () => { ATT.subjects = ATT.subjects.filter((c) => c !== s.code); attChanged(); });
+    actions.appendChild(rm);
+  }
+  card.appendChild(actions);
+  const panel = el("div", "att-panel");
+  const open = (kind) => {
+    attOpen = { code: s.code, kind };
+    panel.hidden = false;
+    (kind === "hist" ? fillHistory : fillBase)(panel, s.code);
+  };
+  panel.hidden = true;
+  if (attOpen && attOpen.code === s.code) open(attOpen.kind);
+  hist.addEventListener("click", () => { if (!panel.hidden && attOpen.kind === "hist") { panel.hidden = true; attOpen = null; } else open("hist"); });
+  base.addEventListener("click", () => { if (!panel.hidden && attOpen.kind === "base") { panel.hidden = true; attOpen = null; } else open("base"); });
+  card.appendChild(panel);
+  return card;
+}
+
+function fillHistory(panel, code) {
+  panel.replaceChildren();
+  const recs = ATT.records.filter((r) => r.code === code).sort((a, b) => b.date.localeCompare(a.date) || b.slot.localeCompare(a.slot));
+  const b = ATT.base[code];
+  if (!recs.length && !b) { panel.appendChild(el("p", "empty-line", "Nothing marked yet.")); return; }
+  const ul = el("ul", "att-hist");
+  recs.forEach((r) => {
+    const li = el("li", r.status);
+    const start = parseInt(r.slot, 10);
+    const time = r.slot.startsWith("x") ? "Extra class" : Number.isNaN(start) ? "" : hh(start);
+    li.appendChild(el("span", "", `${niceDate(r.date)}${time ? " · " + time : ""}`));
+    li.appendChild(el("strong", "", { present: "Present", absent: "Absent", cancelled: "Cancelled" }[r.status]));
+    const del = el("button", "remove", "×"); del.title = "Delete this entry";
+    del.addEventListener("click", () => { ATT.records = ATT.records.filter((x) => x.id !== r.id); attChanged(); });
+    li.appendChild(del);
+    ul.appendChild(li);
+  });
+  if (b) ul.appendChild(el("li", "base", `Starting count: ${b.attended} of ${b.total} attended`));
+  panel.appendChild(ul);
+}
+
+function fillBase(panel, code) {
+  panel.replaceChildren();
+  const b = ATT.base[code] || { attended: 0, total: 0 };
+  panel.appendChild(el("p", "muted", "Classes held before you started tracking here (for example from the start of the semester). They're added to your marked classes."));
+  const row = el("div", "att-base");
+  const num = (label, val) => { const l = el("label", "", label); const i = el("input"); i.type = "number"; i.min = 0; i.max = 1000; i.value = val; l.appendChild(i); row.appendChild(l); return i; };
+  const att = num("Attended", b.attended), tot = num("Held", b.total);
+  const save = el("button", "ghost small", "Save");
+  const err = el("span", "att-base-err");
+  save.addEventListener("click", () => {
+    const A = Number(att.value || 0), T = Number(tot.value || 0);
+    if (!Number.isInteger(A) || !Number.isInteger(T) || A < 0 || T < 0 || T > 1000) { err.textContent = "Use whole numbers."; return; }
+    if (A > T) { err.textContent = "Attended can't be more than held."; return; }
+    if (T) ATT.base[code] = { attended: A, total: T }; else delete ATT.base[code];
+    attOpen = null;
+    attChanged();
+  });
+  row.append(save, err);
+  panel.appendChild(row);
+}
+
+$("attTarget").addEventListener("change", (e) => { ATT.target = Number(e.target.value) || 75; attChanged(); });
+$("attDate").addEventListener("change", (e) => { if (e.target.value) { attDate = e.target.value; renderAttendance(); } });
+$("attPrev").addEventListener("click", () => { attDate = shiftISO(attDate, -1); renderAttendance(); });
+$("attNext").addEventListener("click", () => { attDate = shiftISO(attDate, 1); renderAttendance(); });
+$("attToday").addEventListener("click", () => { attDate = todayISO(); renderAttendance(); });
+function addExtra(status) {
+  const code = $("attExtraCode").value;
+  if (!code) return;
+  const slot = `x${Date.now().toString(36)}`;
+  ATT.records.push({ id: `${attDate}|${code}|${slot}`, date: attDate, code, slot, type: "Extra", status });
+  attChanged();
+}
+$("attExtraP").addEventListener("click", () => addExtra("present"));
+$("attExtraA").addEventListener("click", () => addExtra("absent"));
+$("attAddSubject").addEventListener("click", () => {
+  const code = $("attNewSubject").value.replace(/\s+/g, " ").trim().slice(0, 40);
+  if (!code) return;
+  if (!attSubjects().includes(code)) ATT.subjects.push(code);
+  $("attNewSubject").value = "";
+  attChanged();
+});
+$("attNewSubject").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("attAddSubject").click(); } });
+
+function renderDashAttendance() {
+  const box = $("dashAttendance"); box.replaceChildren();
+  const stats = attSubjects().map(attStats).filter((s) => s.total);
+  if (!stats.length) { box.appendChild(el("p", "empty-line", "Not tracking yet. Mark today's classes as present or absent to see your attendance here.")); return; }
+  const a = stats.reduce((n, s) => n + s.attended, 0), t = stats.reduce((n, s) => n + s.total, 0);
+  const top = el("div", "att-dash-top");
+  top.append(el("strong", "", fmtPct((a / t) * 100)), el("span", "muted", `overall · ${a} of ${t} classes · target ${ATT.target}%`));
+  box.appendChild(top);
+  stats.sort((x, y) => x.pct - y.pct).slice(0, 3).forEach((s) => {
+    const row = el("div", `att-dash-row ${attLevel(s)}`);
+    row.append(el("span", "as-code", s.code), el("span", "att-dash-adv", s.advice), el("strong", "", fmtPct(s.pct)));
+    row.addEventListener("click", () => { location.hash = "#attendance"; });
+    box.appendChild(row);
+  });
+}
+
+loadAttendance();
+
 // ========================================================== ASK CAMPUSMATE
 let askHistory = [];
 
@@ -1087,7 +1540,9 @@ function clientContext() {
   const deadlines = [];
   history.forEach((h) => h.result.deadlines.forEach((d) => deadlines.push({ date: d.date_iso || d.date, what: d.what, from: h.result.title })));
   const plan = store.get("cm_plan", null);
-  return { deadlines: deadlines.slice(0, 20), plan: plan ? plan.result.days : [] };
+  const att = attSubjects().map(attStats).filter((s) => s.total)
+    .map((s) => ({ code: s.code, attended: s.attended, total: s.total, percent: Number(s.pct.toFixed(1)), advice: s.advice }));
+  return { deadlines: deadlines.slice(0, 20), plan: plan ? plan.result.days : [], attendance: { target: ATT.target, subjects: att } };
 }
 
 function addMsg(cls, text) {

@@ -244,7 +244,11 @@ def load_campus():
         "exams": load("exams.json"),
         "syllabus": load("syllabus.json"),
         "hostel": load("hostel.json"),
+        "calendar": load("academic_calendar.json"),
     }
+    ov = accounts.get_setting("calendar")
+    if ov:
+        campus["calendar"] = {**campus["calendar"], **ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
     for y in ("1", "2", "3", "4"):
         ov = accounts.get_setting(f"timetable:{y}")
         if ov:
@@ -356,6 +360,122 @@ def edit_menu():
     timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
     accounts.set_setting(f"menu:{hostel}", {"mess_menu": menu, "mess_timings": timings})
     return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
+
+
+# ------------------------------------------------------------------ academic calendar (everyone views, admins edit)
+
+EVENT_TYPES = ("holiday", "exam", "event", "semester")
+ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def _iso(v):
+    v = str(v or "")
+    if not ISO_DATE.fullmatch(v):
+        return None
+    try:
+        date.fromisoformat(v)
+    except ValueError:
+        return None
+    return v
+
+
+@app.post("/api/edit/calendar")
+@admin_required
+def edit_calendar():
+    data = request.get_json(silent=True) or {}
+    events = []
+    for i, e in enumerate(data.get("events") or [], 1):
+        if not isinstance(e, dict):
+            continue
+        start = _iso(e.get("date"))
+        if not start:
+            return jsonify(error=f"Row {i}: choose a date."), 400
+        end = _iso(e.get("end")) or start
+        if end < start:
+            return jsonify(error=f"Row {i}: the end date is before the start date."), 400
+        if (date.fromisoformat(end) - date.fromisoformat(start)).days > 366:
+            return jsonify(error=f"Row {i}: an entry can't be longer than a year."), 400
+        title = _txt(e.get("title"), 120)
+        if not title:
+            return jsonify(error=f"Row {i}: enter a title, e.g. Diwali."), 400
+        etype = e.get("type") if e.get("type") in EVENT_TYPES else "holiday"
+        events.append({"date": start, "end": end, "title": title, "type": etype, "note": _txt(e.get("note"), 200)})
+    if len(events) > 300:
+        return jsonify(error="Too many calendar entries (300 max)."), 400
+    events.sort(key=lambda e: (e["date"], e["end"], e["title"]))
+    name = _txt(data.get("name"), 120) or "Academic Calendar"
+    accounts.set_setting("calendar", {"name": name, "events": events})
+    return jsonify(ok=True, calendar=load_campus()["calendar"])
+
+
+# ------------------------------------------------------------------ self attendance (private to each student)
+
+ATT_STATUSES = ("present", "absent", "cancelled")
+
+
+def clean_attendance(data):
+    """Validate the attendance document the browser sends; raise ValueError with a friendly message."""
+    try:
+        target = int(data.get("target") or 75)
+    except (TypeError, ValueError):
+        target = 75
+    target = min(max(target, 1), 100)
+    records, seen = [], set()
+    for r in (data.get("records") or [])[:5000]:
+        if not isinstance(r, dict):
+            continue
+        d = _iso(r.get("date"))
+        code = _txt(r.get("code"), 40)
+        if not d or not code or r.get("status") not in ATT_STATUSES:
+            continue
+        slot = _txt(r.get("slot"), 20) or "extra"
+        rid = _txt(r.get("id"), 80) or f"{d}|{code}|{slot}"
+        if rid in seen:
+            continue
+        seen.add(rid)
+        records.append({"id": rid, "date": d, "code": code, "slot": slot,
+                        "type": _txt(r.get("type"), 20), "status": r["status"]})
+    if len(records) > 4000:
+        raise ValueError("Too many attendance entries.")
+    base = {}
+    for code, b in list((data.get("base") or {}).items())[:60]:
+        code = _txt(code, 40)
+        if not code or not isinstance(b, dict):
+            continue
+        try:
+            attended, total = int(b.get("attended") or 0), int(b.get("total") or 0)
+        except (TypeError, ValueError):
+            raise ValueError(f"{code}: starting counts must be whole numbers.")
+        if not (0 <= attended <= total <= 1000):
+            raise ValueError(f"{code}: classes attended can't be more than classes held.")
+        if total:
+            base[code] = {"attended": attended, "total": total}
+    extra = []
+    for code in (data.get("subjects") or [])[:40]:
+        code = _txt(code, 40)
+        if code and code not in extra:
+            extra.append(code)
+    return {"target": target, "records": records, "base": base, "subjects": extra}
+
+
+@app.get("/api/attendance")
+@login_required
+def get_attendance():
+    saved = accounts.get_user_data(current_user()["id"], "attendance")
+    if not saved:
+        return jsonify(attendance={"target": 75, "records": [], "base": {}, "subjects": []}, updated_at=None)
+    return jsonify(attendance=saved["value"], updated_at=saved["updated_at"])
+
+
+@app.post("/api/attendance")
+@login_required
+def save_attendance():
+    try:
+        doc = clean_attendance(request.get_json(silent=True) or {})
+    except ValueError as e:
+        return jsonify(error=str(e)), 400
+    stamp = accounts.set_user_data(current_user()["id"], "attendance", doc)
+    return jsonify(ok=True, attendance=doc, updated_at=stamp)
 
 
 def for_student(item, year, section):
@@ -494,7 +614,8 @@ Today is {today}. Tomorrow is {tomorrow}.
 
 Answer the student's question using ONLY the campus data below. Rules:
 - If the answer is not in the data, say so honestly and suggest who to ask (e.g. the block warden or the department office). Never invent times, dates, rooms, rules, phone numbers or menus.
-- Use the student's timetable for questions about their classes. Saturday and Sunday have no classes unless a notice says so.
+- Use the student's timetable for questions about their classes. Sunday has no classes, and neither does any day marked as a holiday in the academic calendar.
+- For questions about holidays, breaks or important dates, use the academic calendar. For questions about the student's own attendance, use "The student's self-tracked attendance" (it is their own record, not the official college record).
 - Subjects are often written as codes (e.g. MA-111). Use the codes as given; do not guess full subject names that are not in the data.
 - Consider assignments, the exam schedule, syllabus outlines and notices. Mention a notice or assignment by its title.
 - If you use SAMPLE data (assignments, exams, syllabus, hostel), you may answer from it, but do not claim it is official.
@@ -564,6 +685,25 @@ def build_ask_context(year, section_id, group, client):
         for p in posts[:15]:
             extra = (f", subject {p['code']}" if p["code"] else "") + (f", due {p['due']}" if p["due"] else "")
             parts.append(f"- [{p['kind']}] {p['title']} (published {p['published_at']} by {p['published_by']}{extra}): {p['body'][:600]}")
+
+    cal = campus["calendar"]
+    today_iso = date.today().isoformat()
+    upcoming = [e for e in cal.get("events", []) if e["end"] >= today_iso][:30]
+    parts.append(f"\n## Academic calendar: {cal.get('name', 'Academic Calendar')} (confirmed by CampusMate admins)")
+    if upcoming:
+        for e in upcoming:
+            when = e["date"] if e["end"] == e["date"] else f"{e['date']} to {e['end']}"
+            parts.append(f"- {when}: {e['title']} ({e['type']}){' – ' + e['note'] if e.get('note') else ''}")
+    else:
+        parts.append("No upcoming holidays or events have been added yet.")
+
+    att = client.get("attendance") if isinstance(client.get("attendance"), dict) else None
+    if att and _list(att.get("subjects")):
+        parts.append(f"\n## The student's self-tracked attendance (target {str(att.get('target'))[:3]}%)")
+        for a in _list(att.get("subjects"))[:30]:
+            if isinstance(a, dict):
+                parts.append(f"- {str(a.get('code'))[:40]}: attended {str(a.get('attended'))[:5]} of {str(a.get('total'))[:5]} classes"
+                             f" ({str(a.get('percent'))[:6]}%). {str(a.get('advice'))[:120]}")
 
     parts.append("\n## Notices for this student")
     for n in campus["notices"]["notices"]:

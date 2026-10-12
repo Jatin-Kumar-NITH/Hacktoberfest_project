@@ -74,6 +74,20 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - **Make a study plan for these exams** fills the Study Planner automatically.
 - **Admins enter and edit the exam schedule from the site** (date, time, subject, sections, venue). It starts empty until published.
 
+### 📅 Academic Calendar
+- One calendar for **everyone**: a month view (holidays highlighted, Sundays in red, today outlined) and a list of upcoming dates with countdowns. Tap any day to see what's on it.
+- Entry types: **Holiday**, **Exam**, **Event** and **Semester** (e.g. classes start / end). Entries can span several days (e.g. a Diwali break) and carry a short note.
+- **Only admins and the owner can add, edit or remove dates** from the site. The page shows *Last edited by (name) · time*. It starts empty until confirmed holidays are added.
+- Holidays flow through the app: the dashboard skips holidays when showing "today's classes", My Attendance shows no regular classes on a holiday, and Ask CampusMate can answer *"When is the next holiday?"*.
+
+### ✓ My Attendance
+- Every student tracks their **own** attendance for each subject in their timetable. It's private and **saved to their account**, so it follows them across devices.
+- Pick a date (today by default): your classes for that day appear with **Present / Absent / Cancelled** buttons. Cancelled classes don't count. Add **extra or rescheduled classes**, or subjects not in the timetable (e.g. NCC).
+- **Starting count** lets you enter classes held before you began tracking.
+- Each subject card shows the percentage, a progress bar with your target marked, and plain advice: *"You can miss 2 more classes and stay at 75%"* or *"Attend the next 4 classes in a row to reach 75%"*. The target is adjustable (60–90%).
+- The dashboard shows your overall attendance and your weakest subjects; Ask CampusMate can answer *"In which subjects is my attendance low?"*.
+- This is a personal tracker, not the official record kept by teachers.
+
 ### ❒ Syllabus
 - The **official first-year curriculum (NEP-2020)**: the full PDF, the teaching scheme (page 6) and the evaluation scheme (page 28).
 - One card for each subject in your timetable, showing the real course name, semester, L-P and credits, weekly hours, and faculty. Each card has:
@@ -181,6 +195,7 @@ campusmate/
 │   ├── syllabus.json          # Curriculum per subject (PDF link + text)
 │   ├── assignments.json       # Assignments (real MA-111 PDFs)
 │   ├── exams.json             # Exam schedule defaults (edited from the site)
+│   ├── academic_calendar.json # Academic calendar defaults (holidays edited from the site)
 │   ├── notices.json           # Built-in notices (empty; admins publish from the site)
 │   ├── hostel.json            # Boys'/Girls' hostel menus (edited from the site)
 │   └── sample_notices.json    # Optional demo notices for the Notice Explainer (empty)
@@ -342,7 +357,7 @@ During development, every feature was tested end to end with a stand-in for the 
 ## Roadmap
 
 - Self-hosted Gemma 4 (e.g. via Ollama) so no data leaves campus
-- Calendar export (.ics) for deadlines and exams
+- Calendar export (.ics) for holidays, deadlines and exams
 - Push or email reminders before deadlines
 - More Indian languages for the Notice Explainer
 - Change-password and forgot-password screens

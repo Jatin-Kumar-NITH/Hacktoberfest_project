@@ -70,6 +70,13 @@ CREATE TABLE IF NOT EXISTS files (
   name TEXT PRIMARY KEY,
   data BLOB NOT NULL,
   created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS user_data (
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  key TEXT NOT NULL,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, key)
 )
 """
 
@@ -122,6 +129,13 @@ CREATE TABLE IF NOT EXISTS files (
   name TEXT PRIMARY KEY,
   data BYTEA NOT NULL,
   created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS user_data (
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  key TEXT NOT NULL,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, key)
 )
 """
 
