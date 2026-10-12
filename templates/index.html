@@ -13,7 +13,7 @@
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -45,12 +45,12 @@
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
       <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Mess Menu</span></a>
-      <a href="#chat" data-page="chat"><span class="ico">💬</span><span>Campus Chat</span></a>
-      {% if me.role in ['admin', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">⬆</span><span>Publish</span></a>{% endif %}
-      {% if me.role == 'owner' %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">🛡</span><span>Manage Admins</span></a>{% endif %}
+      <a href="#chat" data-page="chat"><span class="ico">✉</span><span>Campus Chat</span></a>
+      {% if me.role in ['admin', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">↑</span><span>Publish</span></a>{% endif %}
+      {% if me.role == 'owner' %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">⚙</span><span>Manage Admins</span></a>{% endif %}
       <a href="#about" data-page="about"><span class="ico">ⓘ</span><span>About</span></a>
     </nav>
-    <button class="theme-toggle" type="button"><span class="theme-label">🌙 Dark mode</span><span>◐</span></button>
+    <button class="theme-toggle" type="button"><span class="theme-label">Dark mode</span><span>◐</span></button>
     <div class="user-card">
       <div class="avatar role-{{ me.role }}">{{ me.name[:1] | upper }}</div>
       <div class="user-meta">
@@ -67,7 +67,7 @@
   <main class="main">
     {% if me.role in ['admin', 'owner'] %}
     <div class="role-banner role-{{ me.role }}">
-      <span>{{ '👑 Owner mode' if me.role == 'owner' else '🛡 Admin mode' }} · You can publish notices, assignments and PDFs{{ ' and give admin access' if me.role == 'owner' else '' }}.</span>
+      <span>{{ 'Owner mode' if me.role == 'owner' else 'Admin mode' }} · You can publish notices, assignments and PDFs{{ ' and give admin access' if me.role == 'owner' else '' }}.</span>
       <a href="#publish">Publish →</a>
     </div>
     {% endif %}
@@ -137,7 +137,7 @@
             <a class="quick-btn" href="#notice"><span>✦</span>Explain a notice</a>
             <a class="quick-btn" href="#planner"><span>◷</span>Make a study plan</a>
             <a class="quick-btn" href="#hostel"><span>⌂</span>Check mess menu</a>
-            <a class="quick-btn" href="#chat"><span>💬</span>Campus chat</a>
+            <a class="quick-btn" href="#chat"><span>✉</span>Campus chat</a>
           </div>
         </div>
 
@@ -518,11 +518,11 @@
       var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
       try { localStorage.setItem("cm_theme", next); } catch (e) {}
-      document.querySelectorAll(".theme-label").forEach(function (el) { el.textContent = next === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+      document.querySelectorAll(".theme-label").forEach(function (el) { el.textContent = next === "dark" ? "Light mode" : "Dark mode"; });
     }
     document.querySelectorAll(".theme-toggle").forEach(function (b) { b.addEventListener("click", cmToggleTheme); });
     document.querySelectorAll(".theme-label").forEach(function (el) {
-      el.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️ Light mode" : "🌙 Dark mode"; });
+      el.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; });
 </script>
 </body>
 </html>
