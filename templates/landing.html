@@ -34,9 +34,12 @@
         </div>
     </main>
 
-    <!-- Connects to the Client ID you set in your .env file -->
+    <!-- Connects to the Client ID you set in your .env file (GOOGLE_CLIENT_ID) -->
+    {% if not google_client_id %}
+    <p class="text-sm text-red-600 text-center pb-8">Google login is not set up: add GOOGLE_CLIENT_ID to the server's .env and restart.</p>
+    {% endif %}
     <div id="g_id_onload"
-         data-client_id="172975052026-pcjpo26s8o788puo3l37u29qd99icts7.apps.googleusercontent.com"
+         data-client_id="{{ google_client_id }}"
          data-context="signin"
          data-ux_mode="popup"
          data-callback="handleGoogleLogin"
