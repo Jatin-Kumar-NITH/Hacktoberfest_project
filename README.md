@@ -124,6 +124,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 
 ### ⬆ Publish (admins) and 🛡 Manage Admins (owner and co-owners)
 - Admins publish **notices, announcements, assignments and study-material PDFs**, each targeted by year and section. Everything shows *Published by* and the *publishing time*.
+- Assignments, study material and syllabus subjects can be **edited** (title, text, due date, marks, and replacing the PDF) or **deleted** right on the Assignments and Syllabus pages. This includes the built-in MA-111 assignments and curriculum subjects; those edits are saved in the database, so the JSON files stay unchanged.
 - Anything published by mistake can be **deleted** from the Notice Board, Assignments, Syllabus or Publish pages. Admins can delete any post except the owner's or a co-owner's; co-owners can delete any post except the owner's or another co-owner's; the owner can delete everything.
 - The **owner** and **co-owners** can give or remove admin access.
 - **Co-owners** have the same powers as the owner everywhere else (publishing, calendar edits, private channels, chat moderation), but only the owner can make or remove a co-owner, and a co-owner can never ban, remove or demote the owner. Co-owners show a gold "Co-owner" tag.

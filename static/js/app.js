@@ -557,16 +557,63 @@ const NOTICES = CAMPUS.notices.notices.concat(POSTS.filter((p) => p.kind === "no
   text: p.body, pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role, author_id: p.author_id })))
   .sort((a, b) => (b.published_at || b.date).localeCompare(a.published_at || a.date));
 const canDelete = (p) => IS_ADMIN && p.db_id !== undefined && (p.author_id === ME.id || !["owner", "coowner"].includes(p.author_role) || outranks(p.author_role));
-function deleteButton(p, label = "Delete") {
+// built-in items from the data files (no db_id) are editable by every admin; published posts follow canDelete
+const canManage = (p) => IS_ADMIN && (p.db_id === undefined || canDelete(p));
+function deleteButton(p, label = "Delete", url = `/api/posts/${p.db_id}/delete`) {
   const b = el("button", "ghost small danger", `🗑 ${label}`);
   b.addEventListener("click", async () => {
-    if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "Click again to delete"; return; }
+    if (!confirm(`Delete "${p.title || p.name}"? Students will no longer see it.`)) return;
     b.disabled = true;
-    const res = await fetch(`/api/posts/${p.db_id}/delete`, { method: "POST" });
-    if (res.ok) { location.reload(); } else { const d = await res.json().catch(() => ({})); b.textContent = d.error || "Could not delete"; }
+    const res = await fetch(url, { method: "POST" });
+    if (res.ok) { location.reload(); } else { const d = await res.json().catch(() => ({})); b.disabled = false; b.textContent = d.error || "Could not delete"; }
   });
   return b;
 }
+// inline edit form that replaces `card`; fields: [{ name, label, type: text|textarea|date|number|pdf, value, max }]
+function itemEditor(card, fields, url) {
+  const form = el("form", "as-card item-edit");
+  fields.forEach((f) => {
+    const lab = el("label", "field");
+    lab.appendChild(el("span", "label", f.label));
+    let input;
+    if (f.type === "textarea") { input = el("textarea"); input.rows = f.rows || 5; }
+    else { input = el("input"); input.type = f.type === "pdf" ? "file" : f.type || "text"; }
+    input.name = f.name;
+    if (f.type === "pdf") input.accept = "application/pdf,.pdf";
+    else input.value = f.value ?? "";
+    if (f.max) input.maxLength = f.max;
+    if (f.type === "number") { input.min = 0; input.max = 1000; }
+    lab.appendChild(input);
+    if (f.hint) lab.appendChild(el("span", "muted small-hint", f.hint));
+    form.appendChild(lab);
+  });
+  const act = el("div", "notice-actions");
+  const err = el("span", "muted");
+  const cancel = el("button", "ghost small", "Cancel"); cancel.type = "button";
+  cancel.addEventListener("click", () => form.replaceWith(card));
+  const save = el("button", "primary inline", "Save changes"); save.type = "submit";
+  act.append(err, cancel, save);
+  form.appendChild(act);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    save.disabled = true; err.textContent = "Saving…";
+    const data = new FormData(form);
+    const file = form.querySelector("input[type=file]");
+    if (file && !file.files[0]) data.delete(file.name);
+    const res = await fetch(url, { method: "POST", body: data });
+    if (res.ok) { location.reload(); return; }
+    save.disabled = false; err.textContent = (await res.json().catch(() => ({}))).error || "Could not save.";
+  });
+  card.replaceWith(form);
+  form.querySelector("input, textarea").focus();
+}
+function editButton(open) {
+  const b = el("button", "ghost small", "✎ Edit");
+  b.addEventListener("click", open);
+  return b;
+}
+const pdfField = (has) => ({ name: "pdf", label: has ? "Replace PDF (optional)" : "Attach PDF (optional)", type: "pdf",
+  hint: has ? "Leave empty to keep the current PDF." : "" });
 function pubLine(item, fallbackFrom) {
   const line = el("div", "pub-line");
   if (item.published_at) {
@@ -869,7 +916,20 @@ function renderAssignments() {
     const ai = el("button", "ai-btn", "✦ How do I start?");
     ai.addEventListener("click", () => { location.hash = "#dashboard"; setTimeout(() => askQuestion(`How should I start "${a.title}" (${a.code})? Which syllabus topics does it need and what should I revise first?`), 60); });
     actions.append(tick, ai);
-    if (canDelete(a)) actions.appendChild(deleteButton(a));
+    if (canManage(a)) {
+      const builtin = a.db_id === undefined;
+      const base = builtin ? `/api/edit/assignment/${encodeURIComponent(a.id)}` : `/api/posts/${a.db_id}`;
+      actions.appendChild(editButton(() => itemEditor(card, [
+        { name: "title", label: "Title", value: a.title, max: 150 },
+        { name: "code", label: "Subject code", value: a.code === "General" ? "" : a.code, max: 40 },
+        { name: "body", label: "Description / instructions", type: "textarea", value: builtin || a.details !== "See the attached PDF." ? a.details : "", max: 8000 },
+        { name: "due", label: "Due date", type: "date", value: a.due || "" },
+        { name: "marks", label: "Marks", type: "number", value: a.marks ?? "" },
+        ...(builtin ? [{ name: "submit", label: "How to submit", value: a.submit, max: 300 }] : []),
+        pdfField(!!a.pdf),
+      ], builtin ? base : `${base}/edit`)));
+      actions.appendChild(deleteButton(a, "Delete", `${base}/delete`));
+    }
     card.appendChild(actions);
     box.appendChild(card);
   });
@@ -981,7 +1041,7 @@ function subjectCard(code, sec, syl) {
   }
   if (sub.note) card.appendChild(el("p", "sy-fac", sub.note));
   const actions = el("div", "sy-actions");
-  actions.appendChild(pdfLink(sub.pdf, `📄 Original PDF${syl.official ? ` (p. ${sub.pages.join(", ")})` : ""}`));
+  actions.appendChild(pdfLink(sub.pdf, `📄 Original PDF${syl.official && sub.pages && sub.pages.length ? ` (p. ${sub.pages.join(", ")})` : ""}`));
   const toggle = el("button", "ghost small", "📝 Read as text");
   const pre = el("pre", "sy-text", sub.text);
   pre.hidden = true;
@@ -989,6 +1049,16 @@ function subjectCard(code, sec, syl) {
   const ai = el("button", "ai-btn", "✦ Summarise");
   ai.addEventListener("click", () => { location.hash = "#dashboard"; setTimeout(() => askQuestion(`Summarise the syllabus of ${code}${sub.name !== code ? " " + sub.name : ""} unit by unit, in simple words.`), 60); });
   actions.append(toggle, ai);
+  if (IS_ADMIN) {
+    const url = `/api/edit/syllabus/${myYear}/${encodeURIComponent(code)}`;
+    actions.appendChild(editButton(() => itemEditor(card, [
+      { name: "name", label: "Subject name", value: sub.name, max: 150 },
+      { name: "text", label: "Syllabus text", type: "textarea", rows: 12, value: sub.text, max: 20000 },
+      { name: "note", label: "Note (optional)", value: sub.note || "", max: 300 },
+      pdfField(true),
+    ], url)));
+    actions.appendChild(deleteButton({ title: `${code} syllabus` }, "Delete", `${url}/delete`));
+  }
   card.appendChild(actions);
   card.appendChild(pre);
   return card;
@@ -1010,7 +1080,15 @@ function renderSyllabus() {
     if (m.body) card.appendChild(el("p", "as-details", m.body));
     card.appendChild(pubLine(m));
     const act = el("div", "notice-actions"); act.appendChild(pdfLink(m.pdf, "📄 Open PDF"));
-    if (canDelete(m)) act.appendChild(deleteButton(m));
+    if (canDelete(m)) {
+      act.appendChild(editButton(() => itemEditor(card, [
+        { name: "title", label: "Title", value: m.title, max: 150 },
+        { name: "code", label: "Subject code", value: m.code || "", max: 40 },
+        { name: "body", label: "Description (optional)", type: "textarea", value: m.body || "", max: 8000 },
+        pdfField(true),
+      ], `/api/posts/${m.db_id}/edit`)));
+      act.appendChild(deleteButton(m));
+    }
     card.appendChild(act);
     return card;
   }));

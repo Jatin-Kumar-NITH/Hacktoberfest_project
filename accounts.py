@@ -401,15 +401,9 @@ def api_create_post():
     years = [int(y) for y in years] if years else ["all"]
     sections = [s for s in f.getlist("sections") if s in SECTIONS] or ["all"]
 
-    pdf_name = None
-    upload = request.files.get("pdf")
-    if upload and upload.filename:
-        head = upload.stream.read(5)
-        upload.stream.seek(0)
-        if not upload.filename.lower().endswith(".pdf") or head != b"%PDF-":
-            return jsonify(error="Only PDF files can be uploaded."), 400
-        pdf_name = f"{uuid.uuid4().hex}.pdf"
-        db().execute("INSERT INTO files (name, data, created_at) VALUES (?,?,?)", (pdf_name, upload.read(), now_iso()))
+    pdf_name = save_pdf_upload()
+    if pdf_name is False:
+        return jsonify(error="Only PDF files can be uploaded."), 400
     if kind == "material" and not pdf_name:
         return jsonify(error="Study material needs a PDF file."), 400
 
@@ -421,22 +415,85 @@ def api_create_post():
     return jsonify(ok=True)
 
 
-@bp.post("/api/posts/<int:pid>/delete")
-@admin_required
-def api_delete_post(pid):
-    row = db().execute("SELECT author_id, pdf FROM posts WHERE id = ?", (pid,)).fetchone()
+def save_pdf_upload(field="pdf"):
+    """Store an uploaded PDF from the request. Returns its file name, None if nothing was uploaded,
+    or False if the upload isn't a real PDF. The caller commits."""
+    upload = request.files.get(field)
+    if not upload or not upload.filename:
+        return None
+    head = upload.stream.read(5)
+    upload.stream.seek(0)
+    if not upload.filename.lower().endswith(".pdf") or head != b"%PDF-":
+        return False
+    name = f"{uuid.uuid4().hex}.pdf"
+    db().execute("INSERT INTO files (name, data, created_at) VALUES (?,?,?)", (name, upload.read(), now_iso()))
+    return name
+
+
+def delete_file(name):
+    """Remove an uploaded PDF (by its stored name or its /files/ URL). Bundled static PDFs are left alone."""
+    name = (name or "").removeprefix("/files/")
+    if not re.fullmatch(r"[0-9a-f]{32}\.pdf", name):
+        return
+    db().execute("DELETE FROM files WHERE name = ?", (name,))
+    db().commit()
+    (UPLOADS / name).unlink(missing_ok=True)  # older versions stored files on disk
+
+
+def _post_guard(pid, verb):
+    """The post row if the current admin may change it, else an error response."""
+    row = db().execute("SELECT * FROM posts WHERE id = ?", (pid,)).fetchone()
     if not row:
-        return jsonify(error="Post not found."), 404
+        return None, (jsonify(error="Post not found."), 404)
     u = current_user()
     author = db().execute("SELECT id, role FROM users WHERE id = ?", (row["author_id"],)).fetchone()
     if author and author["id"] != u["id"] and author["role"] in ("owner", "coowner") and not outranks(u, author["role"]):
-        return jsonify(error="Only the owner can delete posts by the owner or a co-owner."), 403
+        return None, (jsonify(error=f"Only the owner can {verb} posts by the owner or a co-owner."), 403)
+    return row, None
+
+
+@bp.post("/api/posts/<int:pid>/edit")
+@admin_required
+def api_edit_post(pid):
+    """Edit a published post's text fields; a new PDF replaces the old one. Audience is unchanged."""
+    row, err = _post_guard(pid, "edit")
+    if err:
+        return err
+    f = request.form
+    title = f.get("title", "").strip()[:150]
+    body = f.get("body", "").strip()[:8000]
+    if len(title) < 3:
+        return jsonify(error="Please enter a title (at least 3 characters)."), 400
+    if row["kind"] in ("notice", "announcement") and not body:
+        return jsonify(error="Please write the notice text."), 400
+    code = re.sub(r"[^A-Za-z0-9 &\-]", "", f.get("code", "")).strip()[:40] or None
+    due, marks = row["due"], row["marks"]
+    if row["kind"] == "assignment":
+        due = f.get("due", "").strip() or None
+        if due and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", due):
+            return jsonify(error="Due date is not valid."), 400
+        marks = f.get("marks", "").strip()
+        marks = int(marks) if marks.isdigit() and int(marks) <= 1000 else None
+    pdf_name = save_pdf_upload()
+    if pdf_name is False:
+        return jsonify(error="Only PDF files can be uploaded."), 400
+    db().execute("UPDATE posts SET title = ?, body = ?, code = ?, due = ?, marks = ?, pdf = ? WHERE id = ?",
+                 (title, body, code, due, marks, pdf_name or row["pdf"], pid))
+    db().commit()
+    if pdf_name and row["pdf"]:
+        delete_file(row["pdf"])
+    return jsonify(ok=True)
+
+
+@bp.post("/api/posts/<int:pid>/delete")
+@admin_required
+def api_delete_post(pid):
+    row, err = _post_guard(pid, "delete")
+    if err:
+        return err
     db().execute("DELETE FROM posts WHERE id = ?", (pid,))
     db().commit()
-    if row["pdf"]:
-        db().execute("DELETE FROM files WHERE name = ?", (row["pdf"],))
-        db().commit()
-        (UPLOADS / row["pdf"]).unlink(missing_ok=True)  # older versions stored files on disk
+    delete_file(row["pdf"])
     return jsonify(ok=True)
 
 

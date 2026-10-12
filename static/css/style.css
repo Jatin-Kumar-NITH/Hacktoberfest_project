@@ -954,3 +954,10 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .news-edit .notice-actions { align-items: center; }
 .news-form { margin-bottom: 16px; }
 .news-edit-tags select { flex: 1 1 160px; width: auto; }
+
+/* ---------- inline edit (assignments, study material, syllabus) ---------- */
+.item-edit .field:first-child { margin-top: 0; }
+.item-edit .field { margin-top: 12px; }
+.item-edit textarea { width: 100%; }
+.item-edit .small-hint { display: block; font-size: 12px; margin-top: 4px; }
+.item-edit .notice-actions { align-items: center; margin-top: 14px; }
