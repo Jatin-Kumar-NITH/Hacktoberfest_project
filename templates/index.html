@@ -49,8 +49,8 @@
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
       <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Mess Menu</span></a>
       <a href="#chat" data-page="chat"><span class="ico">✉</span><span>Campus Chat</span></a>
-      {% if me.role in ['admin', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">↑</span><span>Publish</span></a>{% endif %}
-      {% if me.role == 'owner' %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">⚙</span><span>Manage Admins</span></a>{% endif %}
+      {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">↑</span><span>Publish</span></a>{% endif %}
+      {% if me.role in ['owner', 'coowner'] %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">⚙</span><span>Manage Admins</span></a>{% endif %}
       <a href="#about" data-page="about"><span class="ico">ⓘ</span><span>About</span></a>
     </nav>
     <button class="theme-toggle" type="button"><span class="theme-label">Dark mode</span><span>◐</span></button>
@@ -58,7 +58,7 @@
       <div class="avatar role-{{ me.role }}">{{ me.name[:1] | upper }}</div>
       <div class="user-meta">
         <strong>{{ me.name }}</strong>
-        <span class="role-tag role-{{ me.role }}">{{ {'owner': 'Owner', 'admin': 'Admin', 'user': 'Student'}[me.role] }}</span>
+        <span class="role-tag role-{{ me.role }}">{{ {'owner': 'Owner', 'coowner': 'Co-owner', 'admin': 'Admin', 'user': 'Student'}[me.role] }}</span>
       </div>
       <button class="logout" id="logoutBtn" title="Log out">⎋</button>
     </div>
@@ -68,9 +68,9 @@
   </aside>
 
   <main class="main">
-    {% if me.role in ['admin', 'owner'] %}
+    {% if me.role in ['admin', 'coowner', 'owner'] %}
     <div class="role-banner role-{{ me.role }}">
-      <span>{{ 'Owner mode' if me.role == 'owner' else 'Admin mode' }} · You can publish notices, assignments and PDFs{{ ' and give admin access' if me.role == 'owner' else '' }}.</span>
+      <span>{{ {'owner': 'Owner mode', 'coowner': 'Co-owner mode'}.get(me.role, 'Admin mode') }} · You can publish notices, assignments and PDFs{{ ' and give admin or co-owner access' if me.role == 'owner' else (' and give admin access' if me.role == 'coowner' else '') }}.</span>
       <a href="#publish">Publish →</a>
     </div>
     {% endif %}
@@ -525,14 +525,14 @@
     <section class="page" id="page-chat" hidden>
       <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate, plus private channels admins create for chosen members. Be kind. Admin messages are highlighted.</p></div></header>
       <div class="alert error" id="chatBanned" hidden></div>
-      {% if me.role in ['admin', 'owner'] %}
+      {% if me.role in ['admin', 'coowner', 'owner'] %}
       <details class="card ban-card" id="banCard">
         <summary>🚫 Banned from chat (<span id="banCount">0</span>)</summary>
         <ul class="ban-list" id="banList"></ul>
       </details>
       {% endif %}
       <div class="chips channel-bar" id="channelBar"></div>
-      {% if me.role in ['admin', 'owner'] %}
+      {% if me.role in ['admin', 'coowner', 'owner'] %}
       <form class="card channel-card" id="channelCreate" hidden>
         <h3>New private channel</h3>
         <p class="muted">Only the people you add can see this channel and its messages. You are added automatically.</p>
@@ -561,7 +561,7 @@
       </div>
     </section>
 
-    {% if me.role in ['admin', 'owner'] %}
+    {% if me.role in ['admin', 'coowner', 'owner'] %}
     <!-- ============ PUBLISH (admins) ============ -->
     <section class="page" id="page-publish" hidden>
       <header class="page-head"><div><h1>Publish</h1><p class="sub">Publish to students. Everything shows your name and the time of publishing. Students can only view.</p></div></header>
@@ -600,10 +600,10 @@
     </section>
     {% endif %}
 
-    {% if me.role == 'owner' %}
-    <!-- ============ MANAGE ADMINS (owner only) ============ -->
+    {% if me.role in ['owner', 'coowner'] %}
+    <!-- ============ MANAGE ADMINS (owner and co-owners) ============ -->
     <section class="page" id="page-admins" hidden>
-      <header class="page-head"><div><h1>Manage Admins</h1><p class="sub">Only you, the owner, can give or remove admin access.</p></div></header>
+      <header class="page-head"><div><h1>Manage Admins</h1><p class="sub">{% if me.role == 'owner' %}Only you, the owner, can give or remove co-owner access. You and co-owners can give or remove admin access.{% else %}As a co-owner you can give or remove admin access. Only the owner can change co-owners.{% endif %}</p></div></header>
       <div class="card">
         <input type="search" id="userSearch" class="user-search" placeholder="Search users by name or email…">
         <p class="muted user-count" id="userCount"></p>

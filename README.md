@@ -114,13 +114,14 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - A public chat for all logged-in users. It refreshes every 3 seconds.
 - Every message shows the sender, their role tag and the time.
 - **Admin and owner messages have coloured banners and name tags.** Admins can remove messages.
-- **Chat bans:** admins can ban a student from the chat for 1 hour, 1 day, 7 days or permanently. Only the owner can ban an admin, and the owner can't be banned. A banned user can still read but can't post. A "Banned from chat" list with **Unban** is shown to admins.
+- **Chat bans:** admins can ban a student from the chat for 1 hour, 1 day, 7 days or permanently. The owner and co-owners can ban an admin, only the owner can ban a co-owner, and the owner can't be banned. A banned user can still read but can't post. A "Banned from chat" list with **Unban** is shown to admins.
 - **Private channels:** admins and the owner can create private channels and choose who is in them. Only members can see a channel, its member list and its messages (checked on the server; anyone else gets "not found"). Admins in a channel can add or remove members, remove messages or delete the channel, and any member can leave. Chat bans apply in private channels too.
 
-### ⬆ Publish (admins) and 🛡 Manage Admins (owner)
+### ⬆ Publish (admins) and 🛡 Manage Admins (owner and co-owners)
 - Admins publish **notices, announcements, assignments and study-material PDFs**, each targeted by year and section. Everything shows *Published by* and the *publishing time*.
-- Anything published by mistake can be **deleted** from the Notice Board, Assignments, Syllabus or Publish pages. Admins can delete any post except the owner's; the owner can delete everything.
-- Only the **owner** can give or remove admin access.
+- Anything published by mistake can be **deleted** from the Notice Board, Assignments, Syllabus or Publish pages. Admins can delete any post except the owner's or a co-owner's; co-owners can delete any post except the owner's or another co-owner's; the owner can delete everything.
+- The **owner** and **co-owners** can give or remove admin access.
+- **Co-owners** have the same powers as the owner everywhere else (publishing, calendar edits, private channels, chat moderation), but only the owner can make or remove a co-owner, and a co-owner can never ban, remove or demote the owner. Co-owners show a gold "Co-owner" tag.
 
 ### Also
 - **Sign in with Google**, and stay logged in for 30 days.
