@@ -582,12 +582,12 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 .role-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border-radius: 6px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; }
 .role-tag.role-user { background: var(--fill-2); color: var(--ink-2); }
 .role-tag.role-admin { background: var(--gold-soft); color: var(--gold); }
-.role-tag.role-owner { background: var(--gold); color: var(--on-gold); }
+.role-tag.role-owner, .role-tag.role-coowner { background: var(--gold); color: var(--on-gold); }
 
 .user-card { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 10px; border-radius: 12px; background: var(--fill); border: 1px solid var(--line); color: var(--ink); }
 .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; color: var(--ink); background: var(--fill-2); flex: none; }
 .avatar.role-admin { background: var(--gold-soft); color: var(--gold); box-shadow: inset 0 0 0 1.5px var(--gold); }
-.avatar.role-owner { background: var(--gold); color: var(--on-gold); }
+.avatar.role-owner, .avatar.role-coowner { background: var(--gold); color: var(--on-gold); }
 .user-meta { min-width: 0; flex: 1; }
 .user-meta strong { display: block; color: var(--ink); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-meta .role-tag { margin-left: 0; }
@@ -599,7 +599,7 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 .role-banner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-radius: 12px; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
 .role-banner a { font-weight: 700; }
 .role-banner.role-admin { background: var(--gold-soft); color: var(--ink); border: 0; }
-.role-banner.role-owner { background: var(--gold-soft); color: var(--ink); border: 0; }
+.role-banner.role-owner, .role-banner.role-coowner { background: var(--gold-soft); color: var(--ink); border: 0; }
 .role-banner a { color: var(--gold); }
 
 /* ---------- published-by lines ---------- */
@@ -619,18 +619,18 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 .chat-msg.mine :is(.chat-body, .chat-name, .chat-time, .chat-del) { color: var(--on-accent); }
 .chat-msg.mine .chat-time { opacity: .75; }
 .chat-msg.role-admin { border: 1px solid var(--gold); background: var(--card); padding-top: 0; overflow: hidden; }
-.chat-msg.role-owner { border: 1px solid var(--gold); background: var(--card); padding-top: 0; overflow: hidden; }
+.chat-msg.role-owner, .chat-msg.role-coowner { border: 1px solid var(--gold); background: var(--card); padding-top: 0; overflow: hidden; }
 /* admins' own messages keep the gold card, so their text stays dark instead of white */
-.chat-msg.mine:is(.role-admin, .role-owner) :is(.chat-body, .chat-time, .chat-del) { color: var(--ink); }
-.chat-msg.mine:is(.role-admin, .role-owner) .chat-name { color: var(--gold); }
-.chat-msg.mine:is(.role-admin, .role-owner) :is(.chat-time, .chat-del) { color: var(--muted); }
+.chat-msg.mine:is(.role-admin, .role-coowner, .role-owner) :is(.chat-body, .chat-time, .chat-del) { color: var(--ink); }
+.chat-msg.mine:is(.role-admin, .role-coowner, .role-owner) .chat-name { color: var(--gold); }
+.chat-msg.mine:is(.role-admin, .role-coowner, .role-owner) :is(.chat-time, .chat-del) { color: var(--muted); }
 .chat-banner { margin: 0 -14px 8px; padding: 3px 14px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .role-admin .chat-banner { background: var(--gold-soft); color: var(--gold); }
-.role-owner .chat-banner { background: var(--gold); color: var(--on-gold); }
+.role-owner .chat-banner, .role-coowner .chat-banner { background: var(--gold); color: var(--on-gold); }
 .chat-head { display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
 .chat-name { font-size: 14px; }
 .chat-name.role-admin { color: var(--gold); }
-.chat-name.role-owner { color: var(--gold); }
+.chat-name.role-owner, .chat-name.role-coowner { color: var(--gold); }
 .chat-time { font-size: 11px; color: var(--muted); margin-left: 8px; }
 .chat-del { margin-left: auto; border: 0; background: none; color: var(--muted); font-size: 11px; cursor: pointer; }
 .chat-del:hover { color: var(--high); }

@@ -2,7 +2,11 @@
 
 const $ = (id) => document.getElementById(id);
 const ME = JSON.parse(document.getElementById("me-data").textContent);
-const IS_ADMIN = ME.role === "admin" || ME.role === "owner";
+const IS_ADMIN = ME.role === "admin" || ME.role === "coowner" || ME.role === "owner";
+const IS_OWNER_LEVEL = ME.role === "owner" || ME.role === "coowner";
+const RANK = { owner: 3, coowner: 2, admin: 1, user: 0 };
+// may I act against (ban, remove, delete posts of) someone with this role? mirrors outranks() on the server
+const outranks = (role) => ME.role === "owner" || (RANK[ME.role] || 0) > (RANK[role] || 0);
 // every POST to our API carries a custom header (CSRF protection); expired sessions go back to login
 const _fetch = window.fetch.bind(window);
 window.fetch = async (url, opts = {}) => {
@@ -13,7 +17,7 @@ window.fetch = async (url, opts = {}) => {
 };
 const fmtTime = (iso) => new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 const localDate = (iso) => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
-const ROLE_LABEL = { owner: "Owner", admin: "Admin", user: "Student" };
+const ROLE_LABEL = { owner: "Owner", coowner: "Co-owner", admin: "Admin", user: "Student" };
 const pdfHref = (p) => (p.startsWith("/") ? p : `/static/${p}`);
 const SAMPLES = JSON.parse($("samples-data").textContent);
 
@@ -544,12 +548,12 @@ const POSTS = CAMPUS.posts || [];
 POSTS.filter((p) => p.kind === "assignment").forEach((p) => CAMPUS.assignments.assignments.push({
   id: p.id, db_id: p.db_id, years: p.years, sections: p.sections, code: p.code || "General", title: p.title, posted: localDate(p.published_at),
   due: p.due, marks: p.marks, official: true, details: p.body || "See the attached PDF.", topics: [],
-  submit: "Follow the instructions in the assignment.", pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role }));
+  submit: "Follow the instructions in the assignment.", pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role, author_id: p.author_id }));
 const NOTICES = CAMPUS.notices.notices.concat(POSTS.filter((p) => p.kind === "notice" || p.kind === "announcement").map((p) => ({
   id: p.id, db_id: p.db_id, kind: p.kind, date: localDate(p.published_at), title: p.title, from: p.published_by, years: p.years, sections: p.sections,
-  text: p.body, pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role })))
+  text: p.body, pdf: p.pdf, published_at: p.published_at, published_by: p.published_by, author_role: p.author_role, author_id: p.author_id })))
   .sort((a, b) => (b.published_at || b.date).localeCompare(a.published_at || a.date));
-const canDelete = (p) => IS_ADMIN && p.db_id !== undefined && (ME.role === "owner" || p.author_role !== "owner");
+const canDelete = (p) => IS_ADMIN && p.db_id !== undefined && (p.author_id === ME.id || !["owner", "coowner"].includes(p.author_role) || outranks(p.author_role));
 function deleteButton(p, label = "Delete") {
   const b = el("button", "ghost small danger", `🗑 ${label}`);
   b.addEventListener("click", async () => {
@@ -1605,12 +1609,12 @@ const chatUrl = () => (chatChannel ? `/api/channels/${chatChannel}/messages` : "
 function chatMsg(m) {
   const mine = m.user_id === ME.id;
   const wrap = el("div", `chat-msg role-${m.role}${mine ? " mine" : ""}`);
-  if (m.role !== "user") wrap.appendChild(el("div", "chat-banner", m.role === "owner" ? "Owner" : "Admin"));
+  if (m.role !== "user") wrap.appendChild(el("div", "chat-banner", ROLE_LABEL[m.role]));
   const head = el("div", "chat-head");
   head.appendChild(el("strong", `chat-name role-${m.role}`, m.name));
   head.appendChild(el("span", `role-tag role-${m.role}`, ROLE_LABEL[m.role]));
   head.appendChild(el("span", "chat-time", fmtTime(m.created_at)));
-  const canBan = IS_ADMIN && m.user_id !== ME.id && m.role !== "owner" && (m.role !== "admin" || ME.role === "owner");
+  const canBan = IS_ADMIN && m.user_id !== ME.id && m.role !== "owner" && (m.role !== "coowner" || ME.role === "owner") && (m.role !== "admin" || IS_OWNER_LEVEL);
   if (canBan) {
     const ban = el("button", "chat-del", "Ban");
     ban.addEventListener("click", () => {
@@ -1762,7 +1766,7 @@ async function loadChannelInfo() {
     txt.append(el("strong", "", m.id === ME.id ? `${m.name} (you)` : m.name), el("span", `role-tag role-${m.role}`, ROLE_LABEL[m.role]),
       el("div", "muted", m.email));
     li.appendChild(txt);
-    if (channelInfo.can_manage && m.id !== ME.id && (m.role !== "owner" || ME.role === "owner")) {
+    if (channelInfo.can_manage && m.id !== ME.id && (!["owner", "coowner"].includes(m.role) || outranks(m.role))) {
       const rm = el("button", "ghost small danger", "Remove");
       rm.addEventListener("click", async () => {
         const r = await postJson(`/api/channels/${id}/members/${m.id}/remove`);
@@ -1869,7 +1873,7 @@ function renderPublish() {
     row.appendChild(pubLine(p));
     const act = el("div", "notice-actions");
     if (p.pdf) act.appendChild(pdfLink(p.pdf, "📄 PDF"));
-    if (ME.role === "owner" || p.author_role !== "owner") {
+    if (canDelete(p)) {
       const del = el("button", "ghost small danger", "Delete");
       del.addEventListener("click", async () => {
         if (del.dataset.confirm !== "1") { del.dataset.confirm = "1"; del.textContent = "Click again to delete"; return; }
@@ -1907,7 +1911,7 @@ if (IS_ADMIN && $("pubForm")) {
   });
 }
 
-// ========================================================== MANAGE ADMINS (owner)
+// ========================================================== MANAGE ADMINS (owner and co-owners)
 let USERS = [];
 async function loadUsers() {
   const res = await fetch("/api/users");
@@ -1920,7 +1924,7 @@ function renderUsers() {
   const q = ($("userSearch").value || "").toLowerCase();
   const body = $("userBody"); body.replaceChildren();
   const admins = USERS.filter((u) => u.role !== "user").length;
-  $("userCount").textContent = `${USERS.length} account${USERS.length === 1 ? "" : "s"} · ${admins} owner/admin · ${USERS.length - admins} student${USERS.length - admins === 1 ? "" : "s"}`;
+  $("userCount").textContent = `${USERS.length} account${USERS.length === 1 ? "" : "s"} · ${admins} owner/co-owner/admin · ${USERS.length - admins} student${USERS.length - admins === 1 ? "" : "s"}`;
   USERS.filter((u) => `${u.name} ${u.email}`.toLowerCase().includes(q)).forEach((u) => {
     const tr = el("tr");
     const who = el("td"); who.append(el("strong", "", u.name), el("div", "muted", u.email)); tr.appendChild(who);
@@ -1929,15 +1933,25 @@ function renderUsers() {
     tr.appendChild(el("td", "muted", u.last_login_at ? fmtTime(u.last_login_at) : "—"));
     tr.appendChild(el("td", u.chat_banned ? "banned-cell" : "muted", u.chat_banned ? "🚫 Banned" : "OK"));
     const act = el("td");
-    if (u.role !== "owner") {
-      const make = u.role === "user";
-      const b = el("button", make ? "ai-btn" : "ghost small danger", make ? "Make admin" : "Remove admin");
+    const setRole = (label, cls, role) => {
+      const b = el("button", cls, label);
       b.addEventListener("click", async () => {
-        const res = await fetch(`/api/users/${u.id}/role`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: make ? "admin" : "user" }) });
+        const res = await fetch(`/api/users/${u.id}/role`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) });
         if (res.ok) loadUsers();
+        else alert((await res.json().catch(() => ({}))).error || "Could not change the role.");
       });
       act.appendChild(b);
-    } else act.appendChild(el("span", "muted", "You"));
+    };
+    if (u.id === ME.id) act.appendChild(el("span", "muted", "You"));
+    else if (u.role === "owner") act.appendChild(el("span", "muted", "Owner"));
+    else if (u.role === "coowner") {
+      if (ME.role === "owner") setRole("Remove co-owner", "ghost small danger", "admin");
+      else act.appendChild(el("span", "muted", "Co-owner"));
+    } else {
+      if (u.role === "user") setRole("Make admin", "ai-btn", "admin");
+      else setRole("Remove admin", "ghost small danger", "user");
+      if (ME.role === "owner") setRole("Make co-owner", "ghost small", "coowner");
+    }
     tr.appendChild(act);
     body.appendChild(tr);
   });

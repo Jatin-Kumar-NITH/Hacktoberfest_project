@@ -1,7 +1,10 @@
 """Accounts, roles, published posts, the public campus chat and private chat channels (SQLite).
 
 Roles:
-  owner - the site owner (whoever signs in with Google as OWNER_EMAIL from .env). Can grant/revoke admin.
+  owner   - the site owner (whoever signs in with Google as OWNER_EMAIL from .env). Can grant/revoke admin
+            and co-owner.
+  coowner - same powers as the owner (including granting/revoking admin), except only the owner can
+            grant or revoke co-owner, and a co-owner can never ban, remove or demote the owner.
   admin - can publish notices, announcements, assignments and study material, moderate chat,
           and create private chat channels and choose their members.
   user  - can read everything and use the chat, but cannot publish or change content.
@@ -58,7 +61,8 @@ DB_PATH = INSTANCE / "campusmate.db"
 
 bp = Blueprint("accounts", __name__)
 
-ROLES = ("owner", "admin", "user")
+ROLES = ("owner", "coowner", "admin", "user")
+RANK = {"owner": 3, "coowner": 2, "admin": 1, "user": 0}
 POST_KINDS = ("notice", "announcement", "assignment", "material")
 SECTIONS = list("ABCDEFGHIJ") + ["Z"]
 EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
@@ -88,6 +92,20 @@ def now_iso():
 
 def owner_email():
     return os.getenv("OWNER_EMAIL", "").strip().lower()
+
+
+def is_owner_level(u):
+    """Owner or co-owner."""
+    return u["role"] in ("owner", "coowner")
+
+
+def outranks(actor, target_role):
+    """Whether actor may act against someone with target_role (ban, remove, delete their posts).
+    The owner may act against everyone; everyone else only against lower roles."""
+    return actor["role"] == "owner" or RANK.get(actor["role"], 0) > RANK.get(target_role, 0)
+
+
+ROLE_ORDER_SQL = "CASE {col} WHEN 'owner' THEN 0 WHEN 'coowner' THEN 1 WHEN 'admin' THEN 2 ELSE 3 END"
 
 
 def sync_owner(conn):
@@ -179,8 +197,8 @@ def _guard(check):
 
 
 login_required = _guard(lambda u: True)
-admin_required = _guard(lambda u: u["role"] in ("admin", "owner"))
-owner_required = _guard(lambda u: u["role"] == "owner")
+admin_required = _guard(lambda u: u["role"] in ("admin", "coowner", "owner"))
+owner_required = _guard(is_owner_level)  # owner or co-owner
 
 @bp.before_app_request
 def csrf_guard():
@@ -253,14 +271,14 @@ def api_logout():
     return jsonify(ok=True)
 
 
-# ------------------------------------------------------------------ owner: manage admins
+# ------------------------------------------------------------------ owner/co-owner: manage admins
 
 @bp.get("/api/users")
 @owner_required
 def api_users():
     rows = db().execute("""SELECT id, name, email, role, created_at, last_login_at,
                            CASE WHEN chat_ban_until > ? THEN 1 ELSE 0 END AS chat_banned
-                           FROM users ORDER BY CASE role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, name""",
+                           FROM users ORDER BY """ + ROLE_ORDER_SQL.format(col="role") + ", name",
                         (time.time(),)).fetchall()
     return jsonify(users=[dict(r) for r in rows])
 
@@ -269,13 +287,15 @@ def api_users():
 @owner_required
 def api_set_role(uid):
     role = str((request.get_json(silent=True) or {}).get("role") or "")
-    if role not in ("admin", "user"):
-        return jsonify(error="Role must be admin or user."), 400
+    if role not in ("coowner", "admin", "user"):
+        return jsonify(error="Role must be coowner, admin or user."), 400
     row = db().execute("SELECT role FROM users WHERE id = ?", (uid,)).fetchone()
     if not row:
         return jsonify(error="User not found."), 404
     if row["role"] == "owner":
         return jsonify(error="The owner's role cannot be changed."), 400
+    if (role == "coowner" or row["role"] == "coowner") and current_user()["role"] != "owner":
+        return jsonify(error="Only the owner can give or remove co-owner access."), 403
     db().execute("UPDATE users SET role = ? WHERE id = ?", (role, uid))
     db().commit()
     return jsonify(ok=True)
@@ -391,9 +411,9 @@ def api_delete_post(pid):
     if not row:
         return jsonify(error="Post not found."), 404
     u = current_user()
-    author = db().execute("SELECT role FROM users WHERE id = ?", (row["author_id"],)).fetchone()
-    if u["role"] != "owner" and author and author["role"] == "owner":
-        return jsonify(error="Only the owner can delete the owner's posts."), 403
+    author = db().execute("SELECT id, role FROM users WHERE id = ?", (row["author_id"],)).fetchone()
+    if author and author["id"] != u["id"] and author["role"] in ("owner", "coowner") and not outranks(u, author["role"]):
+        return jsonify(error="Only the owner can delete posts by the owner or a co-owner."), 403
     db().execute("DELETE FROM posts WHERE id = ?", (pid,))
     db().commit()
     if row["pdf"]:
@@ -492,8 +512,10 @@ def ban_status(uid):
 def _can_ban(actor, target):
     if target["role"] == "owner":
         return "The owner cannot be banned."
-    if target["role"] == "admin" and actor["role"] != "owner":
-        return "Only the owner can ban an admin."
+    if target["role"] == "coowner" and actor["role"] != "owner":
+        return "Only the owner can ban a co-owner."
+    if target["role"] == "admin" and not is_owner_level(actor):
+        return "Only the owner or a co-owner can ban an admin."
     if target["id"] == actor["id"]:
         return "You cannot ban yourself."
     return None
@@ -540,12 +562,12 @@ def api_chat_bans():
 
 # ------------------------------------------------------------------ private chat channels
 #
-# Admins and the owner create private channels and choose who is in them. Only members can
+# Admins, co-owners and the owner create private channels and choose who is in them. Only members can
 # see a channel, its member list or its messages: everyone else gets a 404, as if it did not
 # exist. Admins who are members manage it (add/remove people, remove messages, delete it).
 
 def _is_admin(u):
-    return u["role"] in ("admin", "owner")
+    return u["role"] in ("admin", "coowner", "owner")
 
 
 def _channel_for_member(cid):
@@ -561,7 +583,7 @@ def _not_found():
 
 def _channel_members(cid):
     rows = db().execute("""SELECT u.id, u.name, u.email, u.role FROM channel_members cm JOIN users u ON u.id = cm.user_id
-                           WHERE cm.channel_id = ? ORDER BY CASE u.role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, u.name""",
+                           WHERE cm.channel_id = ? ORDER BY """ + ROLE_ORDER_SQL.format(col="u.role") + ", u.name",
                         (cid,)).fetchall()
     return [dict(r) for r in rows]
 
@@ -678,8 +700,8 @@ def api_channel_remove_member(cid, uid):
     if uid != u["id"] and not _is_admin(u):
         return jsonify(error="Only admins can remove members."), 403
     target = db().execute("SELECT role FROM users WHERE id = ?", (uid,)).fetchone()
-    if target and target["role"] == "owner" and u["role"] != "owner":
-        return jsonify(error="Only the owner can remove the owner."), 403
+    if target and uid != u["id"] and target["role"] in ("owner", "coowner") and not outranks(u, target["role"]):
+        return jsonify(error="Only the owner can remove the owner or a co-owner."), 403
     db().execute("DELETE FROM channel_members WHERE channel_id = ? AND user_id = ?", (cid, uid))
     db().commit()
     return jsonify(ok=True)
@@ -702,5 +724,5 @@ def api_channel_delete(cid):
 def api_people():
     """Everyone with an account, for choosing channel members."""
     rows = db().execute("""SELECT id, name, email, role FROM users
-                           ORDER BY CASE role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, name""").fetchall()
+                           ORDER BY """ + ROLE_ORDER_SQL.format(col="role") + ", name").fetchall()
     return jsonify(people=[dict(r) for r in rows])
