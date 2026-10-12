@@ -697,8 +697,10 @@ def can_delete_message(actor, author_id, author_role):
 
 
 def _delete_message(mid, channel_id):
-    row = db().execute("""SELECT m.user_id, u.role FROM messages m JOIN users u ON u.id = m.user_id
-                          WHERE m.id = ? AND m.channel_id IS ?""", (mid, channel_id)).fetchone()
+    row = db().execute("SELECT m.user_id, u.role, m.channel_id FROM messages m JOIN users u ON u.id = m.user_id WHERE m.id = ?",
+                       (mid,)).fetchone()
+    if row and row["channel_id"] != channel_id:  # Python compare: Postgres has no "IS ?" for parameters
+        row = None
     if not row:
         return jsonify(error="Message not found."), 404
     if not can_delete_message(current_user(), row["user_id"], row["role"]):
@@ -710,7 +712,10 @@ def _delete_message(mid, channel_id):
 
 def _recent_ids(channel_id):
     """Ids of the latest messages, so clients can drop messages someone else deleted."""
-    rows = db().execute("SELECT id FROM messages WHERE channel_id IS ? ORDER BY id DESC LIMIT 200", (channel_id,)).fetchall()
+    if channel_id is None:
+        rows = db().execute("SELECT id FROM messages WHERE channel_id IS NULL ORDER BY id DESC LIMIT 200").fetchall()
+    else:
+        rows = db().execute("SELECT id FROM messages WHERE channel_id = ? ORDER BY id DESC LIMIT 200", (channel_id,)).fetchall()
     return [r[0] for r in rows]
 
 
