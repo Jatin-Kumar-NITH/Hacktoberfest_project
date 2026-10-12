@@ -106,7 +106,10 @@ fun Screen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                vm.loadError?.let { err -> item { Alert("Showing saved data. $err", AlertKind.Warn) } }
+                vm.loadError?.let { err ->
+                    val saved = if (vm.lastSync > 0) " from ${savedAt(vm.lastSync)}" else ""
+                    item { Alert("Showing data saved$saved. $err", AlertKind.Warn) }
+                }
                 content()
             }
         }
@@ -344,3 +347,34 @@ fun CenterText(text: String) = Text(text, textAlign = TextAlign.Center, color = 
 
 @Composable
 fun todayLocal(): LocalDate = remember { LocalDate.now() }
+
+/** "today 4:05 PM" or "12 Oct, 4:05 PM" for a saved-at time. */
+fun savedAt(millis: Long): String {
+    val t = java.time.Instant.ofEpochMilli(millis).atZone(java.time.ZoneId.systemDefault())
+    val time = t.format(java.time.format.DateTimeFormatter.ofPattern("h:mm a", java.util.Locale.ENGLISH))
+    return if (t.toLocalDate() == java.time.LocalDate.now()) "today $time"
+    else t.format(java.time.format.DateTimeFormatter.ofPattern("d MMM", java.util.Locale.ENGLISH)) + ", $time"
+}
+
+/** Banner shown when a newer version of the app is published. */
+@Composable
+fun UpdateBanner(vm: AppViewModel) {
+    val v = vm.update ?: return
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    CmCard(border = P.accent.copy(alpha = 0.4f), onClick = {
+        runCatching {
+            ctx.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(vm.updateUrl())))
+        }
+    }) {
+        Text("A new version of CampusMate is ready", fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
+        Muted("Version ${v.versionName}. Tap to download it, then open the file to install.", size = 13)
+    }
+}
+
+/** Opens the phone's share sheet with some text. */
+fun shareText(ctx: android.content.Context, subject: String, text: String) {
+    val send = android.content.Intent(android.content.Intent.ACTION_SEND).setType("text/plain")
+        .putExtra(android.content.Intent.EXTRA_SUBJECT, subject)
+        .putExtra(android.content.Intent.EXTRA_TEXT, text)
+    runCatching { ctx.startActivity(android.content.Intent.createChooser(send, "Share").addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
+}

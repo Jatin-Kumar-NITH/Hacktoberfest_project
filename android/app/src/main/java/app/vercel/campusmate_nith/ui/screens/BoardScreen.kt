@@ -39,6 +39,7 @@ import app.vercel.campusmate_nith.ui.PdfButton
 import app.vercel.campusmate_nith.ui.Screen
 import app.vercel.campusmate_nith.ui.SectionTitle
 import app.vercel.campusmate_nith.ui.SmallButton
+import app.vercel.campusmate_nith.ui.shareText
 import app.vercel.campusmate_nith.ui.Tag
 import kotlinx.coroutines.launch
 
@@ -80,6 +81,7 @@ fun DeletePostButton(vm: AppViewModel, dbId: Int) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun NoticeCard(vm: AppViewModel, nav: Nav, n: BoardItem) {
+    val ctx = LocalContext.current
     var open by remember { mutableStateOf(false) }
     CmCard(border = if (n.publishedAt != null) P.gold.copy(alpha = 0.35f) else null) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -101,6 +103,7 @@ private fun NoticeCard(vm: AppViewModel, nav: Nav, n: BoardItem) {
             n.pdf?.let { PdfButton(vm, it) }
             if (flat.length > 170) SmallButton(if (open) "Show less" else "Read full notice", { open = !open })
             AiButton("Explain with AI", { vm.pendingExplain = n.id to n.text; nav.go("explain") })
+            SmallButton("Share", { shareText(ctx, n.title, "${n.title}\n${n.from} · ${dmy(n.date)}\n\n${n.text.trim()}\n\nShared from CampusMate") })
             if (canDelete(vm, n.dbId, n.authorRole)) DeletePostButton(vm, n.dbId!!)
         }
     }

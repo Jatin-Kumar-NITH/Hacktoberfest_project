@@ -59,7 +59,44 @@ class Store(context: Context) {
             if (v == null) prefs.edit().remove("campus_cache").apply() else write("campus_cache", CampusResponse.serializer(), v)
         }
 
+    /** When the campus data was last fetched (epoch millis), shown when the app is offline. */
+    var lastSync: Long
+        get() = prefs.getLong("last_sync", 0L)
+        set(v) = prefs.edit().putLong("last_sync", v).apply()
+
+    // ------------------------------------------------------------ settings
+
+    /** "system", "light" or "dark". */
+    var theme: String
+        get() = prefs.getString("theme", "system") ?: "system"
+        set(v) = prefs.edit().putString("theme", v).apply()
+    var notifyNew: Boolean
+        get() = prefs.getBoolean("notify_new", true)
+        set(v) = prefs.edit().putBoolean("notify_new", v).apply()
+    var notifyClasses: Boolean
+        get() = prefs.getBoolean("notify_classes", true)
+        set(v) = prefs.edit().putBoolean("notify_classes", v).apply()
+    /** Minutes before a class that its reminder goes off. */
+    var classLead: Int
+        get() = prefs.getInt("class_lead", 10)
+        set(v) = prefs.edit().putInt("class_lead", v).apply()
+    var askedNotifications: Boolean
+        get() = prefs.getBoolean("asked_notifications", false)
+        set(v) = prefs.edit().putBoolean("asked_notifications", v).apply()
+
+    /** Notices, assignments and exams already seen, so only new ones notify. Null until the first sync. */
+    var seenIds: Set<String>?
+        get() = if (prefs.contains("seen_ids")) prefs.getStringSet("seen_ids", emptySet())!!.toSet() else null
+        set(v) {
+            if (v == null) prefs.edit().remove("seen_ids").apply() else prefs.edit().putStringSet("seen_ids", v).apply()
+        }
+
     fun clearAccount() {
-        prefs.edit().remove("campus_cache").apply()
+        prefs.edit().remove("campus_cache").remove("seen_ids").remove("last_sync").apply()
+    }
+
+    /** "Clear data on this phone": everything except the sign-in cookie and settings. */
+    fun clearLocal() {
+        prefs.edit().remove("notice_history").remove("plan").remove("assign_done").apply()
     }
 }

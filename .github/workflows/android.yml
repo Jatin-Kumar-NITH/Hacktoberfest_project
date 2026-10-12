@@ -19,6 +19,8 @@ jobs:
         working-directory: android
     env:
       HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      # becomes the app's version (versionCode 100 + this), so each build updates the last
+      APP_BUILD_NUMBER: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +55,13 @@ jobs:
             cp app/build/outputs/apk/release/app-release.apk ../dist/CampusMate.apk
             cp app/build/outputs/bundle/release/app-release.aab ../dist/CampusMate.aab
           fi
+          # the app reads this to offer "A new version is ready"
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/android-latest"
+          APK=""
+          if [ "$HAS_KEYSTORE" = "true" ]; then APK="$BASE/CampusMate.apk"; fi
+          printf '{"versionCode": %d, "versionName": "2.1.%d", "apk": "%s", "debugApk": "%s"}\n' \
+            $((100 + APP_BUILD_NUMBER)) "$APP_BUILD_NUMBER" "$APK" "$BASE/CampusMate-debug.apk" > ../dist/version.json
+          cat ../dist/version.json
 
       - uses: actions/upload-artifact@v4
         with:

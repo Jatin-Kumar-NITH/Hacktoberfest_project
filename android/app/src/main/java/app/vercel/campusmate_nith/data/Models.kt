@@ -398,3 +398,12 @@ data class UsersResponse(val users: List<AccountRow> = emptyList())
 data class ErrorBody(val error: String? = null, val banned: Ban? = null)
 
 fun JsonElement.stringOrNull(): String? = (this as? JsonPrimitive)?.contentOrNull ?: runCatching { jsonPrimitive.contentOrNull }.getOrNull()
+
+/** The newest build CI published, so the app can offer an update. */
+@Serializable
+data class AppVersion(
+    val versionCode: Int = 0,
+    val versionName: String = "",
+    val apk: String = "",
+    val debugApk: String = "",
+)

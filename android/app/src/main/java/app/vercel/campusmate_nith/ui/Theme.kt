@@ -52,8 +52,7 @@ val P: Palette
     @Composable get() = LocalPalette.current
 
 @Composable
-fun CampusMateTheme(content: @Composable () -> Unit) {
-    val dark = isSystemInDarkTheme()
+fun CampusMateTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val p = if (dark) Dark else Light
     val scheme = if (dark) darkColorScheme(
         primary = p.accent, onPrimary = Color.White, background = p.bg, onBackground = p.ink,

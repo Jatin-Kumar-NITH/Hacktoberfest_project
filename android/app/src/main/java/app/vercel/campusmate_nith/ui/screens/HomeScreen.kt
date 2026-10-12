@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +46,7 @@ import app.vercel.campusmate_nith.ui.Muted
 import app.vercel.campusmate_nith.ui.Nav
 import app.vercel.campusmate_nith.ui.P
 import app.vercel.campusmate_nith.ui.Screen
+import app.vercel.campusmate_nith.ui.UpdateBanner
 import app.vercel.campusmate_nith.ui.SectionTitle
 import app.vercel.campusmate_nith.ui.SmallButton
 import app.vercel.campusmate_nith.ui.Tag
@@ -59,6 +61,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
     val sec = vm.mySection
     val tIso = todayIso()
     Screen("CampusMate", vm, actions = {
+        IconButton(onClick = { nav.go("settings") }) { Icon(Icons.Outlined.Settings, "Settings") }
         IconButton(onClick = { nav.go("profile") }) { Icon(Icons.Outlined.AccountCircle, "Your class") }
     }) {
         item {
@@ -67,6 +70,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
                 Muted(vm.myLabel)
             }
         }
+        item { UpdateBanner(vm) }
 
         // ---- ask bar
         item {

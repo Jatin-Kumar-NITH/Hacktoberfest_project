@@ -199,4 +199,15 @@ class Api(context: Context) {
         }
         return out
     }
+
+    /** The newest published build (version.json next to the APK on the android-latest release), or null if unknown. */
+    suspend fun latestVersion(): AppVersion? = withContext(Dispatchers.IO) {
+        runCatching {
+            // a separate client with no cookies: this goes to GitHub, not to CampusMate
+            val plain = client.newBuilder().cookieJar(CookieJar.NO_COOKIES).build()
+            plain.newCall(Request.Builder().url(BuildConfig.UPDATE_URL).build()).execute().use {
+                if (it.isSuccessful) json.decodeFromString<AppVersion>(it.body!!.string()) else null
+            }
+        }.getOrNull()
+    }
 }

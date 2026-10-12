@@ -13,7 +13,12 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import app.vercel.campusmate_nith.BuildConfig
 import app.vercel.campusmate_nith.CampusMateApplication
+import app.vercel.campusmate_nith.background.ClassReminders
+import app.vercel.campusmate_nith.background.TodayWidget
+import app.vercel.campusmate_nith.background.Updates
+import app.vercel.campusmate_nith.data.AppVersion
 import app.vercel.campusmate_nith.data.ApiException
 import app.vercel.campusmate_nith.data.AskTurn
 import app.vercel.campusmate_nith.data.Attendance
@@ -38,8 +43,9 @@ enum class AuthState { Checking, SignedOut, SignedIn }
 
 /** Everything the screens share: the account, campus data and the student's own choices. */
 class AppViewModel(app: Application) : AndroidViewModel(app) {
-    val api = (app as CampusMateApplication).api
-    val store = (app as CampusMateApplication).store
+    private val cm = app as CampusMateApplication
+    val api = cm.api
+    val store = cm.store
 
     var auth by mutableStateOf(AuthState.Checking); private set
     var user by mutableStateOf<User?>(null); private set
@@ -49,6 +55,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var loadError by mutableStateOf<String?>(null)
     var signingIn by mutableStateOf(false); private set
     var signInError by mutableStateOf<String?>(null)
+    var lastSync by mutableStateOf(store.lastSync); private set
+
+    /** A newer build than this one, when CI has published one. */
+    var update by mutableStateOf<AppVersion?>(null); private set
+    var checkingUpdate by mutableStateOf(false); private set
+
+    // settings
+    var notifyNew by mutableStateOf(store.notifyNew); private set
+    var notifyClasses by mutableStateOf(store.notifyClasses); private set
+    var classLead by mutableStateOf(store.classLead); private set
 
     // the student's year / section / group, like the website's sidebar pickers
     var year by mutableStateOf(store.year); private set
@@ -82,6 +98,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     init {
         store.campusCache?.let { applyCampus(it) }
         viewModelScope.launch { refresh(initial = true) }
+        checkUpdate()
     }
 
     val isAdmin get() = user?.isAdmin == true
@@ -111,7 +128,11 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 val r = api.campus()
                 applyCampus(r)
                 store.campusCache = r
+                store.lastSync = System.currentTimeMillis(); lastSync = store.lastSync
                 loadError = null
+                // the student is looking at the app, so these aren't news any more
+                cm.background { Updates.takeNew(store, r.campus) }
+                afterCampusChange()
                 if (initial || !attDirty) loadAttendance()
             } catch (e: ApiException) {
                 if (e.status == 401) {
@@ -161,6 +182,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         auth = AuthState.SignedOut
         store.clearAccount()
         campus = Campus()
+        afterCampusChange()
         askLog.clear(); askHistory = emptyList()
     }
 
@@ -169,7 +191,58 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         store.year = y; store.section = sec; store.group = grp
         store.profileChosen = true; profileChosen = true
         askHistory = emptyList()
+        store.seenIds = null   // a new section: start counting "new" from now
+        afterCampusChange()
     }
+
+    /** Keeps the reminders and the widget in step with the timetable and the student's section. */
+    private fun afterCampusChange() {
+        val c = if (auth == AuthState.SignedIn) campus else null
+        cm.background {
+            ClassReminders.schedule(cm, c)
+            TodayWidget.refresh(cm)
+        }
+    }
+
+    // ------------------------------------------------------------ settings
+
+    fun setTheme(mode: String) {
+        store.theme = mode; cm.themeMode = mode
+    }
+
+    fun setNotifyNew(on: Boolean) {
+        notifyNew = on; store.notifyNew = on
+    }
+
+    fun setNotifyClasses(on: Boolean) {
+        notifyClasses = on; store.notifyClasses = on; afterCampusChange()
+    }
+
+    fun setClassLead(minutes: Int) {
+        classLead = minutes; store.classLead = minutes; afterCampusChange()
+    }
+
+    fun clearLocalData() {
+        store.clearLocal()
+        history = emptyList(); plan = null; assignmentsDone = emptyMap()
+    }
+
+    /** Looks for a newer APK on the android-latest release. */
+    fun checkUpdate(manual: Boolean = false) {
+        if (checkingUpdate) return
+        viewModelScope.launch {
+            checkingUpdate = true
+            val v = api.latestVersion()
+            checkingUpdate = false
+            val url = v?.let { if (BuildConfig.DEBUG) it.debugApk else it.apk }.orEmpty()
+            update = if (v != null && v.versionCode > BuildConfig.VERSION_CODE && url.isNotEmpty()) v else null
+            if (manual && update == null) {
+                Toast.makeText(cm, if (v == null) "Couldn't check for updates." else "You have the latest version.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun updateUrl(): String = update?.let { if (BuildConfig.DEBUG) it.debugApk else it.apk }.orEmpty()
 
     fun chooseHostel(h: String) {
         hostel = h; store.hostel = h
@@ -274,6 +347,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun replaceCampus(c: Campus) {
         campus = c
         store.campusCache = CampusResponse(campus = c, samples = samples, me = user)
+        afterCampusChange()
     }
 
     // ------------------------------------------------------------ PDFs

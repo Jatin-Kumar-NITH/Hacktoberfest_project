@@ -1,6 +1,14 @@
 package app.vercel.campusmate_nith.ui
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import app.vercel.campusmate_nith.CampusMateApplication
+import app.vercel.campusmate_nith.background.Notify
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -46,6 +54,7 @@ import app.vercel.campusmate_nith.ui.screens.MoreScreen
 import app.vercel.campusmate_nith.ui.screens.PlannerScreen
 import app.vercel.campusmate_nith.ui.screens.ProfileScreen
 import app.vercel.campusmate_nith.ui.screens.PublishScreen
+import app.vercel.campusmate_nith.ui.screens.SettingsScreen
 import app.vercel.campusmate_nith.ui.screens.SyllabusScreen
 import app.vercel.campusmate_nith.ui.screens.TimetableScreen
 
@@ -83,6 +92,26 @@ fun CampusMateApp(vm: AppViewModel = viewModel()) {
 private fun Main(vm: AppViewModel) {
     val controller = rememberNavController()
     val nav = Nav(controller)
+    val ctx = LocalContext.current
+    val app = ctx.applicationContext as CampusMateApplication
+
+    // a notification, app shortcut or the widget asked for a screen
+    val pending = app.pendingRoute
+    LaunchedEffect(pending) {
+        if (pending != null) {
+            app.pendingRoute = null
+            if (TABS.any { it.route == pending }) nav.tab(pending) else nav.go(pending)
+        }
+    }
+
+    // ask once for notifications (Android 13+), so reminders and new-notice alerts can show
+    val askPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= 33 && !vm.store.askedNotifications && !Notify.allowed(ctx)) {
+            vm.store.askedNotifications = true
+            askPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
     val entry by controller.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val bottomBar = @Composable {
@@ -116,6 +145,7 @@ private fun Main(vm: AppViewModel) {
             composable("ask") { AskScreen(vm, nav) }
             composable("publish") { PublishScreen(vm, nav) }
             composable("admins") { AdminsScreen(vm, nav) }
+            composable("settings") { SettingsScreen(vm, nav) }
             composable("profile") { ProfileScreen(vm, firstRun = false, onDone = { nav.back() }) }
         }
     }

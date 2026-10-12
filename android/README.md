@@ -6,6 +6,18 @@ timetable, notice board, assignments, exams, academic calendar, attendance,
 syllabus, mess menu, notice explainer, study planner, Ask CampusMate, chat,
 and the admin editors and publishing tools for CRs and admins.
 
+On top of the website it has what a phone app should:
+
+- Notifications for new notices, assignments and exams for your year and
+  section (checked about once an hour in the background), and a reminder a few
+  minutes before each class.
+- A home-screen widget with the rest of today's classes.
+- Long-press shortcuts on the app icon: Timetable, Mess menu, Attendance, Ask.
+- Settings: light/dark theme, notification switches, reminder time, widget,
+  "check for updates" and sign out.
+- Works offline from the last saved data, and tells you when a newer APK is
+  on the android-latest release.
+
 The app talks to the same Flask backend (`/api/...` on the live site), so the
 data is always the same as on the website. It signs in with Google through
 Android's Credential Manager and sends the ID token to `/api/login`, exactly
@@ -69,10 +81,13 @@ Needs Android Studio or the Android SDK (platform 35) and JDK 17:
 - `data/GoogleAuth.kt`: Google Sign-In via Credential Manager.
 - `ui/AppViewModel.kt`, `ui/CampusMateApp.kt`: app state and navigation.
 - `ui/screens/`: one file per screen.
+- `background/`: hourly sync and notifications (`SyncWorker`, `Updates`), class
+  reminders (`ClassReminders`), the home-screen widget (`TodayWidget`).
 
 ## Changing things
 
-- Site address, app id, version: `app/build.gradle` (`BASE_URL`; bump
-  `versionCode` for every Play upload).
+- Site address and app id: `app/build.gradle` (`BASE_URL`). The version comes
+  from the CI run number (`APP_BUILD_NUMBER`), so every build installs over the
+  last one; CI also publishes `version.json`, which the app reads to offer updates.
 - `debug.keystore` is a throwaway key so CI debug builds can update each other
   and so the debug SHA-1 above stays fixed.

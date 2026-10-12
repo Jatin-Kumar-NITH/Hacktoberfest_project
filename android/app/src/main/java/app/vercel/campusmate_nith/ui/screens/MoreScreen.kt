@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Publish
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import app.vercel.campusmate_nith.ui.Nav
 import app.vercel.campusmate_nith.ui.P
 import app.vercel.campusmate_nith.ui.RoleTag
 import app.vercel.campusmate_nith.ui.Screen
+import app.vercel.campusmate_nith.ui.UpdateBanner
 
 private data class Entry(val route: String, val label: String, val hint: String, val icon: ImageVector)
 
@@ -63,6 +65,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         if (u?.isOwner == true) add(Entry("admins", "Manage admins", "Give or remove admin rights", Icons.Outlined.AdminPanelSettings))
     }
     Screen("More", vm) {
+        item { UpdateBanner(vm) }
         item {
             CmCard(onClick = { nav.go("profile") }) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -76,6 +79,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         item { Group("Campus", study, nav) }
         item { Group("AI tools", ai, nav) }
         if (admin.isNotEmpty()) item { Group("Admin", admin, nav) }
+        item { Group("App", listOf(Entry("settings", "Settings", "Theme, notifications, widget, updates", Icons.Outlined.Settings)), nav) }
         item {
             CmCard(onClick = { vm.logout() }) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
