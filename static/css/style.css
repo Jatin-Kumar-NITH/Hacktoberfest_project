@@ -916,6 +916,9 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .landing-ok { margin-top: 24px; padding: 12px 18px; border-radius: 12px; background: var(--green-soft); color: var(--green); font-weight: 500; font-size: 15px; }
 .landing-warn { text-align: center; font-size: 13px; color: var(--red); padding: 0 24px 24px; margin: 0; }
 .landing-foot { text-align: center; font-size: 12px; color: var(--muted); padding: 24px; border-top: 1px solid var(--line); }
+/* Google renders its button in an iframe with a light colour scheme; matching it keeps the
+   iframe transparent instead of painting a white box around the button in dark mode. */
+#google-button-center, #google-button-nav { color-scheme: light; }
 .landing .theme-toggle { width: auto; margin: 0; padding: 7px 12px; border-radius: 980px; }
 @media (max-width: 760px) {
   .landing-nav { padding: 10px 16px; }
