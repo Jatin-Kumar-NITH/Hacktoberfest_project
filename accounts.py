@@ -1,32 +1,33 @@
+```python
 """Accounts, roles, published posts and the public campus chat (SQLite).
 
 Roles:
-  owner - the site owner (created from OWNER_EMAIL / OWNER_PASSWORD in .env). Can grant/revoke admin.
+  owner - the site owner (created from OWNER_EMAIL in .env). Can grant/revoke admin.
   admin - can publish notices, announcements, assignments and study material, and moderate chat.
   user  - can read everything and use the chat, but cannot publish or change content.
 """
 import hashlib
-import hmac
 import json
 import os
-import smtplib
-from email.message import EmailMessage
 import re
 import secrets
 import sqlite3
 import time
-
-import db as database
 import uuid
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
 
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+
+import db as database
+
 from flask import (Blueprint, Response, abort, current_app, g, jsonify, redirect, render_template, request,
                    send_from_directory, session, url_for)
-from werkzeug.security import check_password_hash, generate_password_hash
 
 BASE_DIR = Path(__file__).parent
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com")
 
 
 def _writable(path):
@@ -64,7 +65,6 @@ bp = Blueprint("accounts", __name__)
 ROLES = ("owner", "admin", "user")
 POST_KINDS = ("notice", "announcement", "assignment", "material")
 SECTIONS = list("ABCDEFGHIJ") + ["Z"]
-EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
 
 
 # ------------------------------------------------------------------ database
@@ -80,9 +80,6 @@ def close_db(_exc):
     conn = g.pop("db", None)
     if conn is not None:
         conn.close()
-
-
-# Table definitions live in db.py (SQLite locally, Postgres when DATABASE_URL is set).
 
 
 def now_iso():
@@ -103,10 +100,6 @@ def sync_owner(conn):
     conn.commit()
 
 
-def smtp_ready():
-    return bool(os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip())
-
-
 def init_app(app):
     """Create folders, database tables, the secret key and the owner account."""
     global INSTANCE, UPLOADS, DB_PATH
@@ -120,7 +113,7 @@ def init_app(app):
     key_file = INSTANCE / "secret_key"
     if not key and os.getenv("VERCEL"):
         # every serverless instance must share one key, or users get logged out between requests
-        seed = os.getenv("GEMINI_API_KEY", "") + os.getenv("OWNER_PASSWORD", "") + os.getenv("OWNER_EMAIL", "")
+        seed = os.getenv("GEMINI_API_KEY", "") + os.getenv("OWNER_EMAIL", "")
         key = hashlib.sha256(("campusmate:" + seed).encode()).hexdigest()
         print("[CampusMate] SECRET_KEY not set; derived one from other secrets. Set SECRET_KEY in Vercel for best security.")
     if not key:
@@ -137,18 +130,13 @@ def init_app(app):
     conn = database.connect(DB_PATH)
     database.create_schema(conn)
     email = os.getenv("OWNER_EMAIL", "").strip().lower()
-    password = os.getenv("OWNER_PASSWORD", "")
     name = os.getenv("OWNER_NAME", "").strip() or (email.split("@")[0] if email else "Owner")
     if email:
         row = conn.execute("SELECT id, role FROM users WHERE email = ?", (email,)).fetchone()
         if row is None:
-            problem = password_problem(password)
-            if problem:
-                print(f"[CampusMate] Owner account NOT created: OWNER_PASSWORD {problem}")
-            else:
-                conn.execute("INSERT INTO users (email, name, password_hash, role, created_at) VALUES (?,?,?,?,?)",
-                             (email, name, generate_password_hash(password), "owner", now_iso()))
-                print(f"[CampusMate] Owner account created for {email}")
+            conn.execute("INSERT INTO users (email, name, password_hash, role, created_at) VALUES (?,?,?,?,?)",
+                         (email, name, "", "owner", now_iso()))
+            print(f"[CampusMate] Owner account created for {email}")
         elif row[1] != "owner":
             conn.execute("UPDATE users SET role = 'owner' WHERE id = ?", (row[0],))
     conn.commit()
@@ -161,31 +149,12 @@ def init_app(app):
     if os.getenv("VERCEL") and not database.using_postgres():
         print("[CampusMate] WARNING: on Vercel without DATABASE_URL, accounts and data are temporary. Connect a Postgres database (see README).")
     print(f"[CampusMate] Owner email: {email or 'NOT SET - add OWNER_EMAIL to .env'}")
-    print(f"[CampusMate] Email OTP: {'sending via ' + os.getenv('SMTP_HOST', 'smtp.gmail.com') if smtp_ready() else 'SMTP not set - OTP codes will be printed here in this window'}")
+    print("[CampusMate] Authentication: Google OAuth Active")
     print("[CampusMate] ----------------------------------------------")
     app.register_blueprint(bp)
 
 
 # ------------------------------------------------------------------ helpers
-
-def password_problem(pw):
-    """Return a description of what is wrong with a password, or None if it is strong enough."""
-    if len(pw or "") < 8:
-        return "must be at least 8 characters long."
-    if len(pw) > 128:
-        return "must be at most 128 characters long."
-    if not re.search(r"[a-z]", pw):
-        return "must contain a lowercase letter."
-    if not re.search(r"[A-Z]", pw):
-        return "must contain an uppercase letter."
-    if not re.search(r"\d", pw):
-        return "must contain a number."
-    if not re.search(r"[^A-Za-z0-9]", pw):
-        return "must contain a symbol such as @ # $ !"
-    if pw.lower() in ("password@1", "password@123", "qwerty@123", "admin@123"):
-        return "is too common."
-    return None
-
 
 def current_user():
     if "user" not in g:
@@ -210,7 +179,7 @@ def _guard(check):
             u = current_user()
             api = request.path.startswith("/api/") or request.path.startswith("/files/")
             if u is None:
-                return (jsonify(error="Please log in first."), 401) if api else redirect(url_for("accounts.login_page"))
+                return (jsonify(error="Please log in first."), 401) if api else redirect("/")
             if not check(u):
                 return (jsonify(error="You do not have permission to do that."), 403) if api else abort(403)
             return fn(*args, **kwargs)
@@ -229,180 +198,57 @@ def csrf_guard():
         return jsonify(error="Request blocked (missing security header). Refresh the page."), 400
 
 
-# simple in-memory brute-force protection: 5 failures per email+IP per 10 minutes
-_FAILS = {}
-
-
-def _too_many(key):
-    now = time.time()
-    _FAILS[key] = [t for t in _FAILS.get(key, []) if now - t < 600]
-    return len(_FAILS[key]) >= 5
-
-
 # ------------------------------------------------------------------ auth pages & API
 
 @bp.get("/login")
 def login_page():
-    if current_user():
-        return redirect("/")
-    return render_template("login.html")
+    # Since we are using index.html as the landing page now
+    return redirect("/")
 
 
-# ------------------------------------------------------------------ email OTP
-
-OTP_TTL = 600          # 10 minutes
-OTP_MAX_TRIES = 5
-OTP_RESEND_AFTER = 60  # seconds
-
-
-def _otp_hash(code, otp_email):
-    return hmac.new(current_app.secret_key.encode(), f"{otp_email}:{code}".encode(), hashlib.sha256).hexdigest()
-
-
-def mask_email(e):
-    name, _, domain = e.partition("@")
-    return (name[:2] + "•" * max(1, len(name) - 2)) + "@" + domain
-
-
-def deliver_otp(to_email, code, purpose):
-    """Email the code. Without SMTP settings, print it in the server window (demo mode)."""
-    action = "create your CampusMate account" if purpose == "signup" else "log in to CampusMate"
-    if not smtp_ready():
-        print(f"\n[CampusMate] *** OTP for {to_email} ({purpose}): {code}  (valid 10 minutes) ***\n", flush=True)
-        return "console"
-    msg = EmailMessage()
-    msg["Subject"] = f"Your CampusMate code: {code}"
-    msg["From"] = os.getenv("SMTP_FROM", "").strip() or os.getenv("SMTP_USER")
-    msg["To"] = to_email
-    msg.set_content(f"Your one-time code to {action} is:\n\n    {code}\n\nIt expires in 10 minutes. "
-                    "If you did not try to do this, you can ignore this email.\n\n- CampusMate AI")
-    host, port = os.getenv("SMTP_HOST", "smtp.gmail.com"), int(os.getenv("SMTP_PORT", "587"))
-    if port == 465:   # SSL from the start (works on networks that block port 587)
-        server = smtplib.SMTP_SSL(host, port, timeout=20)
-    else:
-        server = smtplib.SMTP(host, port, timeout=20)
-        server.starttls()
-    with server:
-        server.login(os.getenv("SMTP_USER").strip(), os.getenv("SMTP_PASSWORD").replace(" ", ""))
-        server.send_message(msg)
-    return "email"
-
-
-def start_otp(otp_email, purpose, payload):
-    code = f"{secrets.randbelow(1_000_000):06d}"
-    conn = db()
-    conn.execute("DELETE FROM otps WHERE expires_at < ? OR (email = ? AND purpose = ?)", (time.time(), otp_email, purpose))
-    cur = conn.execute("INSERT INTO otps (email, purpose, code_hash, payload, expires_at, sent_at) VALUES (?,?,?,?,?,?)",
-                       (otp_email, purpose, _otp_hash(code, otp_email), json.dumps(payload), time.time() + OTP_TTL, time.time()))
-    conn.commit()
+@bp.post("/google_login")
+def google_login():
+    """Handles the token sent by Google Identity Services on the frontend."""
+    data = request.get_json(silent=True) or {}
+    token = data.get("credential")
+    
+    if not token:
+        return jsonify(error="Missing Google credential."), 400
+        
     try:
-        via = deliver_otp(otp_email, code, purpose)
-    except Exception as e:  # SMTP problem: tell the user plainly what went wrong
-        print(f"[CampusMate] Could not send OTP email: {e!r}", flush=True)
-        conn.execute("DELETE FROM otps WHERE id = ?", (cur.lastrowid,))
-        conn.commit()
-        text = str(e)
-        if isinstance(e, smtplib.SMTPAuthenticationError) or "535" in text or "Username and Password not accepted" in text:
-            why = "Gmail rejected the login. SMTP_PASSWORD must be a Gmail App Password (not your normal password) and 2-Step Verification must be on."
-        elif "timed out" in text.lower() or isinstance(e, TimeoutError):
-            why = "Timed out connecting to the mail server. Try SMTP_PORT=465 (or 587)."
-        elif "refused" in text.lower() or "unreachable" in text.lower():
-            why = "The mail server refused the connection. Check SMTP_HOST and SMTP_PORT."
+        id_info = id_token.verify_oauth2_token(
+            token, google_requests.Request(), GOOGLE_CLIENT_ID
+        )
+        
+        email = id_info.get("email").lower()
+        name = id_info.get("name")
+        
+        conn = db()
+        row = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
+        
+        if row:
+            uid = row["id"]
+            conn.execute("UPDATE users SET last_login_at = ? WHERE id = ?", (now_iso(), uid))
         else:
-            why = f"Mail error: {type(e).__name__}."
-        return None, "Could not send the code email. " + why
-    session["otp_id"] = cur.lastrowid
-    return {"otp": True, "via": via, "email": mask_email(otp_email), "purpose": purpose}, None
-
-
-@bp.post("/api/login")
-def api_login():
-    data = request.get_json(silent=True) or {}
-    email = str(data.get("email") or "").strip().lower()
-    password = str(data.get("password") or "")
-    key = f"{email}|{request.remote_addr}"
-    if _too_many(key):
-        return jsonify(error="Too many failed attempts. Please wait 10 minutes and try again."), 429
-    row = db().execute("SELECT id, password_hash FROM users WHERE email = ?", (email,)).fetchone()
-    if not row or not check_password_hash(row["password_hash"], password):
-        _FAILS.setdefault(key, []).append(time.time())
-        return jsonify(error="Email or password is incorrect."), 401
-    _FAILS.pop(key, None)
-    result, err = start_otp(email, "login", {"uid": row["id"], "remember": bool(data.get("remember", True))})
-    return (jsonify(error=err), 502) if err else jsonify(result)
-
-
-@bp.post("/api/signup")
-def api_signup():
-    data = request.get_json(silent=True) or {}
-    name = re.sub(r"\s+", " ", str(data.get("name") or "")).strip()
-    email = str(data.get("email") or "").strip().lower()
-    password = str(data.get("password") or "")
-    if not 2 <= len(name) <= 40:
-        return jsonify(error="Name must be 2 to 40 characters."), 400
-    if not EMAIL_RE.match(email):
-        return jsonify(error="Please enter a valid email address."), 400
-    problem = password_problem(password)
-    if problem:
-        return jsonify(error="Password " + problem), 400
-    if password != str(data.get("confirm") or ""):
-        return jsonify(error="The two passwords do not match."), 400
-    if db().execute("SELECT 1 FROM users WHERE email = ?", (email,)).fetchone():
-        return jsonify(error="An account with this email already exists. Use Log in instead."), 409
-    result, err = start_otp(email, "signup", {"name": name, "email": email, "pw": generate_password_hash(password)})
-    return (jsonify(error=err), 502) if err else jsonify(result)
-
-
-@bp.post("/api/otp/verify")
-def api_otp_verify():
-    code = re.sub(r"\D", "", str((request.get_json(silent=True) or {}).get("code") or ""))
-    otp_id = session.get("otp_id")
-    row = db().execute("SELECT * FROM otps WHERE id = ?", (otp_id,)).fetchone() if otp_id else None
-    if not row:
-        return jsonify(error="This code has expired. Please start again.", restart=True), 400
-    if time.time() > row["expires_at"]:
-        db().execute("DELETE FROM otps WHERE id = ?", (row["id"],)); db().commit()
-        return jsonify(error="This code has expired. Please start again.", restart=True), 400
-    if row["attempts"] >= OTP_MAX_TRIES:
-        db().execute("DELETE FROM otps WHERE id = ?", (row["id"],)); db().commit()
-        return jsonify(error="Too many wrong codes. Please start again.", restart=True), 429
-    if len(code) != 6 or not hmac.compare_digest(_otp_hash(code, row["email"]), row["code_hash"]):
-        db().execute("UPDATE otps SET attempts = attempts + 1 WHERE id = ?", (row["id"],)); db().commit()
-        left = OTP_MAX_TRIES - row["attempts"] - 1
-        return jsonify(error=f"That code is not correct. {left} tr{'y' if left == 1 else 'ies'} left."), 400
-
-    payload = json.loads(row["payload"])
-    db().execute("DELETE FROM otps WHERE id = ?", (row["id"],))
-    if row["purpose"] == "signup":
-        try:
-            cur = db().execute("INSERT INTO users (email, name, password_hash, role, created_at) VALUES (?,?,?,?,?)",
-                               (payload["email"], payload["name"], payload["pw"], "user", now_iso()))
-        except database.integrity_errors():
-            db().rollback()
-            return jsonify(error="An account with this email already exists. Use Log in instead.", restart=True), 409
-        uid, remember = cur.lastrowid, True
-    else:
-        uid, remember = payload["uid"], payload.get("remember", True)
-    db().execute("UPDATE users SET last_login_at = ? WHERE id = ?", (now_iso(), uid))
-    db().commit()
-    sync_owner(db())
-    session.clear()
-    session["uid"] = uid
-    session.permanent = bool(remember)
-    return jsonify(ok=True)
-
-
-@bp.post("/api/otp/resend")
-def api_otp_resend():
-    otp_id = session.get("otp_id")
-    row = db().execute("SELECT * FROM otps WHERE id = ?", (otp_id,)).fetchone() if otp_id else None
-    if not row:
-        return jsonify(error="Please start again.", restart=True), 400
-    wait = int(OTP_RESEND_AFTER - (time.time() - row["sent_at"]))
-    if wait > 0:
-        return jsonify(error=f"Please wait {wait} seconds before asking for a new code."), 429
-    result, err = start_otp(row["email"], row["purpose"], json.loads(row["payload"]))
-    return (jsonify(error=err), 502) if err else jsonify(result)
+            # New student/user logging in via Google
+            cur = conn.execute(
+                "INSERT INTO users (email, name, password_hash, role, created_at) VALUES (?,?,?,?,?)",
+                (email, name, "", "user", now_iso())
+            )
+            uid = cur.lastrowid
+            
+        conn.commit()
+        sync_owner(conn)
+        
+        # Establish Flask session
+        session.clear()
+        session["uid"] = uid
+        session.permanent = True
+        
+        return jsonify(message="Login successful", name=name, email=email)
+        
+    except ValueError:
+        return jsonify(error="Invalid Google token."), 401
 
 
 @bp.post("/api/logout")
@@ -417,22 +263,6 @@ def api_me():
     return jsonify(user=public_user(current_user()))
 
 
-@bp.post("/api/password")
-@login_required
-def api_change_password():
-    data = request.get_json(silent=True) or {}
-    row = db().execute("SELECT password_hash FROM users WHERE id = ?", (current_user()["id"],)).fetchone()
-    if not check_password_hash(row["password_hash"], str(data.get("current") or "")):
-        return jsonify(error="Your current password is incorrect."), 400
-    new = str(data.get("new") or "")
-    problem = password_problem(new)
-    if problem:
-        return jsonify(error="New password " + problem), 400
-    db().execute("UPDATE users SET password_hash = ? WHERE id = ?", (generate_password_hash(new), current_user()["id"]))
-    db().commit()
-    return jsonify(ok=True)
-
-
 # ------------------------------------------------------------------ owner: manage admins
 
 @bp.get("/api/users")
@@ -442,7 +272,7 @@ def api_users():
                            CASE WHEN chat_ban_until > ? THEN 1 ELSE 0 END AS chat_banned
                            FROM users ORDER BY CASE role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, name""",
                         (time.time(),)).fetchall()
-    return jsonify(users=[dict(r) for r in rows], smtp=smtp_ready())
+    return jsonify(users=[dict(r) for r in rows])
 
 
 @bp.post("/api/users/<int:uid>/role")
@@ -476,24 +306,6 @@ def set_setting(key, value):
                     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_by=excluded.updated_by,
                     updated_at=excluded.updated_at""", (key, json.dumps(value, ensure_ascii=False), u["name"], now_iso()))
     db().commit()
-
-
-# ------------------------------------------------------------------ private per-user data (e.g. self attendance)
-
-def get_user_data(user_id, key):
-    row = db().execute("SELECT value, updated_at FROM user_data WHERE user_id = ? AND key = ?", (user_id, key)).fetchone()
-    if not row:
-        return None
-    return {"value": json.loads(row["value"]), "updated_at": row["updated_at"]}
-
-
-def set_user_data(user_id, key, value):
-    stamp = now_iso()
-    db().execute("""INSERT INTO user_data (user_id, key, value, updated_at) VALUES (?,?,?,?)
-                    ON CONFLICT(user_id, key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at""",
-                 (user_id, key, json.dumps(value, ensure_ascii=False), stamp))
-    db().commit()
-    return stamp
 
 
 # ------------------------------------------------------------------ posts (admin publishing)
@@ -710,3 +522,5 @@ def api_chat_bans():
                           "permanent": r["chat_ban_until"] >= PERMANENT,
                           "until": datetime.fromtimestamp(r["chat_ban_until"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
                          for r in rows])
+
+```
