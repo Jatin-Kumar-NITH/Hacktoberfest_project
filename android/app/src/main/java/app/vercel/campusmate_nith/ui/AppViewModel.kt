@@ -210,15 +210,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         store.theme = mode; cm.themeMode = mode
     }
 
-    fun setNotifyNew(on: Boolean) {
+    fun changeNotifyNew(on: Boolean) {
         notifyNew = on; store.notifyNew = on
     }
 
-    fun setNotifyClasses(on: Boolean) {
+    fun changeNotifyClasses(on: Boolean) {
         notifyClasses = on; store.notifyClasses = on; afterCampusChange()
     }
 
-    fun setClassLead(minutes: Int) {
+    fun changeClassLead(minutes: Int) {
         classLead = minutes; store.classLead = minutes; afterCampusChange()
     }
 

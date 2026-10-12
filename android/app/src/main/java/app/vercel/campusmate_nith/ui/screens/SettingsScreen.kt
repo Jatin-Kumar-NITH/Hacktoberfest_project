@@ -84,15 +84,15 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
                     SmallButton("Allow notifications", { allowNotifications() })
                 }
                 ToggleRow("New notices, assignments and exams", "Checked about once an hour for your year and section", vm.notifyNew) {
-                    vm.setNotifyNew(it); if (it && !allowed) allowNotifications()
+                    vm.changeNotifyNew(it); if (it && !allowed) allowNotifications()
                 }
                 HorizontalDivider(color = P.line)
                 ToggleRow("Class reminders", "A heads-up before each class on your timetable", vm.notifyClasses) {
-                    vm.setNotifyClasses(it); if (it && !allowed) allowNotifications()
+                    vm.changeNotifyClasses(it); if (it && !allowed) allowNotifications()
                 }
                 if (vm.notifyClasses) {
                     Muted("Remind me", size = 13)
-                    ChipRow(listOf(5 to "5 min", 10 to "10 min", 15 to "15 min", 30 to "30 min"), vm.classLead) { vm.setClassLead(it) }
+                    ChipRow(listOf(5 to "5 min", 10 to "10 min", 15 to "15 min", 30 to "30 min"), vm.classLead) { vm.changeClassLead(it) }
                 }
             }
         }
