@@ -37,7 +37,7 @@ let currentId = null;
 // ---------------------------------------------------------- routing
 function route() {
   const page = (location.hash || "#dashboard").slice(1);
-  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
+  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "results", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
@@ -48,6 +48,7 @@ function route() {
   if (p === "exams") renderExams();
   if (p === "calendar") renderCalendar();
   if (p === "attendance") renderAttendance();
+  if (p === "results") renderResultsPage();
   if (p === "syllabus") renderSyllabus();
   if (p === "hostel") renderHostel();
   if (p === "chat") startChat(); else stopChat();
@@ -2186,5 +2187,110 @@ document.querySelectorAll("[data-hn-hostel]").forEach((b) => b.addEventListener(
   hnHostel = b.dataset.hnHostel; store.set("cm_hn_hostel", hnHostel); loadNews("hostel");
 }));
 document.querySelectorAll(".ask-chip").forEach((c) => c.addEventListener("click", () => askQuestion(c.textContent)));
+
+// ---------------------------------------------------------- results (nithresults.xyz, via our server)
+const RES_KEY = "cm_results_recent";
+let resRecent = store.get(RES_KEY, []);
+let resLast = null;
+
+function renderResultsPage() {
+  const box = $("resRecent");
+  box.replaceChildren();
+  resRecent.forEach((r) => {
+    const c = el("button", "chip", r);
+    c.type = "button";
+    c.addEventListener("click", () => { $("resQuery").value = r; lookupResult(r); });
+    box.append(c);
+  });
+  box.hidden = resRecent.length === 0;
+  if (!resLast) $("resQuery").focus();
+}
+
+const gpa = (v) => (v === null || v === undefined ? "–" : Number(v).toFixed(2));
+
+function resultCard(st) {
+  const wrap = el("div", "res-student");
+  const head = el("div", "card res-head");
+  const who = el("div");
+  who.append(el("h2", null, st.name || st.roll), el("p", "muted", [st.roll, st.father && `Father: ${st.father}`, st.year && `Batch ${st.year}`].filter(Boolean).join(" · ")));
+  head.append(who);
+  wrap.append(head);
+
+  const latest = st.semesters[st.semesters.length - 1];
+  const stats = el("div", "stats");
+  [[gpa(st.cgpa), "CGPA"], [gpa(latest && latest.sgpa), latest ? `SGPA (${latest.name})` : "SGPA"], [String(st.credits || 0), `Credits over ${st.semesters.length} semester${st.semesters.length === 1 ? "" : "s"}`]]
+    .forEach(([n, l]) => { const s = el("div", "stat"); s.append(el("div", "stat-num", n), el("div", "stat-label", l)); stats.append(s); });
+  wrap.append(stats);
+
+  if (st.semesters.length > 1) {
+    const trend = el("div", "card res-trend");
+    trend.append(el("h2", null, "SGPA by semester"));
+    const bars = el("div", "res-bars");
+    st.semesters.forEach((s) => {
+      const b = el("div", "res-bar");
+      const fill = el("div", "res-bar-fill");
+      fill.style.height = `${Math.max(4, ((s.sgpa || 0) / 10) * 100)}%`;
+      b.append(el("span", "res-bar-val", gpa(s.sgpa)), fill, el("span", "res-bar-lab", `S${s.number}`));
+      bars.append(b);
+    });
+    trend.append(bars);
+    wrap.append(trend);
+  }
+
+  [...st.semesters].reverse().forEach((s, i) => {
+    const d = el("details", "card res-sem");
+    d.open = i === 0;
+    const sum = el("summary");
+    sum.append(el("strong", null, s.name), el("span", "muted", `SGPA ${gpa(s.sgpa)} · CGPA ${gpa(s.cgpa)} · ${s.credits} credits`));
+    d.append(sum);
+    const scroll = el("div", "res-table-wrap");
+    const t = el("table", "res-table");
+    const hr = el("tr");
+    ["Code", "Subject", "Credits", "Grade", "Points"].forEach((h) => hr.append(el("th", null, h)));
+    t.append(hr);
+    s.subjects.forEach((sub) => {
+      const tr = el("tr");
+      const g = el("td"); g.append(el("span", `res-grade g-${(sub.grade || "x").toLowerCase()}`, sub.grade || "–"));
+      tr.append(el("td", "res-code", sub.code), el("td", null, sub.subject), el("td", null, String(sub.credit)), g, el("td", null, sub.points === null ? "–" : String(sub.points)));
+      t.append(tr);
+    });
+    scroll.append(t);
+    d.append(scroll);
+    wrap.append(d);
+  });
+  return wrap;
+}
+
+async function lookupResult(raw) {
+  const q = String(raw || "").replace(/\s+/g, "").toUpperCase();
+  $("resErr").hidden = true; $("resStale").hidden = true;
+  if (!/^[A-Z0-9]{5,15}$/.test(q)) { $("resErr").textContent = "Enter a full roll number, like 25BCS050."; $("resErr").hidden = false; return; }
+  const out = $("resOut"), btn = $("resGo");
+  btn.disabled = true; btn.textContent = "Searching…";
+  out.replaceChildren(el("p", "muted", `Looking up ${q}…`));
+  try {
+    const res = await fetch(`/api/results?q=${encodeURIComponent(q)}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Could not load results.");
+    out.replaceChildren();
+    if (!data.students.length) {
+      out.append(el("div", "card empty-line", `No results found for ${q}. Check the roll number; results of a new batch show up once they're published.`));
+      return;
+    }
+    resLast = q;
+    resRecent = [q, ...resRecent.filter((r) => r !== q)].slice(0, 6);
+    store.set(RES_KEY, resRecent);
+    renderResultsPage();
+    if (data.stale) { $("resStale").textContent = `The results site isn't responding, so this is the copy saved at ${fmtTime(data.fetched_at * 1000)}.`; $("resStale").hidden = false; }
+    data.students.forEach((st) => out.append(resultCard(st)));
+  } catch (err) {
+    out.replaceChildren();
+    $("resErr").textContent = err.message; $("resErr").hidden = false;
+  } finally {
+    btn.disabled = false; btn.textContent = "Search";
+  }
+}
+
+if ($("resForm")) $("resForm").addEventListener("submit", (e) => { e.preventDefault(); lookupResult($("resQuery").value); });
 
 route();

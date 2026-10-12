@@ -961,3 +961,31 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .item-edit textarea { width: 100%; }
 .item-edit .small-hint { display: block; font-size: 12px; margin-top: 4px; }
 .item-edit .notice-actions { align-items: center; margin-top: 14px; }
+
+/* ---------- results ---------- */
+.res-search { display: flex; gap: 10px; padding: 14px; margin-bottom: 12px; }
+.res-search input { flex: 1; min-width: 0; text-transform: uppercase; }
+.res-search .primary { flex: 0 0 auto; width: auto; padding-left: 26px; padding-right: 26px; margin: 0; }
+.res-recent { margin-bottom: 14px; }
+.res-student { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+.res-student .stats { margin-bottom: 0; }
+.res-head h2 { font-size: 22px; }
+.res-head p { margin: 4px 0 0; }
+.res-trend h2 { margin-bottom: 12px; }
+.res-bars { display: flex; align-items: flex-end; gap: 12px; height: 150px; }
+.res-bar { flex: 1; max-width: 64px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+.res-bar-fill { width: 100%; background: var(--accent); border-radius: 6px 6px 2px 2px; }
+.res-bar-val { font-size: 12px; font-weight: 600; }
+.res-bar-lab { font-size: 12px; color: var(--muted); }
+.res-sem summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+.res-sem summary span { font-size: 13px; }
+.res-table-wrap { overflow-x: auto; margin-top: 12px; }
+.res-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.res-table th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.res-table td { padding: 8px; border-bottom: 1px solid var(--line); }
+.res-table tr:last-child td { border-bottom: 0; }
+.res-code { white-space: nowrap; color: var(--muted); }
+.res-grade { display: inline-block; min-width: 30px; text-align: center; padding: 2px 6px; border-radius: 6px; font-weight: 600; font-size: 13px; background: var(--accent-soft); color: var(--accent); }
+.res-grade.g-a, .res-grade.g-ab { background: var(--green-soft); color: var(--green); }
+.res-grade.g-cd, .res-grade.g-d { background: var(--orange-soft); color: var(--orange); }
+.res-grade.g-f { background: var(--red-soft); color: var(--red); }
