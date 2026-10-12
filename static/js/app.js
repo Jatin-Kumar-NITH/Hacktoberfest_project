@@ -4,7 +4,7 @@ const $ = (id) => document.getElementById(id);
 const ME = JSON.parse(document.getElementById("me-data").textContent);
 const IS_ADMIN = ME.role === "admin" || ME.role === "coowner" || ME.role === "owner";
 const IS_OWNER_LEVEL = ME.role === "owner" || ME.role === "coowner";
-const RANK = { owner: 3, coowner: 2, admin: 1, user: 0 };
+const RANK = { owner: 4, coowner: 3, admin: 2, journalist: 1, user: 0 };
 // may I act against (ban, remove, delete posts of) someone with this role? mirrors outranks() on the server
 const outranks = (role) => ME.role === "owner" || (RANK[ME.role] || 0) > (RANK[role] || 0);
 // every POST to our API carries a custom header (CSRF protection); expired sessions go back to login
@@ -17,7 +17,7 @@ window.fetch = async (url, opts = {}) => {
 };
 const fmtTime = (iso) => new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 const localDate = (iso) => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
-const ROLE_LABEL = { owner: "Owner", coowner: "Co-owner", admin: "Admin", user: "Student" };
+const ROLE_LABEL = { owner: "Owner", coowner: "Co-owner", admin: "Admin", journalist: "Journalist", user: "Student" };
 const pdfHref = (p) => (p.startsWith("/") ? p : `/static/${p}`);
 const SAMPLES = JSON.parse($("samples-data").textContent);
 
@@ -37,7 +37,7 @@ let currentId = null;
 // ---------------------------------------------------------- routing
 function route() {
   const page = (location.hash || "#dashboard").slice(1);
-  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "syllabus", "notice", "planner", "hostel", "chat", "publish", "admins", "about"].filter((v) => $(`page-${v}`));
+  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
@@ -53,6 +53,9 @@ function route() {
   if (p === "chat") startChat(); else stopChat();
   if (p === "publish") renderPublish();
   if (p === "admins") loadUsers();
+  if (p === "college-updates") loadNews("college");
+  if (p === "hostel-updates") loadNews("hostel");
+  if (p === "journalists") loadJournalists();
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
@@ -1923,7 +1926,7 @@ async function loadUsers() {
 function renderUsers() {
   const q = ($("userSearch").value || "").toLowerCase();
   const body = $("userBody"); body.replaceChildren();
-  const admins = USERS.filter((u) => u.role !== "user").length;
+  const admins = USERS.filter((u) => !["user", "journalist"].includes(u.role)).length;
   $("userCount").textContent = `${USERS.length} account${USERS.length === 1 ? "" : "s"} · ${admins} owner/co-owner/admin · ${USERS.length - admins} student${USERS.length - admins === 1 ? "" : "s"}`;
   USERS.filter((u) => `${u.name} ${u.email}`.toLowerCase().includes(q)).forEach((u) => {
     const tr = el("tr");
@@ -1948,8 +1951,10 @@ function renderUsers() {
       if (ME.role === "owner") setRole("Remove co-owner", "ghost small danger", "admin");
       else act.appendChild(el("span", "muted", "Co-owner"));
     } else {
-      if (u.role === "user") setRole("Make admin", "ai-btn", "admin");
-      else setRole("Remove admin", "ghost small danger", "user");
+      if (u.role === "admin") setRole("Remove admin", "ghost small danger", "user");
+      else setRole("Make admin", "ai-btn", "admin");
+      if (u.role === "user") setRole("Make journalist", "ghost small", "journalist");
+      if (u.role === "journalist") setRole("Remove journalist", "ghost small danger", "user");
       if (ME.role === "owner") setRole("Make co-owner", "ghost small", "coowner");
     }
     tr.appendChild(act);
@@ -1957,6 +1962,151 @@ function renderUsers() {
   });
 }
 if ($("userSearch")) $("userSearch").addEventListener("input", renderUsers);
+
+// ========================================================== JOURNALISTS (admins and above)
+let PEOPLE = [];
+async function loadJournalists() {
+  const res = await fetch("/api/people");
+  if (!res.ok) return;
+  PEOPLE = (await res.json()).people;
+  renderJournalists();
+}
+function renderJournalists() {
+  const q = ($("jrSearch").value || "").toLowerCase();
+  const body = $("jrBody"); body.replaceChildren();
+  const count = PEOPLE.filter((u) => u.role === "journalist").length;
+  $("jrCount").textContent = `${count} journalist${count === 1 ? "" : "s"}`;
+  // journalists first, then students; staff can already post so they are left out
+  PEOPLE.filter((u) => ["journalist", "user"].includes(u.role) && `${u.name} ${u.email}`.toLowerCase().includes(q)).forEach((u) => {
+    const tr = el("tr");
+    const who = el("td"); who.append(el("strong", "", u.name), el("div", "muted", u.email)); tr.appendChild(who);
+    const rt = el("td"); rt.appendChild(el("span", `role-tag role-${u.role}`, ROLE_LABEL[u.role])); tr.appendChild(rt);
+    const act = el("td");
+    const on = u.role !== "journalist";
+    const b = el("button", on ? "ai-btn" : "ghost small danger", on ? "Make journalist" : "Remove journalist");
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      const res = await fetch(`/api/users/${u.id}/journalist`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ journalist: on }) });
+      if (res.ok) loadJournalists();
+      else { b.disabled = false; alert((await res.json().catch(() => ({}))).error || "Could not change the role."); }
+    });
+    act.appendChild(b);
+    tr.appendChild(act);
+    body.appendChild(tr);
+  });
+}
+if ($("jrSearch")) $("jrSearch").addEventListener("input", renderJournalists);
+
+// ========================================================== COLLEGE & HOSTEL UPDATES
+const NEWS_YEAR_LABEL = { all: "All years", 1: "1st Year", 2: "2nd Year", 3: "3rd Year", 4: "4th Year" };
+const NEWS_HOSTEL_LABEL = { both: "Boys & girls", boys: "Boys' hostel", girls: "Girls' hostel" };
+let hnYear = store.get("cm_hn_year", null) || String(myYear);
+let hnHostel = store.get("cm_hn_hostel", null) || myHostel;
+const postJSON = (url, data) => fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+
+async function loadNews(section) {
+  const list = $(`newsList-${section}`);
+  let url = `/api/updates/${section}`;
+  if (section === "hostel") {
+    document.querySelectorAll("[data-hn-year]").forEach((b) => b.classList.toggle("active", b.dataset.hnYear === hnYear));
+    document.querySelectorAll("[data-hn-hostel]").forEach((b) => b.classList.toggle("active", b.dataset.hnHostel === hnHostel));
+    url += `?year=${encodeURIComponent(hnYear)}&hostel=${encodeURIComponent(hnHostel)}`;
+  }
+  const res = await fetch(url);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) { list.replaceChildren(el("p", "empty-line", data.error || "Could not load updates.")); return; }
+  const form = document.querySelector(`[data-news-form="${section}"]`);
+  if (form) form.hidden = !data.can_post;
+  list.replaceChildren();
+  if (!data.updates.length) list.appendChild(el("p", "empty-line", section === "hostel" ? "No hostel updates for this year and hostel yet." : "No college updates yet."));
+  data.updates.forEach((u) => list.appendChild(newsItem(section, u)));
+}
+
+function newsItem(section, u) {
+  const card = el("article", "notice news-item");
+  const top = el("div", "notice-top");
+  top.appendChild(el("span", "notice-date", fmtTime(u.created_at)));
+  if (section === "hostel") {
+    const tags = el("span", "news-tags");
+    tags.append(el("span", "kind-badge", NEWS_YEAR_LABEL[u.year]), el("span", "kind-badge", NEWS_HOSTEL_LABEL[u.hostel]));
+    top.appendChild(tags);
+  }
+  card.appendChild(top);
+  if (u.title) card.appendChild(el("h3", "", u.title));
+  card.appendChild(el("p", "notice-preview news-body", u.body));
+  const line = el("div", "pub-line");
+  line.append(el("span", "", "Posted by "), el("strong", "", u.author_name), el("span", `role-tag role-${u.author_role}`, ROLE_LABEL[u.author_role] || "Student"));
+  if (u.updated_at) line.appendChild(el("span", "", ` · edited ${fmtTime(u.updated_at)}`));
+  card.appendChild(line);
+  if (u.can_edit) {
+    const act = el("div", "notice-actions");
+    const edit = el("button", "ghost small", "✎ Edit");
+    edit.addEventListener("click", () => card.replaceWith(newsEditor(section, u)));
+    const del = el("button", "ghost small danger", "🗑 Delete");
+    del.addEventListener("click", async () => {
+      if (del.dataset.confirm !== "1") { del.dataset.confirm = "1"; del.textContent = "Click again to delete"; return; }
+      del.disabled = true;
+      const res = await fetch(`/api/updates/item/${u.id}/delete`, { method: "POST" });
+      if (res.ok) loadNews(section);
+      else { const d = await res.json().catch(() => ({})); del.textContent = d.error || "Could not delete"; }
+    });
+    act.append(edit, del);
+    card.appendChild(act);
+  }
+  return card;
+}
+
+function newsEditor(section, u) {
+  const card = el("form", "notice news-item news-edit");
+  const title = el("input"); title.type = "text"; title.maxLength = 120; title.value = u.title; title.placeholder = "Headline (optional)";
+  const body = el("textarea"); body.rows = 4; body.maxLength = 3000; body.value = u.body;
+  let year, hostel;
+  if (section === "hostel") {
+    year = selectEl(Object.entries(NEWS_YEAR_LABEL), u.year, "");
+    hostel = selectEl(Object.entries(NEWS_HOSTEL_LABEL), u.hostel, "");
+    const row = el("div", "news-edit-tags"); row.append(year, hostel); card.appendChild(row);
+  }
+  card.append(title, body);
+  const act = el("div", "notice-actions");
+  const err = el("span", "muted");
+  const cancel = el("button", "ghost small", "Cancel"); cancel.type = "button";
+  cancel.addEventListener("click", () => card.replaceWith(newsItem(section, u)));
+  const save = el("button", "primary inline", "Save"); save.type = "submit";
+  act.append(err, cancel, save);
+  card.appendChild(act);
+  card.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    save.disabled = true;
+    const data = { title: title.value, body: body.value };
+    if (section === "hostel") { data.year = year.value; data.hostel = hostel.value; }
+    const res = await postJSON(`/api/updates/item/${u.id}/edit`, data);
+    if (res.ok) loadNews(section);
+    else { save.disabled = false; err.textContent = (await res.json().catch(() => ({}))).error || "Could not save."; }
+  });
+  return card;
+}
+
+document.querySelectorAll("[data-news-form]").forEach((form) => {
+  const section = form.dataset.newsForm;
+  if (section === "hostel") { form.elements.year.value = String(myYear); form.elements.hostel.value = myHostel; }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector("button[type=submit]"), msg = form.querySelector(".news-msg");
+    const data = { title: form.elements.title.value, body: form.elements.body.value };
+    if (section === "hostel") { data.year = form.elements.year.value; data.hostel = form.elements.hostel.value; }
+    btn.disabled = true; msg.textContent = "";
+    const res = await postJSON(`/api/updates/${section}`, data);
+    btn.disabled = false;
+    if (res.ok) { form.elements.title.value = ""; form.elements.body.value = ""; msg.textContent = "Posted."; loadNews(section); }
+    else msg.textContent = (await res.json().catch(() => ({}))).error || "Could not post.";
+  });
+});
+document.querySelectorAll("[data-hn-year]").forEach((b) => b.addEventListener("click", () => {
+  hnYear = b.dataset.hnYear; store.set("cm_hn_year", hnYear); loadNews("hostel");
+}));
+document.querySelectorAll("[data-hn-hostel]").forEach((b) => b.addEventListener("click", () => {
+  hnHostel = b.dataset.hnHostel; store.set("cm_hn_hostel", hnHostel); loadNews("hostel");
+}));
 document.querySelectorAll(".ask-chip").forEach((c) => c.addEventListener("click", () => askQuestion(c.textContent)));
 
 route();

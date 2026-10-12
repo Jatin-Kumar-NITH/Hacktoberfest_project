@@ -110,6 +110,11 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - **Admins edit the menu and meal timings from the site.** The menu shows *Last edited by (name) · time*.
 - The Dashboard shows today's menu for your hostel. Ask CampusMate can answer "What's for dinner today?"
 
+### 📰 College Updates and 🛏 Hostel Updates
+- Short text news posts that everyone signed in can read. **Journalists**, admins, co-owners and the owner can post.
+- **Hostel Updates** are tagged with a year (1st to 4th, or all years) and a hostel (Boys, Girls or both). Readers pick a year and Boys/Girls to see the updates meant for them; updates for all years or both hostels show under every filter.
+- The author of an update and admins+ can edit or delete it (only the owner can touch the owner's or a co-owner's updates). Edited updates show when they were edited. All of this is checked on the server.
+
 ### 💬 Campus Chat
 - A public chat for all logged-in users. It refreshes every 3 seconds.
 - Every message shows the sender, their role tag and the time.
@@ -276,6 +281,7 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 |---|---|---|
 | **Owner** | 👑 pink-gold `OWNER` | Everything admins can, plus **Manage Admins** (give or remove admin access). There is exactly one owner, set by `OWNER_EMAIL`, and the role can't be removed or transferred from inside the app. |
 | **Admin** | 🛡 amber `ADMIN` | Publish notices, announcements, assignments and study-material PDFs; **edit timetables, exam schedules and mess menus**; delete posts (except the owner's); remove chat messages and ban students from chat. |
+| **Journalist** | blue `JOURNALIST` | Everything a student can, plus post, edit and delete their own **College Updates** and **Hostel Updates**. Admins and above make or remove journalists from the **Journalists** page. |
 | **Student** | grey `STUDENT` | View everything, use the AI features and post in the chat. Cannot publish or change content. |
 
 - Everyone signs in with their Google account. A first sign-in creates a **student** account. Admin access can only be given by the owner from **Manage Admins**.

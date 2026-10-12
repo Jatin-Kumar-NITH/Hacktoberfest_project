@@ -90,6 +90,17 @@ CREATE TABLE IF NOT EXISTS channel_members (
   added_by TEXT NOT NULL,
   added_at TEXT NOT NULL,
   PRIMARY KEY (channel_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS news (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  section TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  body TEXT NOT NULL,
+  year TEXT NOT NULL DEFAULT 'all',
+  hostel TEXT NOT NULL DEFAULT 'both',
+  author_id INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL,
+  updated_at TEXT
 )
 """
 
@@ -162,6 +173,17 @@ CREATE TABLE IF NOT EXISTS channel_members (
   added_by TEXT NOT NULL,
   added_at TEXT NOT NULL,
   PRIMARY KEY (channel_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS news (
+  id SERIAL PRIMARY KEY,
+  section TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  body TEXT NOT NULL,
+  year TEXT NOT NULL DEFAULT 'all',
+  hostel TEXT NOT NULL DEFAULT 'both',
+  author_id INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL,
+  updated_at TEXT
 )
 """
 
@@ -174,7 +196,7 @@ EXTRA_COLUMNS = [
     ("messages", "channel_id", "INTEGER REFERENCES channels(id)", "INTEGER REFERENCES channels(id)"),
 ]
 
-TABLES_WITH_ID = ("users", "posts", "otps", "messages", "channels")
+TABLES_WITH_ID = ("users", "posts", "otps", "messages", "channels", "news")
 
 
 class Row(dict):
