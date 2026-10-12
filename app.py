@@ -653,6 +653,29 @@ def index():
     campus["posts"] = accounts.all_posts()
     return render_template("index.html", samples=load("sample_notices.json"), campus=campus,
                            me=user, models=MODELS)
+# ------------------------------------------------------------------ JSON API for the Android app
+
+@app.get("/api/config")
+def api_config():
+    # public: the Android app needs the web client ID to ask Google for an ID token
+    return jsonify(google_client_id=accounts.google_client_id())
+
+
+@app.get("/api/me")
+@login_required
+def api_me():
+    return jsonify(user=public_user(current_user()))
+
+
+@app.get("/api/campus")
+@login_required
+def api_campus():
+    """Everything the dashboard page embeds, for the native app."""
+    campus = load_campus()
+    campus["posts"] = accounts.all_posts()
+    return jsonify(campus=campus, samples=load("sample_notices.json"), me=public_user(current_user()), models=MODELS)
+
+
 # ------------------------------------------------------------------ Study Planner
 
 PLAN_PROMPT = """You are CampusMate AI, a realistic study coach for Indian college students.

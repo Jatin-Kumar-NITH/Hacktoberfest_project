@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="timetable"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_timetable"
+        android:shortcutShortLabel="@string/shortcut_timetable"
+        android:shortcutLongLabel="@string/shortcut_timetable">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.vercel.campusmate_nith"
+            android:targetClass="app.vercel.campusmate_nith.MainActivity">
+            <extra android:name="route" android:value="timetable" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="mess"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_mess"
+        android:shortcutShortLabel="@string/shortcut_mess"
+        android:shortcutLongLabel="@string/shortcut_mess">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.vercel.campusmate_nith"
+            android:targetClass="app.vercel.campusmate_nith.MainActivity">
+            <extra android:name="route" android:value="mess" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="attendance"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_attendance"
+        android:shortcutShortLabel="@string/shortcut_attendance"
+        android:shortcutLongLabel="@string/shortcut_attendance">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.vercel.campusmate_nith"
+            android:targetClass="app.vercel.campusmate_nith.MainActivity">
+            <extra android:name="route" android:value="attendance" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="ask"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_ask"
+        android:shortcutShortLabel="@string/shortcut_ask"
+        android:shortcutLongLabel="@string/shortcut_ask">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.vercel.campusmate_nith"
+            android:targetClass="app.vercel.campusmate_nith.MainActivity">
+            <extra android:name="route" android:value="ask" />
+        </intent>
+    </shortcut>
+</shortcuts>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Same as the page background (bg) in static/css/style.css -->
-    <color name="status_bar">#F5F5F7</color>
-    <color name="status_bar_dark">#000000</color>
+    <color name="background">#F5F5F7</color>
+    <color name="ink">#1D1D1F</color>
+    <color name="accent">#0071E3</color>
+    <color name="widget_bg">#FFFFFF</color>
+    <color name="widget_ink">#1D1D1F</color>
+    <color name="widget_muted">#6E6E73</color>
 </resources>
