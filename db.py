@@ -77,6 +77,19 @@ CREATE TABLE IF NOT EXISTS user_data (
   value TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   PRIMARY KEY (user_id, key)
+);
+CREATE TABLE IF NOT EXISTS channels (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  created_by INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS channel_members (
+  channel_id INTEGER NOT NULL REFERENCES channels(id),
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  added_by TEXT NOT NULL,
+  added_at TEXT NOT NULL,
+  PRIMARY KEY (channel_id, user_id)
 )
 """
 
@@ -136,17 +149,32 @@ CREATE TABLE IF NOT EXISTS user_data (
   value TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   PRIMARY KEY (user_id, key)
+);
+CREATE TABLE IF NOT EXISTS channels (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_by INTEGER NOT NULL REFERENCES users(id),
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS channel_members (
+  channel_id INTEGER NOT NULL REFERENCES channels(id),
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  added_by TEXT NOT NULL,
+  added_at TEXT NOT NULL,
+  PRIMARY KEY (channel_id, user_id)
 )
 """
 
 # columns added after the first release (added automatically if missing)
-EXTRA_USER_COLUMNS = [
-    ("chat_ban_until", "REAL NOT NULL DEFAULT 0", "DOUBLE PRECISION NOT NULL DEFAULT 0"),
-    ("chat_ban_by", "TEXT", "TEXT"),
-    ("last_login_at", "TEXT", "TEXT"),
+EXTRA_COLUMNS = [
+    ("users", "chat_ban_until", "REAL NOT NULL DEFAULT 0", "DOUBLE PRECISION NOT NULL DEFAULT 0"),
+    ("users", "chat_ban_by", "TEXT", "TEXT"),
+    ("users", "last_login_at", "TEXT", "TEXT"),
+    # NULL = the public campus chat; otherwise the private channel the message belongs to
+    ("messages", "channel_id", "INTEGER REFERENCES channels(id)", "INTEGER REFERENCES channels(id)"),
 ]
 
-TABLES_WITH_ID = ("users", "posts", "otps", "messages")
+TABLES_WITH_ID = ("users", "posts", "otps", "messages", "channels")
 
 
 class Row(dict):
@@ -229,12 +257,12 @@ def integrity_errors():
 def create_schema(conn):
     pg = isinstance(conn, PostgresConnection)
     conn.executescript(POSTGRES_SCHEMA if pg else SQLITE_SCHEMA)
-    for name, sqlite_type, pg_type in EXTRA_USER_COLUMNS:
+    for table, name, sqlite_type, pg_type in EXTRA_COLUMNS:
         if pg:
-            conn.execute(f"ALTER TABLE users ADD COLUMN IF NOT EXISTS {name} {pg_type}")
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {name} {pg_type}")
         else:
             try:
-                conn.execute(f"ALTER TABLE users ADD COLUMN {name} {sqlite_type}")
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {sqlite_type}")
             except sqlite3.OperationalError:
                 pass  # already exists
     conn.commit()

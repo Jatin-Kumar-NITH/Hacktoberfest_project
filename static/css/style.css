@@ -620,6 +620,10 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 .chat-msg.mine .chat-time { opacity: .75; }
 .chat-msg.role-admin { border: 1px solid var(--gold); background: var(--card); padding-top: 0; overflow: hidden; }
 .chat-msg.role-owner { border: 1px solid var(--gold); background: var(--card); padding-top: 0; overflow: hidden; }
+/* admins' own messages keep the gold card, so their text stays dark instead of white */
+.chat-msg.mine:is(.role-admin, .role-owner) :is(.chat-body, .chat-time, .chat-del) { color: var(--ink); }
+.chat-msg.mine:is(.role-admin, .role-owner) .chat-name { color: var(--gold); }
+.chat-msg.mine:is(.role-admin, .role-owner) :is(.chat-time, .chat-del) { color: var(--muted); }
 .chat-banner { margin: 0 -14px 8px; padding: 3px 14px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .role-admin .chat-banner { background: var(--gold-soft); color: var(--gold); }
 .role-owner .chat-banner { background: var(--gold); color: var(--on-gold); }
@@ -923,3 +927,14 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
   .landing-main { padding: 64px 16px 48px; }
   .landing-features { grid-template-columns: 1fr 1fr; margin-top: 48px; }
 }
+
+/* ---------- private chat channels ---------- */
+.channel-bar { margin-bottom: 12px; }
+.channel-card { margin-bottom: 12px; padding: 12px 18px; }
+.channel-card h3 { margin: 0 0 4px; }
+.channel-card summary { cursor: pointer; font-weight: 700; }
+.channel-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.channel-actions select { max-width: 260px; }
+.people-pick { max-height: 220px; overflow-y: auto; margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 4px 10px; }
+.people-pick label { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; cursor: pointer; }
+.people-pick label + label { border-top: 1px solid var(--line); }

@@ -1,8 +1,9 @@
-"""Accounts, roles, published posts and the public campus chat (SQLite).
+"""Accounts, roles, published posts, the public campus chat and private chat channels (SQLite).
 
 Roles:
   owner - the site owner (whoever signs in with Google as OWNER_EMAIL from .env). Can grant/revoke admin.
-  admin - can publish notices, announcements, assignments and study material, and moderate chat.
+  admin - can publish notices, announcements, assignments and study material, moderate chat,
+          and create private chat channels and choose their members.
   user  - can read everything and use the chat, but cannot publish or change content.
 """
 import hashlib
@@ -432,9 +433,9 @@ def api_chat():
     after = request.args.get("after", "0")
     after = int(after) if after.isdigit() else 0
     rows = db().execute("""SELECT m.id, m.body, m.created_at, m.user_id, u.name, u.role FROM messages m
-                           JOIN users u ON u.id = m.user_id WHERE m.id > ? ORDER BY m.id DESC LIMIT 100""",
-                        (after,)).fetchall()
-    latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages").fetchone()[0]
+                           JOIN users u ON u.id = m.user_id WHERE m.channel_id IS NULL AND m.id > ?
+                           ORDER BY m.id DESC LIMIT 100""", (after,)).fetchall()
+    latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages WHERE channel_id IS NULL").fetchone()[0]
     return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest,
                    banned=ban_status(current_user()["id"]))
 
@@ -443,6 +444,10 @@ def api_chat():
 @login_required
 def api_chat_send():
     body = re.sub(r"[ \t]+", " ", str((request.get_json(silent=True) or {}).get("body") or "")).strip()
+    return _send_message(body, None)
+
+
+def _send_message(body, channel_id):
     if not body:
         return jsonify(error="Type a message first."), 400
     if len(body) > 500:
@@ -454,7 +459,8 @@ def api_chat_send():
     if time.time() - _LAST_MSG.get(u["id"], 0) < 1.5:
         return jsonify(error="You're sending messages too fast. Wait a second."), 429
     _LAST_MSG[u["id"]] = time.time()
-    db().execute("INSERT INTO messages (user_id, body, created_at) VALUES (?,?,?)", (u["id"], body, now_iso()))
+    db().execute("INSERT INTO messages (user_id, body, created_at, channel_id) VALUES (?,?,?,?)",
+                 (u["id"], body, now_iso(), channel_id))
     db().commit()
     return jsonify(ok=True)
 
@@ -462,7 +468,8 @@ def api_chat_send():
 @bp.post("/api/chat/<int:mid>/delete")
 @admin_required
 def api_chat_delete(mid):
-    db().execute("DELETE FROM messages WHERE id = ?", (mid,))
+    # private-channel messages are removed through their channel, by admins who are members of it
+    db().execute("DELETE FROM messages WHERE id = ? AND channel_id IS NULL", (mid,))
     db().commit()
     return jsonify(ok=True)
 
@@ -529,3 +536,171 @@ def api_chat_bans():
                           "permanent": r["chat_ban_until"] >= PERMANENT,
                           "until": datetime.fromtimestamp(r["chat_ban_until"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
                          for r in rows])
+
+
+# ------------------------------------------------------------------ private chat channels
+#
+# Admins and the owner create private channels and choose who is in them. Only members can
+# see a channel, its member list or its messages: everyone else gets a 404, as if it did not
+# exist. Admins who are members manage it (add/remove people, remove messages, delete it).
+
+def _is_admin(u):
+    return u["role"] in ("admin", "owner")
+
+
+def _channel_for_member(cid):
+    """The channel row if the current user is a member, else None (callers answer 404)."""
+    return db().execute("""SELECT c.id, c.name, c.created_by, c.created_at FROM channels c
+                           JOIN channel_members cm ON cm.channel_id = c.id
+                           WHERE c.id = ? AND cm.user_id = ?""", (cid, current_user()["id"])).fetchone()
+
+
+def _not_found():
+    return jsonify(error="Channel not found."), 404
+
+
+def _channel_members(cid):
+    rows = db().execute("""SELECT u.id, u.name, u.email, u.role FROM channel_members cm JOIN users u ON u.id = cm.user_id
+                           WHERE cm.channel_id = ? ORDER BY CASE u.role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, u.name""",
+                        (cid,)).fetchall()
+    return [dict(r) for r in rows]
+
+
+def _add_member(cid, uid):
+    if not db().execute("SELECT 1 FROM users WHERE id = ?", (uid,)).fetchone():
+        return False
+    if not db().execute("SELECT 1 FROM channel_members WHERE channel_id = ? AND user_id = ?", (cid, uid)).fetchone():
+        db().execute("INSERT INTO channel_members (channel_id, user_id, added_by, added_at) VALUES (?,?,?,?)",
+                     (cid, uid, current_user()["name"], now_iso()))
+    return True
+
+
+def _user_ids(values):
+    out = []
+    for v in values if isinstance(values, list) else []:
+        if isinstance(v, int) or (isinstance(v, str) and v.isdigit()):
+            out.append(int(v))
+    return out
+
+
+@bp.get("/api/channels")
+@login_required
+def api_channels():
+    rows = db().execute("""SELECT c.id, c.name, c.created_at, u.name AS created_by_name,
+                           (SELECT COUNT(*) FROM channel_members x WHERE x.channel_id = c.id) AS member_count,
+                           (SELECT COALESCE(MAX(m.id), 0) FROM messages m WHERE m.channel_id = c.id) AS latest
+                           FROM channels c JOIN channel_members cm ON cm.channel_id = c.id
+                           JOIN users u ON u.id = c.created_by
+                           WHERE cm.user_id = ? ORDER BY c.name""", (current_user()["id"],)).fetchall()
+    return jsonify(channels=[dict(r) for r in rows], can_create=_is_admin(current_user()))
+
+
+@bp.post("/api/channels")
+@admin_required
+def api_channel_create():
+    data = request.get_json(silent=True) or {}
+    name = re.sub(r"\s+", " ", str(data.get("name") or "")).strip()[:60]
+    if len(name) < 2:
+        return jsonify(error="Give the channel a name (at least 2 characters)."), 400
+    u = current_user()
+    cur = db().execute("INSERT INTO channels (name, created_by, created_at) VALUES (?,?,?)", (name, u["id"], now_iso()))
+    cid = cur.lastrowid
+    _add_member(cid, u["id"])
+    for uid in _user_ids(data.get("member_ids")):
+        _add_member(cid, uid)
+    db().commit()
+    return jsonify(ok=True, id=cid)
+
+
+@bp.get("/api/channels/<int:cid>")
+@login_required
+def api_channel(cid):
+    ch = _channel_for_member(cid)
+    if not ch:
+        return _not_found()
+    return jsonify(channel=dict(ch), members=_channel_members(cid), can_manage=_is_admin(current_user()))
+
+
+@bp.get("/api/channels/<int:cid>/messages")
+@login_required
+def api_channel_messages(cid):
+    if not _channel_for_member(cid):
+        return _not_found()
+    after = request.args.get("after", "0")
+    after = int(after) if after.isdigit() else 0
+    rows = db().execute("""SELECT m.id, m.body, m.created_at, m.user_id, u.name, u.role FROM messages m
+                           JOIN users u ON u.id = m.user_id WHERE m.channel_id = ? AND m.id > ?
+                           ORDER BY m.id DESC LIMIT 100""", (cid, after)).fetchall()
+    latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages WHERE channel_id = ?", (cid,)).fetchone()[0]
+    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest,
+                   banned=ban_status(current_user()["id"]))
+
+
+@bp.post("/api/channels/<int:cid>/messages")
+@login_required
+def api_channel_send(cid):
+    if not _channel_for_member(cid):
+        return _not_found()
+    body = re.sub(r"[ \t]+", " ", str((request.get_json(silent=True) or {}).get("body") or "")).strip()
+    return _send_message(body, cid)
+
+
+@bp.post("/api/channels/<int:cid>/messages/<int:mid>/delete")
+@admin_required
+def api_channel_message_delete(cid, mid):
+    if not _channel_for_member(cid):
+        return _not_found()
+    db().execute("DELETE FROM messages WHERE id = ? AND channel_id = ?", (mid, cid))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.post("/api/channels/<int:cid>/members")
+@admin_required
+def api_channel_add_members(cid):
+    if not _channel_for_member(cid):
+        return _not_found()
+    ids = _user_ids((request.get_json(silent=True) or {}).get("user_ids"))
+    if not ids:
+        return jsonify(error="Choose who to add."), 400
+    added = sum(1 for uid in ids if _add_member(cid, uid))
+    db().commit()
+    return jsonify(ok=True, added=added)
+
+
+@bp.post("/api/channels/<int:cid>/members/<int:uid>/remove")
+@login_required
+def api_channel_remove_member(cid, uid):
+    """Admins in the channel can remove anyone; any member can remove themselves (leave)."""
+    if not _channel_for_member(cid):
+        return _not_found()
+    u = current_user()
+    if uid != u["id"] and not _is_admin(u):
+        return jsonify(error="Only admins can remove members."), 403
+    target = db().execute("SELECT role FROM users WHERE id = ?", (uid,)).fetchone()
+    if target and target["role"] == "owner" and u["role"] != "owner":
+        return jsonify(error="Only the owner can remove the owner."), 403
+    db().execute("DELETE FROM channel_members WHERE channel_id = ? AND user_id = ?", (cid, uid))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.post("/api/channels/<int:cid>/delete")
+@admin_required
+def api_channel_delete(cid):
+    if not _channel_for_member(cid):
+        return _not_found()
+    db().execute("DELETE FROM messages WHERE channel_id = ?", (cid,))
+    db().execute("DELETE FROM channel_members WHERE channel_id = ?", (cid,))
+    db().execute("DELETE FROM channels WHERE id = ?", (cid,))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.get("/api/people")
+@admin_required
+def api_people():
+    """Everyone with an account, for choosing channel members."""
+    rows = db().execute("""SELECT id, name, email, role FROM users
+                           ORDER BY CASE role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END, name""").fetchall()
+    return jsonify(people=[dict(r) for r in rows])
