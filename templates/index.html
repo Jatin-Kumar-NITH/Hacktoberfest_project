@@ -44,6 +44,7 @@
       <a href="#exams" data-page="exams"><span class="ico">⚑</span><span>Exam Schedule</span></a>
       <a href="#calendar" data-page="calendar"><span class="ico">📅</span><span>Academic Calendar</span></a>
       <a href="#attendance" data-page="attendance"><span class="ico">✓</span><span>My Attendance</span></a>
+      <a href="#results" data-page="results"><span class="ico">🎓</span><span>Results</span></a>
       <a href="#syllabus" data-page="syllabus"><span class="ico">❒</span><span>Syllabus</span></a>
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
@@ -351,6 +352,20 @@
           <div class="att-grid" id="attSubjects"></div>
         </div>
       </div>
+    </section>
+
+    <!-- ============ RESULTS ============ -->
+    <section class="page" id="page-results" hidden>
+      <header class="page-head"><div><h1>Results</h1><p class="sub">Look up any NIT Hamirpur student's semester results, SGPA and CGPA by roll number.</p></div></header>
+      <form class="card res-search" id="resForm">
+        <input type="text" id="resQuery" maxlength="15" placeholder="Roll number, e.g. 25BCS050" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button class="primary" type="submit" id="resGo">Search</button>
+      </form>
+      <div class="chips res-recent" id="resRecent"></div>
+      <div class="alert error" id="resErr" hidden></div>
+      <div class="alert warn" id="resStale" hidden></div>
+      <div id="resOut"></div>
+      <p class="fine">Results come from <a href="https://www.nithresults.xyz" target="_blank" rel="noopener">nithresults.xyz</a>, an unofficial site, and are refreshed every few hours. SGPA and CGPA are worked out from the grades (A=10, AB=9, B=8, BC=7, C=6, CD=5, D=4, F=0). For anything official, check the college's result portal.</p>
     </section>
 
     <!-- ============ SYLLABUS ============ -->

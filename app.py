@@ -910,6 +910,111 @@ def ask():
     )
 
 
+# ------------------------------------------------------------------ Results (from nithresults.xyz)
+
+RESULTS_URL = os.getenv("RESULTS_URL", "https://www.nithresults.xyz/api/query")
+RESULTS_TTL = 3 * 3600          # keep a looked-up result for 3 hours, then fetch fresh
+RESULTS_PER_USER = 30           # lookups per user per 10 minutes (cached ones are free)
+GRADE_POINTS = {"A": 10, "AB": 9, "B": 8, "BC": 7, "C": 6, "CD": 5, "D": 4, "F": 0}
+_results_cache = {}             # query -> (fetched_at, students)
+_results_hits = {}              # user id -> [timestamps]
+
+
+class ResultsDown(Exception):
+    pass
+
+
+def _num(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def shape_student(raw):
+    """Turn one nithresults.xyz student record into what the Results page shows, with SGPA/CGPA."""
+    info = raw.get("student_info") or {}
+    semesters, total_pts, total_cr = [], 0.0, 0.0
+    for sem in _list(raw.get("semesters")):
+        name = str(sem.get("semester_name") or "")
+        m = re.search(r"S0*(\d+)", name)
+        subjects, pts, cr = [], 0.0, 0.0
+        for s in _list(sem.get("subjects")):
+            credit = _num(s.get("credit")) or 0
+            grade = str(s.get("grade") or "").strip().upper()
+            gp = GRADE_POINTS.get(grade)
+            if gp is None and _num(s.get("marks")) is not None and credit:
+                gp = _num(s.get("marks")) / credit   # unknown grade letter: points = marks / credit
+            if gp is not None and credit:
+                pts += gp * credit
+                cr += credit
+            subjects.append({"code": str(s.get("code") or ""), "subject": str(s.get("subject") or ""),
+                             "credit": credit, "grade": grade,
+                             "points": round(gp * credit, 2) if gp is not None else None})
+        total_pts += pts
+        total_cr += cr
+        semesters.append({
+            "number": int(m.group(1)) if m else len(semesters) + 1,
+            "name": f"Semester {int(m.group(1))}" if m else (name or f"Semester {len(semesters) + 1}"),
+            "subjects": subjects,
+            "credits": cr,
+            "sgpa": round(pts / cr, 2) if cr else None,
+            "cgpa": round(total_pts / total_cr, 2) if total_cr else None,
+        })
+    return {
+        "name": str(info.get("student_name") or "").title(),
+        "roll": str(info.get("roll_number") or "").upper(),
+        "father": str(info.get("father_name") or "").title(),
+        "year": raw.get("year"),
+        "semesters": semesters,
+        "credits": total_cr,
+        "cgpa": round(total_pts / total_cr, 2) if total_cr else None,
+    }
+
+
+def fetch_results(query):
+    import requests
+    try:
+        r = requests.post(RESULTS_URL, params={"query": query}, timeout=12,
+                          headers={"User-Agent": "CampusMate/1.0 (NITH campus app)", "Accept": "application/json"})
+        r.raise_for_status()
+        data = r.json()
+    except Exception as e:
+        raise ResultsDown(str(e)) from e
+    if not isinstance(data, dict) or not isinstance(data.get("students"), list):
+        raise ResultsDown("unexpected reply")
+    return [shape_student(s) for s in data["students"] if isinstance(s, dict)]
+
+
+@app.get("/api/results")
+@login_required
+def results_lookup():
+    q = re.sub(r"\s+", "", str(request.args.get("q") or "")).lower()
+    if not re.fullmatch(r"[a-z0-9]{5,15}", q):
+        return jsonify(error="Enter a full roll number, like 25BCS050."), 400
+    now = time.time()
+    cached = _results_cache.get(q)
+    if cached and now - cached[0] < RESULTS_TTL:
+        return jsonify(students=cached[1], fetched_at=cached[0], cached=True)
+
+    uid = current_user()["id"]
+    hits = [t for t in _results_hits.get(uid, []) if now - t < 600]
+    if len(hits) >= RESULTS_PER_USER:
+        return jsonify(error="You've looked up a lot of results in a short time. Please wait a few minutes."), 429
+    _results_hits[uid] = hits + [now]
+
+    try:
+        students = fetch_results(q)
+    except ResultsDown:
+        if cached:  # source is down: show the last copy we have rather than nothing
+            return jsonify(students=cached[1], fetched_at=cached[0], cached=True, stale=True)
+        return jsonify(error="The results site isn't responding right now. Please try again in a little while."), 502
+    if len(_results_cache) > 2000:
+        _results_cache.clear()
+    _results_cache[q] = (now, students)
+    return jsonify(students=students, fetched_at=now, cached=False)
+
+
 # ------------------------------------------------------------------ Installable app (PWA + Android)
 
 ANDROID_PACKAGE = "app.vercel.campusmate_nith"
