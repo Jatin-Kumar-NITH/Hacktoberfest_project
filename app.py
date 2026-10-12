@@ -256,6 +256,16 @@ def load_campus():
         ov = accounts.get_setting(f"exams:{y}")
         if ov:
             campus["exams"]["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+    ov = accounts.get_setting("assignments")
+    if ov:
+        edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
+        campus["assignments"]["assignments"] = [{**a, **edits.get(a["id"], {})}
+                                                for a in campus["assignments"]["assignments"] if a["id"] not in gone]
+    for y, syl in campus["syllabus"]["years"].items():
+        ov = accounts.get_setting(f"syllabus:{y}")
+        if ov:
+            edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
+            syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in syl["subjects"].items() if c not in gone}
     for h in ("boys", "girls"):
         ov = accounts.get_setting(f"menu:{h}")
         if ov:
@@ -360,6 +370,120 @@ def edit_menu():
     timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
     accounts.set_setting(f"menu:{hostel}", {"mess_menu": menu, "mess_timings": timings})
     return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
+
+
+# ------------------------------------------------------------------ built-in assignments & syllabus (admins edit or delete)
+#
+# Assignments and syllabus subjects that ship in data/*.json can't be changed in place (read-only on Vercel),
+# so edits and deletions are stored as overrides in settings and applied by load_campus().
+# Published assignments and study material are posts; they use /api/posts/<id>/edit and /delete.
+
+def _overrides(key):
+    ov = accounts.get_setting(key)
+    v = ov["value"] if ov else {}
+    return {"edits": v.get("edits", {}), "deleted": v.get("deleted", [])}
+
+
+def _pdf_field(old_pdf):
+    """New /files/ URL if a PDF was uploaded (the old uploaded one is removed), the old value if not,
+    or False if the upload isn't a PDF."""
+    name = accounts.save_pdf_upload()
+    if name is False:
+        return False
+    if not name:
+        return old_pdf
+    accounts.db().commit()
+    accounts.delete_file(old_pdf)
+    return f"/files/{name}"
+
+
+def _builtin_assignment(aid):
+    return next((a for a in load_campus()["assignments"]["assignments"] if a["id"] == aid), None)
+
+
+@app.post("/api/edit/assignment/<aid>")
+@admin_required
+def edit_builtin_assignment(aid):
+    a = _builtin_assignment(aid)
+    if not a:
+        return jsonify(error="Assignment not found."), 404
+    f = request.form
+    title = _txt(f.get("title"), 150)
+    if len(title) < 3:
+        return jsonify(error="Please enter a title (at least 3 characters)."), 400
+    due = f.get("due", "").strip() or None
+    if due and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", due):
+        return jsonify(error="Due date is not valid."), 400
+    marks = f.get("marks", "").strip()
+    pdf = _pdf_field(a.get("pdf"))
+    if pdf is False:
+        return jsonify(error="Only PDF files can be uploaded."), 400
+    ov = _overrides("assignments")
+    ov["edits"][aid] = {
+        "title": title, "code": re.sub(r"[^A-Za-z0-9 &\-]", "", f.get("code", "")).strip()[:40] or "General",
+        "details": f.get("body", "").strip()[:8000] or "See the attached PDF.", "due": due,
+        "marks": int(marks) if marks.isdigit() and int(marks) <= 1000 else None,
+        "submit": _txt(f.get("submit"), 300) or a.get("submit", ""), "pdf": pdf,
+    }
+    accounts.set_setting("assignments", ov)
+    return jsonify(ok=True)
+
+
+@app.post("/api/edit/assignment/<aid>/delete")
+@admin_required
+def delete_builtin_assignment(aid):
+    a = _builtin_assignment(aid)
+    if not a:
+        return jsonify(error="Assignment not found."), 404
+    ov = _overrides("assignments")
+    old = ov["edits"].pop(aid, {})
+    ov["deleted"].append(aid)
+    accounts.set_setting("assignments", ov)
+    accounts.delete_file(old.get("pdf"))
+    return jsonify(ok=True)
+
+
+def _builtin_subject(year, code):
+    if year not in ("1", "2", "3", "4"):
+        return None
+    return load_campus()["syllabus"]["years"].get(year, {}).get("subjects", {}).get(code)
+
+
+@app.post("/api/edit/syllabus/<year>/<code>")
+@admin_required
+def edit_syllabus_subject(year, code):
+    sub = _builtin_subject(year, code)
+    if not sub:
+        return jsonify(error="Subject not found."), 404
+    f = request.form
+    name = _txt(f.get("name"), 150)
+    text = f.get("text", "").strip()[:20000]
+    if len(name) < 2:
+        return jsonify(error="Please enter the subject name."), 400
+    if not text:
+        return jsonify(error="Please enter the syllabus text."), 400
+    pdf = _pdf_field(sub.get("pdf"))
+    if pdf is False:
+        return jsonify(error="Only PDF files can be uploaded."), 400
+    ov = _overrides(f"syllabus:{year}")
+    ov["edits"][code] = {"name": name, "text": text, "note": _txt(f.get("note"), 300) or None, "pdf": pdf}
+    if pdf != sub.get("pdf"):
+        ov["edits"][code]["pages"] = []  # page numbers referred to the old PDF
+    accounts.set_setting(f"syllabus:{year}", ov)
+    return jsonify(ok=True)
+
+
+@app.post("/api/edit/syllabus/<year>/<code>/delete")
+@admin_required
+def delete_syllabus_subject(year, code):
+    if not _builtin_subject(year, code):
+        return jsonify(error="Subject not found."), 404
+    ov = _overrides(f"syllabus:{year}")
+    old = ov["edits"].pop(code, {})
+    ov["deleted"].append(code)
+    accounts.set_setting(f"syllabus:{year}", ov)
+    accounts.delete_file(old.get("pdf"))
+    return jsonify(ok=True)
 
 
 # ------------------------------------------------------------------ academic calendar (everyone views, admins edit)
