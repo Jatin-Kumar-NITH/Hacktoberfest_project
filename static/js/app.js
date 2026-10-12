@@ -1651,7 +1651,8 @@ async function pollChat() {
     showBanned(data.banned);
     const log = $("chatLog");
     const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
-    data.messages.forEach((m) => { log.appendChild(chatMsg(m)); chatLatest = Math.max(chatLatest, m.id); });
+    // polls can overlap on a slow server; only show messages newer than the last one shown
+    data.messages.filter((m) => m.id > chatLatest).forEach((m) => { log.appendChild(chatMsg(m)); chatLatest = m.id; });
     $("chatEmpty").hidden = log.querySelectorAll(".chat-msg").length > 0;
     if (data.messages.length && (atBottom || chatLatest === data.latest)) log.scrollTop = log.scrollHeight;
   } catch { /* offline: try again next tick */ }
