@@ -1233,8 +1233,13 @@ CAL.events = CAL.events || [];
 let calView = todayISO().slice(0, 7), calFilter = "upcoming", calSelected = null, calEditing = false;
 const isoOf = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const shiftISO = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return isoOf(d); };
-const eventsOn = (iso) => CAL.events.filter((e) => e.date <= iso && iso <= e.end);
-const holidayOn = (iso) => CAL.events.find((e) => e.type === "holiday" && e.date <= iso && iso <= e.end);
+// Each entry is for ["all"] years or a list of years (1-4); entries saved before years existed are for all years.
+const calYears = (e) => (e.years && e.years.length ? e.years.map(String) : ["all"]);
+const calForYear = (e, y) => calYears(e).includes("all") || calYears(e).includes(String(y));
+const calYearsLabel = (e) => (calYears(e).includes("all") ? "" : `${calYears(e).map((y) => YEAR_NAMES[y].replace(" Year", "")).join(", ")} Year only`);
+const myCal = () => CAL.events.filter((e) => calForYear(e, myYear));
+const eventsOn = (iso) => myCal().filter((e) => e.date <= iso && iso <= e.end);
+const holidayOn = (iso) => myCal().find((e) => e.type === "holiday" && e.date <= iso && iso <= e.end);
 const spanDays = (e) => Math.round((new Date(e.end) - new Date(e.date)) / 86400000) + 1;
 const rangeLabel = (e) => (e.end === e.date ? niceDate(e.date) : `${niceDate(e.date)} – ${niceDate(e.end)}`);
 function whenLabel(e) {
@@ -1244,16 +1249,16 @@ function whenLabel(e) {
 }
 
 function renderCalendar() {
-  $("calSub").textContent = `${CAL.name || "Academic Calendar"} · confirmed holidays and important dates for everyone`;
+  $("calSub").textContent = `${CAL.name || "Academic Calendar"} · confirmed holidays and important dates for ${YEAR_NAMES[myYear]}`;
   $("calNote").textContent = `📅 ${CAL.note || "Holidays and important dates are confirmed by CampusMate admins."}`;
   $("calEditBar").hidden = !IS_ADMIN || calEditing;
   $("calEdited").textContent = editedLine(CAL);
   const today = todayISO();
-  const left = CAL.events.filter((e) => e.type === "holiday" && e.end >= today);
+  const mine = myCal(), left = mine.filter((e) => e.type === "holiday" && e.end >= today);
   const sum = $("calSummary"); sum.replaceChildren();
   const pill = (big, small, cls = "") => { const d = el("div", `cal-pill ${cls}`); d.append(el("strong", "", big), el("span", "", small)); sum.appendChild(d); };
   const now = holidayOn(today);
-  if (!CAL.events.length) pill("No dates added yet", IS_ADMIN ? "Use “Edit academic calendar” to add holidays." : "Admins will add confirmed holidays here.");
+  if (!mine.length) pill(CAL.events.length ? `No dates for ${YEAR_NAMES[myYear]} yet` : "No dates added yet", IS_ADMIN ? "Use “Edit academic calendar” to add holidays." : "Admins will add confirmed holidays here.");
   else {
     if (now) pill(`🎉 Today: ${now.title}`, "Holiday · no classes", "hol");
     const next = left.find((e) => e.date > today);
@@ -1303,7 +1308,7 @@ function renderCalDay() {
     row.appendChild(el("span", `tag cal-${e.type}`, CAL_TYPES[e.type]));
     const txt = el("div");
     txt.appendChild(el("strong", "", e.title));
-    txt.appendChild(el("span", "muted", ` ${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""}`));
+    txt.appendChild(el("span", "muted", ` ${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""}${calYearsLabel(e) ? ` · ${calYearsLabel(e)}` : ""}`));
     if (e.note) txt.appendChild(el("p", "cal-note", e.note));
     row.appendChild(txt);
     box.appendChild(row);
@@ -1317,7 +1322,7 @@ function calItem(e) {
   badge.appendChild(el("small", "", MONTHS[Number(mm) - 1]));
   const txt = el("div", "dl-text");
   txt.appendChild(el("strong", "", e.title));
-  txt.appendChild(el("span", "", `${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""} · ${whenLabel(e)}`));
+  txt.appendChild(el("span", "", `${rangeLabel(e)}${spanDays(e) > 1 ? ` · ${spanDays(e)} days` : ""} · ${whenLabel(e)}${calYearsLabel(e) ? ` · ${calYearsLabel(e)}` : ""}`));
   if (e.note) txt.appendChild(el("span", "cal-note", e.note));
   li.append(badge, txt, el("span", `tag cal-${e.type}`, CAL_TYPES[e.type]));
   li.addEventListener("click", () => { calView = e.date.slice(0, 7); calSelected = e.date; renderCalGrid(); renderCalDay(); $("calGrid").scrollIntoView({ behavior: "smooth", block: "center" }); });
@@ -1326,7 +1331,7 @@ function calItem(e) {
 
 function renderCalList() {
   const today = todayISO();
-  const list = CAL.events.filter((e) => calFilter === "all" || (calFilter === "holiday" ? e.type === "holiday" : e.end >= today));
+  const list = myCal().filter((e) => calFilter === "all" || (calFilter === "holiday" ? e.type === "holiday" : e.end >= today));
   $("calList").replaceChildren(...(list.length ? list.map(calItem)
     : [el("li", "empty-line", calFilter === "upcoming" ? "No upcoming dates added yet." : "Nothing added yet.")]));
 }
@@ -1350,6 +1355,13 @@ function calRow(e = {}) {
   inp("c-end", "date", e.end && e.end !== e.date ? e.end : "");
   inp("c-title", "text", e.title, "e.g. Diwali", 120);
   td(selectEl(Object.entries(CAL_TYPES), e.type || "holiday", "c-type"));
+  const yrs = td(el("div", "c-years")), on = calYears(e);
+  [1, 2, 3, 4].forEach((y) => {
+    const lab = el("label"), cb = el("input");
+    cb.type = "checkbox"; cb.value = String(y); cb.checked = on.includes(String(y));
+    lab.append(cb, document.createTextNode(YEAR_NAMES[y].replace(" Year", "")));
+    yrs.appendChild(lab);
+  });
   inp("c-note", "text", e.note, "e.g. Classes resume on Monday", 200);
   const del = td(el("button", "remove", "×")); del.title = "Remove"; del.addEventListener("click", () => tr.remove());
   return tr;
@@ -1369,6 +1381,7 @@ if ($("calEditBtn")) {
     const events = [...$("calRows").children].map((tr) => ({
       date: tr.querySelector(".c-date").value, end: tr.querySelector(".c-end").value, title: tr.querySelector(".c-title").value,
       type: tr.querySelector(".c-type").value, note: tr.querySelector(".c-note").value,
+      years: [...tr.querySelectorAll(".c-years input:checked")].map((c) => Number(c.value)),
     })).filter((e) => e.date || e.title.trim());
     $("calSave").disabled = true; $("calErr").hidden = true;
     try {
@@ -1385,7 +1398,7 @@ function renderDashHolidays() {
   const today = todayISO();
   const ul = $("dashHolidays"); if (!ul) return;
   ul.replaceChildren();
-  const hols = CAL.events.filter((e) => e.type === "holiday" && e.end >= today).slice(0, 3);
+  const hols = myCal().filter((e) => e.type === "holiday" && e.end >= today).slice(0, 3);
   hols.forEach((e) => {
     const li = el("li");
     const [, mm, dd] = e.date.split("-");
@@ -1455,7 +1468,11 @@ function attSubjects() {
 function attStats(code) {
   const b = ATT.base[code] || { attended: 0, total: 0 };
   let attended = b.attended, total = b.total;
-  ATT.records.forEach((r) => { if (r.code !== code || r.status === "cancelled") return; total++; if (r.status === "present") attended++; });
+  ATT.records.forEach((r) => {
+    if (r.code !== code || r.status === "cancelled") return;
+    if (!String(r.slot || "").startsWith("x") && holidayOn(r.date)) return; // a holiday has no regular classes, even if marked before it was added
+    total++; if (r.status === "present") attended++;
+  });
   const t = ATT.target / 100, pct = total ? (attended / total) * 100 : null;
   let advice;
   if (!total) advice = "No classes marked yet.";

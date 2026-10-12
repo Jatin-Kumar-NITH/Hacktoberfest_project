@@ -757,6 +757,9 @@ html[data-theme="dark"] .ghost { color: var(--ink-2); }
 .ed-table td { padding: 4px; border-bottom: 1px solid var(--line); }
 .ed-table input, .ed-table select { padding: 7px 8px; font-size: 13px; border-radius: 8px; }
 .ed-table .r-code, .ed-table .e-code { min-width: 130px; }
+.ed-table .c-years { display: flex; gap: 8px; white-space: nowrap; }
+.ed-table .c-years label { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; }
+.ed-table .c-years input { width: auto; padding: 0; margin: 0; }
 .ed-actions { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
 .ed-actions .spacer { flex: 1; }
 .ed-actions .ghost { padding: 9px 14px; }
@@ -1053,6 +1056,10 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
   .ed-table input, .ed-table select { width: 100%; font-size: 16px; padding: 9px 8px; }
   .ed-table .r-code, .ed-table .e-code { min-width: 0; }
   .ed-table .remove { width: 36px; height: 36px; }
+  .ed-table td:has(> .c-years) { grid-column: 1 / -1; }
+  .ed-table .c-years { gap: 14px; }
+  .ed-table .c-years label { font-size: 14px; gap: 5px; }
+  .ed-table .c-years input { width: 18px; height: 18px; }
   .subject-bottom { grid-template-columns: 1fr; }
 
   /* mess menu: one block per day instead of a wide table */
