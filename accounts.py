@@ -297,6 +297,24 @@ def set_setting(key, value):
     db().commit()
 
 
+# ------------------------------------------------------------------ private per-user data (e.g. self attendance)
+
+def get_user_data(user_id, key):
+    row = db().execute("SELECT value, updated_at FROM user_data WHERE user_id = ? AND key = ?", (user_id, key)).fetchone()
+    if not row:
+        return None
+    return {"value": json.loads(row["value"]), "updated_at": row["updated_at"]}
+
+
+def set_user_data(user_id, key, value):
+    stamp = now_iso()
+    db().execute("""INSERT INTO user_data (user_id, key, value, updated_at) VALUES (?,?,?,?)
+                    ON CONFLICT(user_id, key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at""",
+                 (user_id, key, json.dumps(value, ensure_ascii=False), stamp))
+    db().commit()
+    return stamp
+
+
 # ------------------------------------------------------------------ posts (admin publishing)
 
 def post_to_dict(r):
