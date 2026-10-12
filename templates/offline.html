@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're offline · CampusMate AI</title>
+    <script>
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem("cm_theme"); } catch (e) {}
+            if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", t);
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="landing">
+    <main class="landing-main">
+        <div class="logo" style="margin-bottom: 24px;">C</div>
+        <h1 class="landing-title" style="font-size: 36px;">You're offline.</h1>
+        <p class="landing-lede">CampusMate needs a connection to load your timetable, notices and chat. Check your Wi-Fi or mobile data and try again.</p>
+        <div class="landing-cta">
+            <button class="primary inline" type="button" onclick="location.reload()">Try again</button>
+        </div>
+    </main>
+</body>
+</html>
