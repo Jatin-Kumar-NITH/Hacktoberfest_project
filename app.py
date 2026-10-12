@@ -84,11 +84,11 @@ def ask_gemma(contents):
 def friendly_error(e):
     msg = str(e)
     if "MISSING_KEY" in msg:
-        return "No API key found. Add GEMINI_API_KEY=... to the .env file and restart the server."
+        return "No API key found. Set GEMINI_API_KEY in .env (local) or in Vercel's Environment Variables, then restart or redeploy."
     if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
         return "The free Gemma quota is used up for the moment. Wait about a minute and try again."
     if "API key" in msg or "401" in msg or "403" in msg or "PERMISSION" in msg:
-        return "The API key was rejected. Check GEMINI_API_KEY in your .env file."
+        return "The API key was rejected. Check GEMINI_API_KEY in .env (local) or in Vercel's Environment Variables."
     if "BAD_JSON" in msg or isinstance(e, json.JSONDecodeError):
         return "The AI reply could not be read. Please try again."
     if "500" in msg or "503" in msg or "INTERNAL" in msg or "UNAVAILABLE" in msg:
