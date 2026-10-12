@@ -523,7 +523,7 @@
 
     <!-- ============ CAMPUS CHAT ============ -->
     <section class="page" id="page-chat" hidden>
-      <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate. Be kind. Admin messages are highlighted.</p></div></header>
+      <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate, plus private channels admins create for chosen members. Be kind. Admin messages are highlighted.</p></div></header>
       <div class="alert error" id="chatBanned" hidden></div>
       {% if me.role in ['admin', 'owner'] %}
       <details class="card ban-card" id="banCard">
@@ -531,6 +531,26 @@
         <ul class="ban-list" id="banList"></ul>
       </details>
       {% endif %}
+      <div class="chips channel-bar" id="channelBar"></div>
+      {% if me.role in ['admin', 'owner'] %}
+      <form class="card channel-card" id="channelCreate" hidden>
+        <h3>New private channel</h3>
+        <p class="muted">Only the people you add can see this channel and its messages. You are added automatically.</p>
+        <label class="field"><span>Channel name</span><input type="text" id="channelName" maxlength="60" placeholder="e.g. CSE Section A class reps"></label>
+        <label class="field"><span>Members</span><input type="search" id="channelPeopleFilter" placeholder="Search by name or email"></label>
+        <div class="people-pick" id="channelPeople"></div>
+        <div class="channel-actions">
+          <button type="submit" class="ghost small" id="channelCreateBtn">Create channel</button>
+          <button type="button" class="ghost small" id="channelCreateCancel">Cancel</button>
+          <span class="muted" id="channelCreateMsg"></span>
+        </div>
+      </form>
+      {% endif %}
+      <details class="card channel-card" id="channelInfo" hidden>
+        <summary>🔒 <span id="channelTitle"></span> · <span id="channelCount"></span></summary>
+        <ul class="ban-list" id="channelMembers"></ul>
+        <div class="channel-actions" id="channelManage"></div>
+      </details>
       <div class="card chat-card">
         <div class="chat-log" id="chatLog"><p class="empty-line" id="chatEmpty">No messages yet. Say hello 👋</p></div>
         <form class="chat-form" id="chatForm">

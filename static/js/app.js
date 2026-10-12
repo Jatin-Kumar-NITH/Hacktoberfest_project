@@ -1600,6 +1600,8 @@ $("logoutBtn").addEventListener("click", async () => { await fetch("/api/logout"
 
 // ========================================================== CAMPUS CHAT
 let chatTimer = null, chatLatest = 0;
+let chatChannel = null; // null = public campus chat, else a private channel id
+const chatUrl = () => (chatChannel ? `/api/channels/${chatChannel}/messages` : "/api/chat");
 function chatMsg(m) {
   const mine = m.user_id === ME.id;
   const wrap = el("div", `chat-msg role-${m.role}${mine ? " mine" : ""}`);
@@ -1631,16 +1633,20 @@ function chatMsg(m) {
   }
   if (IS_ADMIN) {
     const del = el("button", "chat-del", "Remove"); del.title = "Remove this message";
-    del.addEventListener("click", async () => { await fetch(`/api/chat/${m.id}/delete`, { method: "POST" }); wrap.remove(); });
+    const delUrl = chatChannel ? `/api/channels/${chatChannel}/messages/${m.id}/delete` : `/api/chat/${m.id}/delete`;
+    del.addEventListener("click", async () => { await fetch(delUrl, { method: "POST" }); wrap.remove(); });
     head.appendChild(del);
   }
   wrap.append(head, el("div", "chat-body", m.body));
   return wrap;
 }
 async function pollChat() {
+  const channel = chatChannel;
   try {
-    const res = await fetch(`/api/chat?after=${chatLatest}`);
+    const res = await fetch(`${chatUrl()}?after=${chatLatest}`);
     const data = await res.json();
+    if (channel !== chatChannel) return; // switched channels while this was loading
+    if (res.status === 404 && channel) { selectChannel(null); loadChannels(); return; } // removed from the channel
     if (!res.ok) return;
     showBanned(data.banned);
     const log = $("chatLog");
@@ -1673,7 +1679,12 @@ async function loadBans() {
     li.append(txt, un); ul.appendChild(li);
   });
 }
-function startChat() { loadBans(); if (!chatTimer) { pollChat(); chatTimer = setInterval(pollChat, 3000); } }
+let chatTicks = 0;
+function startChat() {
+  loadBans(); loadChannels();
+  // new channels you were added to show up within ~30 seconds
+  if (!chatTimer) { pollChat(); chatTimer = setInterval(() => { pollChat(); if (++chatTicks % 10 === 0) loadChannels(); }, 3000); }
+}
 function stopChat() { clearInterval(chatTimer); chatTimer = null; }
 $("chatForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -1681,14 +1692,157 @@ $("chatForm").addEventListener("submit", async (e) => {
   if (!body) return;
   $("chatSend").disabled = true;
   try {
-    const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+    const res = await fetch(chatUrl(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
     const data = await res.json();
     if (!res.ok) { if (data.banned) showBanned(data.banned); throw new Error(data.error); }
-    $("chatInput").value = ""; $("chatHint").textContent = "Messages are visible to all logged-in users. Admins can remove messages.";
+    $("chatInput").value = ""; $("chatHint").textContent = chatHintText();
     await pollChat(); $("chatLog").scrollTop = $("chatLog").scrollHeight;
   } catch (err) { $("chatHint").textContent = err.message; }
   finally { $("chatSend").disabled = false; }
 });
+
+// ---------------------------------------------------------- private channels
+let channels = [], channelInfo = null, people = null;
+const chatHintText = () => (chatChannel
+  ? "🔒 Private channel: only its members can see these messages."
+  : "Messages are visible to all logged-in users. Admins can remove messages.");
+const postJson = (url, body) => fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+
+async function loadChannels() {
+  const res = await fetch("/api/channels");
+  if (!res.ok) return;
+  const data = await res.json();
+  channels = data.channels;
+  if (chatChannel && !channels.some((c) => c.id === chatChannel)) { selectChannel(null); return; }
+  renderChannelBar(data.can_create);
+}
+function renderChannelBar(canCreate) {
+  const bar = $("channelBar"); bar.replaceChildren();
+  const chip = (label, id) => {
+    const b = el("button", `chip${chatChannel === id ? " active" : ""}`, label); b.type = "button";
+    b.addEventListener("click", () => selectChannel(id));
+    bar.appendChild(b);
+  };
+  chip("🌐 Campus chat", null);
+  channels.forEach((c) => chip(`🔒 ${c.name}`, c.id));
+  if (canCreate && $("channelCreate")) {
+    const add = el("button", "chip", "＋ New private channel"); add.type = "button";
+    add.addEventListener("click", openChannelCreate);
+    bar.appendChild(add);
+  }
+}
+function selectChannel(id) {
+  chatChannel = id;
+  chatLatest = 0;
+  const log = $("chatLog");
+  log.querySelectorAll(".chat-msg").forEach((n) => n.remove());
+  $("chatEmpty").hidden = false;
+  const ch = channels.find((c) => c.id === id);
+  $("chatInput").placeholder = ch ? `Message ${ch.name}…` : "Message everyone…";
+  $("chatHint").textContent = chatHintText();
+  renderChannelBar(IS_ADMIN);
+  loadChannelInfo();
+  pollChat();
+}
+async function loadChannelInfo() {
+  const box = $("channelInfo");
+  if (!chatChannel) { box.hidden = true; channelInfo = null; return; }
+  const id = chatChannel;
+  const res = await fetch(`/api/channels/${id}`);
+  if (id !== chatChannel) return;
+  if (!res.ok) { selectChannel(null); loadChannels(); return; }
+  channelInfo = await res.json();
+  box.hidden = false;
+  $("channelTitle").textContent = channelInfo.channel.name;
+  $("channelCount").textContent = `${channelInfo.members.length} member${channelInfo.members.length === 1 ? "" : "s"}`;
+  const ul = $("channelMembers"); ul.replaceChildren();
+  channelInfo.members.forEach((m) => {
+    const li = el("li"), txt = el("div");
+    txt.append(el("strong", "", m.id === ME.id ? `${m.name} (you)` : m.name), el("span", `role-tag role-${m.role}`, ROLE_LABEL[m.role]),
+      el("div", "muted", m.email));
+    li.appendChild(txt);
+    if (channelInfo.can_manage && m.id !== ME.id && (m.role !== "owner" || ME.role === "owner")) {
+      const rm = el("button", "ghost small danger", "Remove");
+      rm.addEventListener("click", async () => {
+        const r = await postJson(`/api/channels/${id}/members/${m.id}/remove`);
+        if (r.ok) loadChannelInfo(); else rm.textContent = (await r.json().catch(() => ({}))).error || "Could not remove";
+      });
+      li.appendChild(rm);
+    }
+    ul.appendChild(li);
+  });
+  const manage = $("channelManage"); manage.replaceChildren();
+  if (channelInfo.can_manage) {
+    const all = await loadPeople();
+    const inside = new Set(channelInfo.members.map((m) => m.id));
+    const outside = all.filter((p) => !inside.has(p.id));
+    if (outside.length) {
+      const sel = selectEl(outside.map((p) => [String(p.id), `${p.name} (${p.email})`]), String(outside[0].id), "");
+      const add = el("button", "ghost small", "Add member"); add.type = "button";
+      add.addEventListener("click", async () => {
+        const r = await postJson(`/api/channels/${id}/members`, { user_ids: [Number(sel.value)] });
+        if (r.ok) loadChannelInfo(); else add.textContent = (await r.json().catch(() => ({}))).error || "Could not add";
+      });
+      manage.append(sel, add);
+    }
+    const del = el("button", "ghost small danger", "Delete channel"); del.type = "button";
+    del.addEventListener("click", async () => {
+      if (!confirm(`Delete "${channelInfo.channel.name}" and all its messages for everyone?`)) return;
+      const r = await postJson(`/api/channels/${id}/delete`);
+      if (r.ok) { selectChannel(null); loadChannels(); }
+    });
+    manage.appendChild(del);
+  }
+  const leave = el("button", "ghost small", "Leave channel"); leave.type = "button";
+  leave.addEventListener("click", async () => {
+    if (!confirm(`Leave "${channelInfo.channel.name}"? You will need an admin to add you back.`)) return;
+    const r = await postJson(`/api/channels/${id}/members/${ME.id}/remove`);
+    if (r.ok) { selectChannel(null); loadChannels(); }
+  });
+  manage.appendChild(leave);
+}
+async function loadPeople() {
+  if (people) return people;
+  const res = await fetch("/api/people");
+  people = res.ok ? (await res.json()).people : [];
+  return people;
+}
+async function openChannelCreate() {
+  const form = $("channelCreate");
+  form.hidden = false;
+  $("channelName").value = ""; $("channelPeopleFilter").value = ""; $("channelCreateMsg").textContent = "";
+  people = null; // pick up anyone who signed up since
+  const box = $("channelPeople"); box.replaceChildren();
+  (await loadPeople()).filter((p) => p.id !== ME.id).forEach((p) => {
+    const lab = el("label"); lab.dataset.search = `${p.name} ${p.email}`.toLowerCase();
+    const cb = el("input"); cb.type = "checkbox"; cb.value = p.id;
+    lab.append(cb, el("span", "", p.name), el("span", `role-tag role-${p.role}`, ROLE_LABEL[p.role]), el("span", "muted", p.email));
+    box.appendChild(lab);
+  });
+  if (!box.children.length) box.appendChild(el("p", "muted", "Nobody else has an account yet."));
+  $("channelName").focus();
+}
+if ($("channelCreate")) {
+  $("channelPeopleFilter").addEventListener("input", (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    $("channelPeople").querySelectorAll("label").forEach((l) => (l.hidden = q && !l.dataset.search.includes(q)));
+  });
+  $("channelCreateCancel").addEventListener("click", () => ($("channelCreate").hidden = true));
+  $("channelCreate").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const member_ids = [...$("channelPeople").querySelectorAll("input:checked")].map((c) => Number(c.value));
+    $("channelCreateBtn").disabled = true;
+    try {
+      const res = await postJson("/api/channels", { name: $("channelName").value, member_ids });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      $("channelCreate").hidden = true;
+      await loadChannels();
+      selectChannel(data.id);
+    } catch (err) { $("channelCreateMsg").textContent = err.message; }
+    finally { $("channelCreateBtn").disabled = false; }
+  });
+}
 
 // ========================================================== PUBLISH (admins)
 let pubKind = "notice";

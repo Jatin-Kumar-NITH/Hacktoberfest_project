@@ -115,6 +115,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - Every message shows the sender, their role tag and the time.
 - **Admin and owner messages have coloured banners and name tags.** Admins can remove messages.
 - **Chat bans:** admins can ban a student from the chat for 1 hour, 1 day, 7 days or permanently. Only the owner can ban an admin, and the owner can't be banned. A banned user can still read but can't post. A "Banned from chat" list with **Unban** is shown to admins.
+- **Private channels:** admins and the owner can create private channels and choose who is in them. Only members can see a channel, its member list and its messages (checked on the server; anyone else gets "not found"). Admins in a channel can add or remove members, remove messages or delete the channel, and any member can leave. Chat bans apply in private channels too.
 
 ### ⬆ Publish (admins) and 🛡 Manage Admins (owner)
 - Admins publish **notices, announcements, assignments and study-material PDFs**, each targeted by year and section. Everything shows *Published by* and the *publishing time*.
