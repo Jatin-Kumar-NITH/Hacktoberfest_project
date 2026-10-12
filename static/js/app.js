@@ -1712,9 +1712,18 @@ $("logoutBtn").addEventListener("click", async () => { await fetch("/api/logout"
 let chatTimer = null, chatLatest = 0;
 let chatChannel = null; // null = public campus chat, else a private channel id
 const chatUrl = () => (chatChannel ? `/api/channels/${chatChannel}/messages` : "/api/chat");
+// same rules as can_delete_message on the server: own messages always; the owner anyone's,
+// a co-owner anyone's but the owner's, an admin anyone's but the owner's and co-owners'
+function canDeleteMsg(m) {
+  if (m.user_id === ME.id || ME.role === "owner") return true;
+  if (ME.role === "coowner") return m.role !== "owner";
+  if (ME.role === "admin") return !["owner", "coowner"].includes(m.role);
+  return false;
+}
 function chatMsg(m) {
   const mine = m.user_id === ME.id;
   const wrap = el("div", `chat-msg role-${m.role}${mine ? " mine" : ""}`);
+  wrap.dataset.id = m.id;
   if (m.role !== "user") wrap.appendChild(el("div", "chat-banner", ROLE_LABEL[m.role]));
   const head = el("div", "chat-head");
   head.appendChild(el("strong", `chat-name role-${m.role}`, m.name));
@@ -1741,10 +1750,15 @@ function chatMsg(m) {
     });
     head.appendChild(ban);
   }
-  if (IS_ADMIN) {
-    const del = el("button", "chat-del", "Remove"); del.title = "Remove this message";
+  if (canDeleteMsg(m)) {
+    const del = el("button", "chat-del", "Delete"); del.title = "Delete this message";
     const delUrl = chatChannel ? `/api/channels/${chatChannel}/messages/${m.id}/delete` : `/api/chat/${m.id}/delete`;
-    del.addEventListener("click", async () => { await fetch(delUrl, { method: "POST" }); wrap.remove(); });
+    del.addEventListener("click", async () => {
+      if (!confirm(mine ? "Delete your message?" : `Delete ${m.name}'s message?`)) return;
+      const res = await fetch(delUrl, { method: "POST" });
+      if (res.ok || res.status === 404) { wrap.remove(); $("chatEmpty").hidden = $("chatLog").querySelectorAll(".chat-msg").length > 0; }
+      else del.textContent = (await res.json().catch(() => ({}))).error || "Could not delete";
+    });
     head.appendChild(del);
   }
   wrap.append(head, el("div", "chat-body", m.body));
@@ -1762,6 +1776,11 @@ async function pollChat() {
     const log = $("chatLog");
     const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
     // polls can overlap on a slow server; only show messages newer than the last one shown
+    // drop messages someone deleted (anything older than the window the server sent stays)
+    if (data.ids && data.ids.length) {
+      const keep = new Set(data.ids), oldest = Math.min(...data.ids);
+      log.querySelectorAll(".chat-msg").forEach((w) => { const id = Number(w.dataset.id); if (id >= oldest && !keep.has(id)) w.remove(); });
+    } else if (data.ids) log.querySelectorAll(".chat-msg").forEach((w) => w.remove());
     data.messages.filter((m) => m.id > chatLatest).forEach((m) => { log.appendChild(chatMsg(m)); chatLatest = m.id; });
     $("chatEmpty").hidden = log.querySelectorAll(".chat-msg").length > 0;
     if (data.messages.length && (atBottom || chatLatest === data.latest)) log.scrollTop = log.scrollHeight;

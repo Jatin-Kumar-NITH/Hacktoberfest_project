@@ -650,7 +650,7 @@ def api_chat():
                            JOIN users u ON u.id = m.user_id WHERE m.channel_id IS NULL AND m.id > ?
                            ORDER BY m.id DESC LIMIT 100""", (after,)).fetchall()
     latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages WHERE channel_id IS NULL").fetchone()[0]
-    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest,
+    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest, ids=_recent_ids(None),
                    banned=ban_status(current_user()["id"]))
 
 
@@ -679,13 +679,41 @@ def _send_message(body, channel_id):
     return jsonify(ok=True)
 
 
-@bp.post("/api/chat/<int:mid>/delete")
-@admin_required
-def api_chat_delete(mid):
-    # private-channel messages are removed through their channel, by admins who are members of it
-    db().execute("DELETE FROM messages WHERE id = ? AND channel_id IS NULL", (mid,))
+def can_delete_message(actor, author_id, author_role):
+    """Everyone may delete their own messages. Beyond that: the owner may delete anyone's,
+    a co-owner anyone's except the owner's, and an admin anyone's except the owner's and co-owners'."""
+    if author_id == actor["id"] or actor["role"] == "owner":
+        return True
+    if actor["role"] == "coowner":
+        return author_role != "owner"
+    if actor["role"] == "admin":
+        return author_role not in ("owner", "coowner")
+    return False
+
+
+def _delete_message(mid, channel_id):
+    row = db().execute("""SELECT m.user_id, u.role FROM messages m JOIN users u ON u.id = m.user_id
+                          WHERE m.id = ? AND m.channel_id IS ?""", (mid, channel_id)).fetchone()
+    if not row:
+        return jsonify(error="Message not found."), 404
+    if not can_delete_message(current_user(), row["user_id"], row["role"]):
+        return jsonify(error="You can't delete this message."), 403
+    db().execute("DELETE FROM messages WHERE id = ?", (mid,))
     db().commit()
     return jsonify(ok=True)
+
+
+def _recent_ids(channel_id):
+    """Ids of the latest messages, so clients can drop messages someone else deleted."""
+    rows = db().execute("SELECT id FROM messages WHERE channel_id IS ? ORDER BY id DESC LIMIT 200", (channel_id,)).fetchall()
+    return [r[0] for r in rows]
+
+
+@bp.post("/api/chat/<int:mid>/delete")
+@login_required
+def api_chat_delete(mid):
+    # private-channel messages are removed through their channel route
+    return _delete_message(mid, None)
 
 
 # ------------------------------------------------------------------ chat bans
@@ -848,7 +876,7 @@ def api_channel_messages(cid):
                            JOIN users u ON u.id = m.user_id WHERE m.channel_id = ? AND m.id > ?
                            ORDER BY m.id DESC LIMIT 100""", (cid, after)).fetchall()
     latest = db().execute("SELECT COALESCE(MAX(id), 0) FROM messages WHERE channel_id = ?", (cid,)).fetchone()[0]
-    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest,
+    return jsonify(messages=[msg_to_dict(r) for r in reversed(rows)], latest=latest, ids=_recent_ids(cid),
                    banned=ban_status(current_user()["id"]))
 
 
@@ -862,13 +890,11 @@ def api_channel_send(cid):
 
 
 @bp.post("/api/channels/<int:cid>/messages/<int:mid>/delete")
-@admin_required
+@login_required
 def api_channel_message_delete(cid, mid):
     if not _channel_for_member(cid):
         return _not_found()
-    db().execute("DELETE FROM messages WHERE id = ? AND channel_id = ?", (mid, cid))
-    db().commit()
-    return jsonify(ok=True)
+    return _delete_message(mid, cid)
 
 
 @bp.post("/api/channels/<int:cid>/members")
