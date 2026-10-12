@@ -1320,7 +1320,11 @@ function attSubjects() {
 function attStats(code) {
   const b = ATT.base[code] || { attended: 0, total: 0 };
   let attended = b.attended, total = b.total;
-  ATT.records.forEach((r) => { if (r.code !== code || r.status === "cancelled") return; total++; if (r.status === "present") attended++; });
+  ATT.records.forEach((r) => {
+    if (r.code !== code || r.status === "cancelled") return;
+    if (!String(r.slot || "").startsWith("x") && holidayOn(r.date)) return; // a holiday has no regular classes, even if marked before it was added
+    total++; if (r.status === "present") attended++;
+  });
   const t = ATT.target / 100, pct = total ? (attended / total) * 100 : null;
   let advice;
   if (!total) advice = "No classes marked yet.";
