@@ -526,6 +526,12 @@ def _iso(v):
     return v
 
 
+def _cal_years(v):
+    """Years a calendar entry applies to: ["all"] or a sorted list of 1-4 (entries saved before this were for all years)."""
+    years = sorted({int(y) for y in (v if isinstance(v, list) else []) if str(y) in ("1", "2", "3", "4")})
+    return years if years and len(years) < 4 else ["all"]
+
+
 @app.post("/api/edit/calendar")
 @admin_required
 def edit_calendar():
@@ -546,7 +552,8 @@ def edit_calendar():
         if not title:
             return jsonify(error=f"Row {i}: enter a title, e.g. Diwali."), 400
         etype = e.get("type") if e.get("type") in EVENT_TYPES else "holiday"
-        events.append({"date": start, "end": end, "title": title, "type": etype, "note": _txt(e.get("note"), 200)})
+        events.append({"date": start, "end": end, "title": title, "type": etype, "note": _txt(e.get("note"), 200),
+                       "years": _cal_years(e.get("years"))})
     if len(events) > 300:
         return jsonify(error="Too many calendar entries (300 max)."), 400
     events.sort(key=lambda e: (e["date"], e["end"], e["title"]))
@@ -840,8 +847,8 @@ def build_ask_context(year, section_id, group, client):
 
     cal = campus["calendar"]
     today_iso = date.today().isoformat()
-    upcoming = [e for e in cal.get("events", []) if e["end"] >= today_iso][:30]
-    parts.append(f"\n## Academic calendar: {cal.get('name', 'Academic Calendar')} (confirmed by CampusMate admins)")
+    upcoming = [e for e in cal.get("events", []) if e["end"] >= today_iso and for_student(e, y, sec["id"])][:30]
+    parts.append(f"\n## Academic calendar: {cal.get('name', 'Academic Calendar')} (confirmed by CampusMate admins; only dates for this student's year)")
     if upcoming:
         for e in upcoming:
             when = e["date"] if e["end"] == e["date"] else f"{e['date']} to {e['end']}"

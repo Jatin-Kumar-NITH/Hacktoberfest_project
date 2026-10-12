@@ -76,9 +76,10 @@ Students get information from too many places: a timetable PDF, notice-board pho
 
 ### 📅 Academic Calendar
 - One calendar for **everyone**: a month view (holidays highlighted, Sundays in red, today outlined) and a list of upcoming dates with countdowns. Tap any day to see what's on it.
+- **Year-wise:** each entry is for all years or only for the years ticked (e.g. a holiday just for 1st year). Students see the entries for the year picked in the sidebar plus the all-years ones.
 - Entry types: **Holiday**, **Exam**, **Event** and **Semester** (e.g. classes start / end). Entries can span several days (e.g. a Diwali break) and carry a short note.
 - **Only admins and the owner can add, edit or remove dates** from the site. The page shows *Last edited by (name) · time*. It starts empty until confirmed holidays are added.
-- Holidays flow through the app: the dashboard skips holidays when showing "today's classes", My Attendance shows no regular classes on a holiday, and Ask CampusMate can answer *"When is the next holiday?"*.
+- Holidays flow through the app: the dashboard skips holidays when showing "today's classes", My Attendance shows no regular classes on a holiday for your year (and classes marked on it before the holiday was added stop counting), and Ask CampusMate can answer *"When is the next holiday?"*.
 
 ### ✓ My Attendance
 - Every student tracks their **own** attendance for each subject in their timetable. It's private and **saved to their account**, so it follows them across devices.

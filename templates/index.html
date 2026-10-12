@@ -275,9 +275,9 @@
         <button class="ai-btn" id="calEditBtn">✎ Edit academic calendar</button>
       </div>
       <div class="card editor" id="calEditor" hidden>
-        <div class="card-head"><h2>Edit academic calendar</h2><span class="muted">One row per holiday or event. Leave “End” empty for a single day.</span></div>
+        <div class="card-head"><h2>Edit academic calendar</h2><span class="muted">One row per holiday or event. Leave “End” empty for a single day. Tick the years it's for, or leave all unticked for every year.</span></div>
         <label class="field inline-field"><span class="label">Calendar name</span><input type="text" id="calName" maxlength="120" placeholder="e.g. Academic Calendar 2026-27 (Odd Semester)"></label>
-        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Start</th><th>End</th><th>Title</th><th>Type</th><th>Note (optional)</th><th></th></tr></thead><tbody id="calRows"></tbody></table></div>
+        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Start</th><th>End</th><th>Title</th><th>Type</th><th>Years</th><th>Note (optional)</th><th></th></tr></thead><tbody id="calRows"></tbody></table></div>
         <div class="ed-actions"><button class="ghost" id="calAddRow">+ Add date</button><span class="spacer"></span><button class="ghost" id="calCancel">Cancel</button><button class="primary inline" id="calSave">Save calendar</button></div>
         <div class="alert error" id="calErr" hidden></div>
       </div>
