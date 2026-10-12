@@ -41,6 +41,10 @@ function route() {
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
+  const activeLink = document.querySelector(`.nav a[data-page="${p}"]`);
+  $("menuPage").textContent = activeLink ? activeLink.lastElementChild.textContent.trim() : "Menu";
+  document.body.dataset.page = p;
+  setMenu(false);
   if (p === "dashboard") renderDashboard();
   if (p === "board") renderBoard();
   if (p === "timetable") renderTimetable();
@@ -60,6 +64,25 @@ function route() {
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
+
+// On phones the sidebar collapses to a top bar; the menu button opens it as a full-screen menu.
+function setMenu(open) {
+  document.querySelector(".sidebar").classList.toggle("open", open);
+  document.body.classList.toggle("menu-open", open);
+  $("menuBtn").setAttribute("aria-expanded", String(open));
+  $("menuBtn").setAttribute("aria-label", open ? "Close menu" : "Open menu");
+}
+$("menuBtn").addEventListener("click", () => setMenu(!document.querySelector(".sidebar").classList.contains("open")));
+document.querySelectorAll(".nav a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+
+// Editor tables stack into one card per row on phones; each cell gets its column name as a label.
+document.querySelectorAll(".ed-table").forEach((table) => {
+  const heads = [...table.querySelectorAll("thead th")].map((th) => th.textContent.trim());
+  const label = () => table.querySelectorAll("tbody tr").forEach((tr) =>
+    [...tr.children].forEach((td, i) => { if (heads[i]) td.dataset.label = heads[i]; }));
+  new MutationObserver(label).observe(table.tBodies[0], { childList: true });
+});
 
 // ---------------------------------------------------------- helpers
 function el(tag, cls, text) {
@@ -482,6 +505,7 @@ function renderHostel() {
     tr.appendChild(el("th", "", d === TODAY_NAME ? `${d} · today` : d));
     MEALS.forEach((m) => {
       const td = el("td");
+      td.dataset.label = !menuEditing && h.mess_timings[m] ? `${m} · ${h.mess_timings[m]}` : m; // shown on phones
       const val = (h.mess_menu[d] || {})[m] || "";
       if (menuEditing) {
         const t = el("textarea"); t.rows = 2; t.maxLength = 200; t.value = val; t.dataset.day = d; t.dataset.meal = m;
