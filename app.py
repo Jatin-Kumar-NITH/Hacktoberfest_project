@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 
 import accounts
 from accounts import admin_required, current_user, login_required, public_user
@@ -644,6 +644,42 @@ def ask():
         found=raw.get("found") is not False,
         model=model, seconds=round(time.time() - started, 1),
     )
+
+
+# ------------------------------------------------------------------ Installable app (PWA + Android)
+
+ANDROID_PACKAGE = "app.vercel.campusmate_nith"
+
+
+@app.get("/manifest.webmanifest")
+def web_manifest():
+    return send_from_directory(app.static_folder, "manifest.webmanifest",
+                               mimetype="application/manifest+json")
+
+
+@app.get("/sw.js")
+def service_worker():
+    # Served from the root so the worker controls the whole site.
+    resp = send_from_directory(Path(app.static_folder) / "js", "sw.js", mimetype="text/javascript")
+    resp.headers["Cache-Control"] = "no-cache"
+    return resp
+
+
+@app.get("/offline")
+def offline():
+    return render_template("offline.html")
+
+
+@app.get("/.well-known/assetlinks.json")
+def asset_links():
+    # Lets the Android app open the site full screen (no browser bar). Set
+    # ANDROID_CERT_SHA256 to the app's signing key fingerprint(s), comma separated.
+    prints = [f.strip().upper() for f in os.getenv("ANDROID_CERT_SHA256", "").split(",") if f.strip()]
+    return jsonify([{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {"namespace": "android_app", "package_name": ANDROID_PACKAGE,
+                   "sha256_cert_fingerprints": prints},
+    }])
 
 
 @app.errorhandler(413)

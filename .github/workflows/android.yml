@@ -1,0 +1,74 @@
+name: Android app
+
+on:
+  push:
+    branches: [main]
+    paths: ["android/**", ".github/workflows/android.yml"]
+  pull_request:
+    paths: ["android/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Build signed release APK and bundle
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/release.jks"
+          ./gradlew --no-daemon assembleRelease bundleRelease
+          echo "Release key SHA-256 (set this as ANDROID_CERT_SHA256 in Vercel):"
+          keytool -list -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" | grep SHA-256
+
+      - name: Collect files
+        run: |
+          mkdir -p ../dist
+          cp app/build/outputs/apk/debug/app-debug.apk ../dist/CampusMate-debug.apk
+          if [ "$HAS_KEYSTORE" = "true" ]; then
+            cp app/build/outputs/apk/release/app-release.apk ../dist/CampusMate.apk
+            cp app/build/outputs/bundle/release/app-release.aab ../dist/CampusMate.aab
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CampusMate-android
+          path: dist/
+
+      # Keeps a download link that works on a phone:
+      # https://github.com/<owner>/<repo>/releases/tag/android-latest
+      - name: Publish to the android-latest release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view android-latest >/dev/null 2>&1 || \
+            gh release create android-latest --prerelease --title "CampusMate Android (latest build)" \
+              --notes "Built automatically from main. Install CampusMate.apk (or CampusMate-debug.apk if that is the only file)."
+          git tag -f android-latest && git push -f origin android-latest
+          gh release upload android-latest dist/* --clobber
