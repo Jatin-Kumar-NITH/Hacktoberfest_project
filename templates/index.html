@@ -526,7 +526,14 @@
 
     <!-- ============ HOSTEL (mess menus) ============ -->
     <section class="page" id="page-hostel" hidden>
-      <header class="page-head"><div><h1>Hostel Mess Menu</h1><p class="sub">Boys' and girls' hostels have separate menus. Pick your hostel.</p></div></header>
+      <header class="page-head"><div><h1>Hostel Mess Menu</h1><p class="sub">Each hostel and year can have its own menu. Pick your year and hostel.</p></div></header>
+      <div class="hostel-tabs" id="menuYearTabs">
+        <button class="year-tab" data-menu-year="1">1st Year</button>
+        <button class="year-tab" data-menu-year="2">2nd Year</button>
+        <button class="year-tab" data-menu-year="3">3rd Year</button>
+        <button class="year-tab" data-menu-year="4">4th Year</button>
+        <button class="year-tab" data-menu-year="all" hidden>All years</button>
+      </div>
       <div class="hostel-tabs" id="hostelTabs">
         <button class="year-tab" data-hostel="boys">🏠 Boys' Hostel</button>
         <button class="year-tab" data-hostel="girls">🏠 Girls' Hostel</button>
@@ -537,9 +544,10 @@
       </div>
       <div class="card">
         <div class="card-head"><h2 id="mnTitle">Mess menu</h2><span class="muted" id="mnToday"></span></div>
+        <p class="muted" id="mnSource" hidden></p>
         <p class="empty-line" id="mnEmpty" hidden>The mess menu for this hostel hasn't been added yet.</p>
         <div class="ed-scroll"><table class="menu-table" id="mnTable"></table></div>
-        <div class="ed-actions" id="mnActions" hidden><span class="spacer"></span><button class="ghost" id="mnCancel">Cancel</button><button class="primary inline" id="mnSave">Save menu</button></div>
+        <div class="ed-actions" id="mnActions" hidden><button class="ghost small danger" id="mnClear" hidden>Use the All years menu instead</button><span class="spacer"></span><button class="ghost" id="mnCancel">Cancel</button><button class="primary inline" id="mnSave">Save menu</button></div>
         <div class="alert error" id="mnErr" hidden></div>
       </div>
       <p class="fine">Emergency (India): call <strong>112</strong> for police, fire or ambulance.</p>

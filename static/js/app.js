@@ -464,7 +464,9 @@ function renderDashPlan() {
 // restore the last plan on load
 (() => { const saved = store.get("cm_plan", null); if (saved && saved.result.days.length) { renderPlan(saved.result, null); showP("result"); } })();
 
-// ========================================================== HOSTEL MESS MENUS (boys / girls)
+// ========================================================== HOSTEL MESS MENUS (boys / girls, per year)
+// Each hostel has an "All years" menu plus optional menus of its own for years 1-4;
+// a year without its own menu sees the All years one (same rule as menu_for_year in app.py).
 const CAMPUS = JSON.parse($("campus-data").textContent);
 const HOSTEL = CAMPUS.hostel;
 const TODAY_NAME = DAY_NAMES[new Date().getDay()];
@@ -472,18 +474,30 @@ const WEEK7 = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday
 const MEALS = ["Breakfast", "Lunch", "Snacks", "Dinner"];
 let myHostel = store.get("cm_hostel", "boys");
 if (!HOSTEL.hostels[myHostel]) myHostel = "boys";
+let menuYear = null; // year tab picked on the menu page; null follows the year chosen in the header
 let menuEditing = false;
 const menuIsEmpty = (h) => !WEEK7.some((d) => MEALS.some((m) => (h.mess_menu[d] || {})[m]));
 const editedLine = (o) => (o && o.edited_by ? `Last edited by ${o.edited_by} · ${fmtTime(o.edited_at)}` : "");
+const ownMenu = (hostel, y) => (y === "all" ? hostel : (hostel.years || {})[String(y)]);
+const menuFor = (hostel, y) => ownMenu(hostel, y) || hostel;
 
 function renderHostel() {
-  const h = HOSTEL.hostels[myHostel];
+  const y = menuYear || myYear, hostel = HOSTEL.hostels[myHostel];
+  const own = ownMenu(hostel, y), h = own || hostel;
   document.querySelectorAll("[data-hostel]").forEach((b) => b.classList.toggle("active", b.dataset.hostel === myHostel));
-  $("mnTitle").textContent = `${h.name} · weekly menu`;
+  document.querySelectorAll("[data-menu-year]").forEach((b) => b.classList.toggle("active", b.dataset.menuYear === String(y)));
+  document.querySelector('[data-menu-year="all"]').hidden = !IS_ADMIN;
+  $("mnTitle").textContent = `${hostel.name} · ${y === "all" ? "All years" : YEAR_NAMES[y]} · weekly menu`;
   $("mnToday").textContent = `Today is ${TODAY_NAME}`;
+  $("mnSource").hidden = y === "all" || !!own;
+  $("mnSource").textContent = menuEditing
+    ? `${YEAR_NAMES[y]} has no menu of its own yet. Saving creates one, starting from the All years menu below.`
+    : `${YEAR_NAMES[y]} uses the All years menu for this hostel.`;
   $("mnEditBar").hidden = !IS_ADMIN || menuEditing;
+  $("mnEditBtn").textContent = y === "all" ? "✎ Edit the All years menu" : own ? `✎ Edit ${YEAR_NAMES[y]} menu` : `✎ Make a ${YEAR_NAMES[y]} menu`;
   $("mnEdited").textContent = editedLine(h);
   $("mnActions").hidden = !menuEditing;
+  $("mnClear").hidden = !menuEditing || y === "all" || !own;
   $("mnErr").hidden = true;
   const empty = menuIsEmpty(h);
   $("mnEmpty").hidden = !empty || menuEditing;
@@ -520,21 +534,32 @@ function renderHostel() {
 document.querySelectorAll("[data-hostel]").forEach((b) => b.addEventListener("click", () => {
   myHostel = b.dataset.hostel; store.set("cm_hostel", myHostel); menuEditing = false; renderHostel();
 }));
+document.querySelectorAll("[data-menu-year]").forEach((b) => b.addEventListener("click", () => {
+  menuYear = b.dataset.menuYear === "all" ? "all" : Number(b.dataset.menuYear); menuEditing = false; renderHostel();
+}));
 $("mnEditBtn").addEventListener("click", () => { menuEditing = true; renderHostel(); });
 $("mnCancel").addEventListener("click", () => { menuEditing = false; renderHostel(); });
-$("mnSave").addEventListener("click", async () => {
-  const mess_menu = {}, mess_timings = {};
-  WEEK7.forEach((d) => (mess_menu[d] = {}));
-  document.querySelectorAll("#mnTable textarea").forEach((t) => (mess_menu[t.dataset.day][t.dataset.meal] = t.value));
-  document.querySelectorAll("#mnTable input[data-timing]").forEach((t) => (mess_timings[t.dataset.timing] = t.value));
-  $("mnSave").disabled = true;
+async function saveMenu(payload) {
+  $("mnSave").disabled = $("mnClear").disabled = true;
   try {
-    const res = await fetch("/api/edit/menu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hostel: myHostel, mess_menu, mess_timings }) });
+    const res = await fetch("/api/edit/menu", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hostel: myHostel, year: menuYear || myYear, ...payload }) });
     const data = await res.json().catch(() => ({ error: "Save failed." }));
     if (!res.ok) throw new Error(data.error);
     HOSTEL.hostels[myHostel] = data.hostel; menuEditing = false; renderHostel();
   } catch (err) { $("mnErr").textContent = err.message; $("mnErr").hidden = false; }
-  finally { $("mnSave").disabled = false; }
+  finally { $("mnSave").disabled = $("mnClear").disabled = false; }
+}
+$("mnSave").addEventListener("click", () => {
+  const mess_menu = {}, mess_timings = {};
+  WEEK7.forEach((d) => (mess_menu[d] = {}));
+  document.querySelectorAll("#mnTable textarea").forEach((t) => (mess_menu[t.dataset.day][t.dataset.meal] = t.value));
+  document.querySelectorAll("#mnTable input[data-timing]").forEach((t) => (mess_timings[t.dataset.timing] = t.value));
+  saveMenu({ mess_menu, mess_timings });
+});
+$("mnClear").addEventListener("click", () => {
+  const y = menuYear || myYear;
+  if (!confirm(`Remove the ${YEAR_NAMES[y]} menu? ${YEAR_NAMES[y]} students will see the All years menu instead.`)) return;
+  saveMenu({ clear: true });
 });
 
 function renderMenuMini(target, h, dayName) {
@@ -552,9 +577,9 @@ function renderMenuMini(target, h, dayName) {
 }
 
 function renderDashHostel() {
-  const h = HOSTEL.hostels[myHostel];
-  $("dashMenuTitle").textContent = `Today's menu · ${h.name}`;
-  renderMenuMini("dashMenu", h, TODAY_NAME);
+  const hostel = HOSTEL.hostels[myHostel];
+  $("dashMenuTitle").textContent = `Today's menu · ${hostel.name}`;
+  renderMenuMini("dashMenu", menuFor(hostel, myYear), TODAY_NAME);
   const ul = $("dashAnnouncements"); ul.replaceChildren();
   const ann = POSTS.filter((p) => p.kind === "announcement" && forStudent(p, myYear, mySection)).slice(0, 3);
   ann.forEach((a) => {
@@ -675,7 +700,7 @@ function fillPickers() {
 }
 function saveProfile() {
   store.set("cm_profile", { year: myYear, section: mySection, group: myGroup });
-  ttYear = myYear; ttSection = mySection; askHistory = [];
+  ttYear = myYear; ttSection = mySection; menuYear = null; askHistory = [];
   fillPickers(); route();
 }
 $("myYear").addEventListener("change", (e) => { myYear = Number(e.target.value); mySection = secOf(myYear, mySection).id; myGroup = ""; saveProfile(); });
