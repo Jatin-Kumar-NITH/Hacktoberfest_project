@@ -17,7 +17,7 @@ Built at a Hacktoberfest 2026 hackathon (theme: *best open-source AI project / b
 7. [Setup (Windows, macOS, Linux)](#setup)
 8. [Configuration (`.env`)](#configuration-env)
 9. [Accounts, roles and admin access](#accounts-roles-and-admin-access)
-10. [Email OTP](#email-otp)
+10. [Google Sign-In](#google-sign-in)
 11. [Updating the campus data](#updating-the-campus-data)
 12. [Security](#security)
 13. [Testing](#testing)
@@ -122,7 +122,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - Only the **owner** can give or remove admin access.
 
 ### Also
-- **Login with email OTP**, "stay logged in for 30 days", and password strength rules.
+- **Sign in with Google**, and stay logged in for 30 days.
 - **Dark mode** with a toggle; it follows your system setting by default.
 - **Responsive**: works on phones.
 
@@ -153,14 +153,14 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ```
  Browser (HTML / CSS / vanilla JS)                     Flask server (Python)                  External
  ───────────────────────────────────                  ─────────────────────────              ─────────
- Login + OTP page  ───────── /api/login, /api/otp ──▶ accounts.py ── SQLite (instance/) 
- Dashboard, Timetable, Notice Board,                  │  users, posts, chat, OTP codes
+ Landing + Google button ─── /api/login (ID token) ─▶ accounts.py ── SQLite (instance/) 
+ Dashboard, Timetable, Notice Board,                  │  users, posts, chat           
  Assignments, Exams, Syllabus, Hostel ◀── page + JSON ┤
  Ask CampusMate ───────────── /api/ask ─────────────▶ app.py ── builds grounded context ──▶ Gemini API
  Notice Explainer ─────────── /api/notice ──────────▶        ── strict JSON prompts     ──▶ (Gemma 4)
  Study Planner ────────────── /api/plan ───────────▶         
  Campus Chat ─────────────── /api/chat (poll 3s) ──▶ accounts.py
- Publish / Manage Admins ──── /api/posts, /api/users ▶ (admin / owner only)          SMTP ──▶ Gmail (OTP email)
+ Publish / Manage Admins ──── /api/posts, /api/users ▶ (admin / owner only)
                                                       data/*.json + static/docs/*.pdf
 ```
 
@@ -175,16 +175,15 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ```
 campusmate/
 ├── app.py                  # Flask app: pages, Notice Explainer, Study Planner, Ask CampusMate, Gemma calls
-├── accounts.py             # Login, OTP, roles, admin publishing, uploads, campus chat, bans
+├── accounts.py             # Google login, roles, admin publishing, uploads, campus chat, bans
 ├── db.py                   # Database layer: SQLite locally, Postgres when DATABASE_URL is set
-├── setup_email.py          # One-time Gmail setup for OTP emails (sends a test email)
 ├── requirements.txt
 ├── .env.example            # Template for your secrets (copy to .env)
 ├── .gitignore              # Keeps .env, instance/, venv/ out of Git
 ├── LICENSE                 # MIT (code only, see License section)
 ├── templates/
 │   ├── index.html          # The single-page app (all sections)
-│   └── login.html          # Login / sign-up / OTP
+│   └── landing.html        # Landing page with the Google sign-in button
 ├── static/
 │   ├── css/style.css       # Light + dark theme
 │   ├── js/app.js           # All front-end logic
@@ -236,13 +235,13 @@ cp .env.example .env
 python app.py
 ```
 
-Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the database path, the owner email it loaded and whether email OTP is on.
+Open **http://127.0.0.1:5000**. The terminal prints a startup block showing the database path, the owner email it loaded and whether Google login is on.
 
 > **Windows tip:** run `python app.py` from the terminal *after* activating `venv`. The prompt should start with `(venv)`. If PowerShell refuses to activate it, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
 
 ### Deploying to Vercel
 
-The repo includes `vercel.json`. In Vercel → *Project → Settings → Environment Variables*, add `GEMINI_API_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME`, a long random `SECRET_KEY`, and the `SMTP_*` settings for email OTP.
+The repo includes `vercel.json`. In Vercel → *Project → Settings → Environment Variables*, add `GEMINI_API_KEY`, `GOOGLE_CLIENT_ID`, `OWNER_EMAIL`, `OWNER_NAME` and a long random `SECRET_KEY`. Add your Vercel URL to the Google client's *Authorized JavaScript origins*.
 
 **Connect a permanent database (required on Vercel).** Vercel's disk is temporary, so without a database, accounts, chat, posts and edits disappear when the app restarts.
 1. In your Vercel project open **Storage → Create Database → Neon (Postgres)** (free plan) and connect it to the project. Vercel adds `DATABASE_URL` (or `POSTGRES_URL`) automatically. Any other Postgres works too: set `DATABASE_URL=postgresql://…`.
@@ -258,17 +257,14 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 |---|---|---|
 | `GEMINI_API_KEY` | ✅ | Your Google AI Studio key, used to call Gemma 4. |
 | `GEMMA_MODELS` | – | Models to try, in order. Default: `gemma-4-26b-a4b-it,gemma-4-31b-it` |
-| `OWNER_EMAIL` | ✅ | Email of the site owner. This account is always the **owner**. |
-| `OWNER_PASSWORD` | ✅ (first run) | Creates the owner account on first start if it doesn't exist. Must meet the password rules. |
+| `GOOGLE_CLIENT_ID` | ✅ | OAuth client ID for Google Sign-In (see [Google Sign-In](#google-sign-in)). Login is disabled without it. |
+| `OWNER_EMAIL` | ✅ | Google account email of the site owner. Whoever signs in with it is always the **owner**. |
 | `OWNER_NAME` | – | Display name for the owner. |
 | `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
 | `DATABASE_URL` | ✅ on Vercel | Postgres connection string (e.g. from Neon). If set, all data (accounts, posts, PDFs, chat, edits) is stored there permanently. If empty, a local SQLite file is used. `POSTGRES_URL` also works. |
 | `CAMPUSMATE_DATA_DIR` | – | Where the SQLite file and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
-| `SMTP_HOST` / `SMTP_PORT` | – | Mail server, `smtp.gmail.com` with `587` (STARTTLS) or `465` (SSL). |
-| `SMTP_USER` / `SMTP_PASSWORD` | – | Gmail address and **App Password** for sending OTP codes. |
-| `SMTP_FROM` | – | Sender shown on OTP emails. |
 
-`.env` is listed in `.gitignore`, so **your keys and passwords are never committed**. Only `.env.example` (with blank values) is in the repository.
+`.env` is listed in `.gitignore`, so **your keys are never committed**. Only `.env.example` (with blank values) is in the repository.
 
 ---
 
@@ -280,27 +276,20 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 | **Admin** | 🛡 amber `ADMIN` | Publish notices, announcements, assignments and study-material PDFs; **edit timetables, exam schedules and mess menus**; delete posts (except the owner's); remove chat messages and ban students from chat. |
 | **Student** | grey `STUDENT` | View everything, use the AI features and post in the chat. Cannot publish or change content. |
 
-- New sign-ups are always **students**. Admin access can only be given by the owner from **Manage Admins**.
+- Everyone signs in with their Google account. A first sign-in creates a **student** account. Admin access can only be given by the owner from **Manage Admins**.
 - Every published item and chat message shows **Published by (name + role tag)** and the **publishing time** in the viewer's local time.
-- Passwords must have **8+ characters with an uppercase letter, a lowercase letter, a number and a symbol**.
-- "Keep me logged in" keeps the session for **30 days**.
+- A login lasts **30 days**.
 
 ---
 
-## Email OTP
+## Google Sign-In
 
-Login and sign-up both require a **6-digit one-time code** after the password step:
-- valid for **10 minutes**, single use, with at most **5 attempts**
-- a new code can be requested after **60 seconds**
-- a new account is only created after its email is confirmed
+Students and admins sign in with **Sign in with Google** on the landing page. The server checks Google's ID token (signature, expiry, that it was issued for this site's client ID, and that the email is verified) before creating the session.
 
-**Turning on email delivery (Gmail):**
-1. Turn on **2-Step Verification** on the sending Google account: https://myaccount.google.com/security
-2. Create an **App Password**: https://myaccount.google.com/apppasswords
-3. Run `python setup_email.py`. It asks for the address and App Password, tries port 587 and then 465, **sends a test email**, and saves the settings to `.env` only if the test succeeds.
-4. Restart the server.
-
-**Without email settings** (or on a network that blocks email), codes are **printed in the server terminal**, and the login page tells the user where to find them. This is fine for local demos. Configure SMTP for real use.
+**Setting it up:**
+1. Open https://console.cloud.google.com/apis/credentials and create an **OAuth client ID** of type **Web application**.
+2. Under **Authorized JavaScript origins**, add every address the site runs on, for example `http://localhost:5000`, `http://127.0.0.1:5000` and your Vercel URL.
+3. Copy the client ID into `GOOGLE_CLIENT_ID` in `.env` (or Vercel's environment variables) and restart the server.
 
 ---
 
@@ -318,16 +307,14 @@ All campus content is plain JSON in `data/`. Edit it and restart the server.
 
 ## Security
 
-- **Secrets:** API keys, the owner password and the Gmail App Password live only in `.env` (git-ignored). The Gemini key is only used on the server.
-- **Passwords:** stored as **scrypt hashes** (Werkzeug). Strength rules are enforced on the server.
-- **Brute-force protection:** 5 failed logins per email and IP lock that combination for 10 minutes. OTP codes allow 5 attempts.
-- **OTP codes:** random 6 digits, stored only as an HMAC-SHA256 hash, compared in constant time, expiring after 10 minutes, single use.
+- **Secrets:** API keys live only in `.env` (git-ignored). The Gemini key is only used on the server.
+- **Login:** no passwords are stored. Google ID tokens are verified on the server against `GOOGLE_CLIENT_ID`, and only verified emails can sign in.
 - **Sessions:** signed, `HttpOnly`, `SameSite=Lax` cookies.
 - **CSRF:** every state-changing API call must include a custom `X-CampusMate` header, which other websites cannot send.
 - **Authorization** is checked on the server for every route (`login_required`, `admin_required`, `owner_required`). Hiding a button is never the only protection.
 - **Uploads:** PDF only, checked by extension *and* the `%PDF-` file signature. Files are stored with random names outside `static/` and served only to logged-in users. Maximum 12 MB.
 - **XSS:** all user and AI text is inserted with `textContent`, never `innerHTML`.
-- **Rate limits:** chat messages (one per 1.5 seconds per user) and OTP resends.
+- **Rate limits:** chat messages (one per 1.5 seconds per user).
 
 ---
 
@@ -338,7 +325,7 @@ During development, every feature was tested end to end with a stand-in for the 
 - **Notice Explainer:** clear deadline, multiple dates, a vague notice with missing information, a long notice, empty input, too-long input, missing API key, quota exhausted (saved fallback), model fallback from 26B to 31B.
 - **Study Planner:** missing names or dates, past exam dates, hours out of range, plans longer than 14 days (trimmed with a note).
 - **Ask CampusMate:** context contains only the student's year, section and group data, with no other section's notices or another group's labs.
-- **Accounts:** password rules, duplicate email, wrong password, login lockout, OTP wrong / expired / reused / too many tries / resend cooldown, owner promotion from `.env`, owner can't be demoted, students and admins blocked from owner actions, admin access revoked instantly.
+- **Accounts:** Google token checks (missing, invalid, unverified email, missing client ID), owner promotion from `.env`, owner can't be demoted, students and admins blocked from owner actions, admin access revoked instantly.
 - **Publishing:** fake PDF rejected, targeting by year and section, delete permissions, PDFs blocked for logged-out users.
 - **Chat:** HTML or script in messages shown as plain text, rate limit, admin removal.
 - **Timetable:** year 1 data checked against the PDF, page by page.
@@ -360,7 +347,6 @@ During development, every feature was tested end to end with a stand-in for the 
 - Calendar export (.ics) for holidays, deadlines and exams
 - Push or email reminders before deadlines
 - More Indian languages for the Notice Explainer
-- Change-password and forgot-password screens
 
 ---
 

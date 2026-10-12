@@ -1756,11 +1756,6 @@ async function loadUsers() {
   if (!res.ok) return;
   const data = await res.json();
   USERS = data.users;
-  $("smtpStatus").hidden = false;
-  $("smtpStatus").className = `alert ${data.smtp ? "ok" : "warn"}`;
-  $("smtpStatus").textContent = data.smtp
-    ? "✓ Email OTP is on: login and sign-up codes are sent by email."
-    : "✉️ Email OTP is not set up yet, so codes are printed in the server terminal. To email them, stop the server and run: python setup_email.py";
   renderUsers();
 }
 function renderUsers() {

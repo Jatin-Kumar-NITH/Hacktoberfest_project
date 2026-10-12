@@ -372,7 +372,7 @@ def index():
     
     if not user:
         # If not logged in, show the new Google Login landing page
-        return render_template("landing.html")
+        return render_template("landing.html", google_client_id=accounts.google_client_id())
     
     # If logged in, load the campus data and show the student dashboard
     campus = load_campus()
