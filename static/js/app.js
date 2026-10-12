@@ -1202,9 +1202,9 @@ document.querySelectorAll("[data-calf]").forEach((b) => b.addEventListener("clic
   renderCalList();
 }));
 function moveMonth(n) { const [y, m] = calView.split("-").map(Number); calView = isoOf(new Date(y, m - 1 + n, 1)).slice(0, 7); renderCalGrid(); }
-$("calPrev").addEventListener("click", () => moveMonth(-1));
-$("calNext").addEventListener("click", () => moveMonth(1));
-$("calToday").addEventListener("click", () => { calView = todayISO().slice(0, 7); calSelected = todayISO(); renderCalGrid(); renderCalDay(); });
+$("calPrev")?.addEventListener("click", () => moveMonth(-1));
+$("calNext")?.addEventListener("click", () => moveMonth(1));
+$("calToday")?.addEventListener("click", () => { calView = todayISO().slice(0, 7); calSelected = todayISO(); renderCalGrid(); renderCalDay(); });
 
 // ---------- calendar editor (admins and owner)
 function calRow(e = {}) {
@@ -1248,7 +1248,8 @@ if ($("calEditBtn")) {
 
 function renderDashHolidays() {
   const today = todayISO();
-  const ul = $("dashHolidays"); ul.replaceChildren();
+  const ul = $("dashHolidays"); if (!ul) return;
+  ul.replaceChildren();
   const hols = CAL.events.filter((e) => e.type === "holiday" && e.end >= today).slice(0, 3);
   hols.forEach((e) => {
     const li = el("li");
@@ -1273,6 +1274,7 @@ let ATT = attNorm(store.get(ATT_KEY, null));
 let attDate = todayISO(), attDirty = false, attTimer = null, attOpen = null;
 
 async function loadAttendance() {
+  if (!$("page-attendance")) return; // attendance page is not on the site right now
   try {
     const res = await fetch("/api/attendance");
     const data = await res.json();
@@ -1492,11 +1494,11 @@ function fillBase(panel, code) {
   panel.appendChild(row);
 }
 
-$("attTarget").addEventListener("change", (e) => { ATT.target = Number(e.target.value) || 75; attChanged(); });
-$("attDate").addEventListener("change", (e) => { if (e.target.value) { attDate = e.target.value; renderAttendance(); } });
-$("attPrev").addEventListener("click", () => { attDate = shiftISO(attDate, -1); renderAttendance(); });
-$("attNext").addEventListener("click", () => { attDate = shiftISO(attDate, 1); renderAttendance(); });
-$("attToday").addEventListener("click", () => { attDate = todayISO(); renderAttendance(); });
+$("attTarget")?.addEventListener("change", (e) => { ATT.target = Number(e.target.value) || 75; attChanged(); });
+$("attDate")?.addEventListener("change", (e) => { if (e.target.value) { attDate = e.target.value; renderAttendance(); } });
+$("attPrev")?.addEventListener("click", () => { attDate = shiftISO(attDate, -1); renderAttendance(); });
+$("attNext")?.addEventListener("click", () => { attDate = shiftISO(attDate, 1); renderAttendance(); });
+$("attToday")?.addEventListener("click", () => { attDate = todayISO(); renderAttendance(); });
 function addExtra(status) {
   const code = $("attExtraCode").value;
   if (!code) return;
@@ -1504,19 +1506,20 @@ function addExtra(status) {
   ATT.records.push({ id: `${attDate}|${code}|${slot}`, date: attDate, code, slot, type: "Extra", status });
   attChanged();
 }
-$("attExtraP").addEventListener("click", () => addExtra("present"));
-$("attExtraA").addEventListener("click", () => addExtra("absent"));
-$("attAddSubject").addEventListener("click", () => {
+$("attExtraP")?.addEventListener("click", () => addExtra("present"));
+$("attExtraA")?.addEventListener("click", () => addExtra("absent"));
+$("attAddSubject")?.addEventListener("click", () => {
   const code = $("attNewSubject").value.replace(/\s+/g, " ").trim().slice(0, 40);
   if (!code) return;
   if (!attSubjects().includes(code)) ATT.subjects.push(code);
   $("attNewSubject").value = "";
   attChanged();
 });
-$("attNewSubject").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("attAddSubject").click(); } });
+$("attNewSubject")?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("attAddSubject").click(); } });
 
 function renderDashAttendance() {
-  const box = $("dashAttendance"); box.replaceChildren();
+  const box = $("dashAttendance"); if (!box) return;
+  box.replaceChildren();
   const stats = attSubjects().map(attStats).filter((s) => s.total);
   if (!stats.length) { box.appendChild(el("p", "empty-line", "Not tracking yet. Mark today's classes as present or absent to see your attendance here.")); return; }
   const a = stats.reduce((n, s) => n + s.attended, 0), t = stats.reduce((n, s) => n + s.total, 0);
@@ -1600,7 +1603,7 @@ let chatTimer = null, chatLatest = 0;
 function chatMsg(m) {
   const mine = m.user_id === ME.id;
   const wrap = el("div", `chat-msg role-${m.role}${mine ? " mine" : ""}`);
-  if (m.role !== "user") wrap.appendChild(el("div", "chat-banner", m.role === "owner" ? "👑 Owner" : "🛡 Admin"));
+  if (m.role !== "user") wrap.appendChild(el("div", "chat-banner", m.role === "owner" ? "Owner" : "Admin"));
   const head = el("div", "chat-head");
   head.appendChild(el("strong", `chat-name role-${m.role}`, m.name));
   head.appendChild(el("span", `role-tag role-${m.role}`, ROLE_LABEL[m.role]));
