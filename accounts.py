@@ -389,7 +389,7 @@ def api_create_post():
     body = f.get("body", "").strip()[:8000]
     if len(title) < 3:
         return jsonify(error="Please enter a title (at least 3 characters)."), 400
-    if kind in ("notice", "announcement") and len(body) < 5:
+    if kind in ("notice", "announcement") and not body:
         return jsonify(error="Please write the notice text."), 400
     code = re.sub(r"[^A-Za-z0-9 &\-]", "", f.get("code", "")).strip()[:40] or None
     due = f.get("due", "").strip() or None
