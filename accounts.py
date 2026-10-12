@@ -6,7 +6,8 @@ Roles:
   coowner - same powers as the owner (including granting/revoking admin), except only the owner can
             grant or revoke co-owner, and a co-owner can never ban, remove or demote the owner.
   admin - can publish notices, announcements, assignments and study material, moderate chat,
-          and create private chat channels and choose their members.
+          create private chat channels and choose their members, and make someone a journalist.
+  journalist - a student who can also post text updates in College Updates and Hostel Updates.
   user  - can read everything and use the chat, but cannot publish or change content.
 """
 import hashlib
@@ -61,8 +62,8 @@ DB_PATH = INSTANCE / "campusmate.db"
 
 bp = Blueprint("accounts", __name__)
 
-ROLES = ("owner", "coowner", "admin", "user")
-RANK = {"owner": 3, "coowner": 2, "admin": 1, "user": 0}
+ROLES = ("owner", "coowner", "admin", "journalist", "user")
+RANK = {"owner": 4, "coowner": 3, "admin": 2, "journalist": 1, "user": 0}
 POST_KINDS = ("notice", "announcement", "assignment", "material")
 SECTIONS = list("ABCDEFGHIJ") + ["Z"]
 EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
@@ -105,7 +106,7 @@ def outranks(actor, target_role):
     return actor["role"] == "owner" or RANK.get(actor["role"], 0) > RANK.get(target_role, 0)
 
 
-ROLE_ORDER_SQL = "CASE {col} WHEN 'owner' THEN 0 WHEN 'coowner' THEN 1 WHEN 'admin' THEN 2 ELSE 3 END"
+ROLE_ORDER_SQL = "CASE {col} WHEN 'owner' THEN 0 WHEN 'coowner' THEN 1 WHEN 'admin' THEN 2 WHEN 'journalist' THEN 3 ELSE 4 END"
 
 
 def sync_owner(conn):
@@ -199,6 +200,7 @@ def _guard(check):
 login_required = _guard(lambda u: True)
 admin_required = _guard(lambda u: u["role"] in ("admin", "coowner", "owner"))
 owner_required = _guard(is_owner_level)  # owner or co-owner
+journalist_required = _guard(lambda u: u["role"] in ("journalist", "admin", "coowner", "owner"))
 
 @bp.before_app_request
 def csrf_guard():
@@ -287,8 +289,8 @@ def api_users():
 @owner_required
 def api_set_role(uid):
     role = str((request.get_json(silent=True) or {}).get("role") or "")
-    if role not in ("coowner", "admin", "user"):
-        return jsonify(error="Role must be coowner, admin or user."), 400
+    if role not in ("coowner", "admin", "journalist", "user"):
+        return jsonify(error="Role must be coowner, admin, journalist or user."), 400
     row = db().execute("SELECT role FROM users WHERE id = ?", (uid,)).fetchone()
     if not row:
         return jsonify(error="User not found."), 404
@@ -297,6 +299,21 @@ def api_set_role(uid):
     if (role == "coowner" or row["role"] == "coowner") and current_user()["role"] != "owner":
         return jsonify(error="Only the owner can give or remove co-owner access."), 403
     db().execute("UPDATE users SET role = ? WHERE id = ?", (role, uid))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.post("/api/users/<int:uid>/journalist")
+@admin_required
+def api_set_journalist(uid):
+    """Admins and above can make a student a journalist, or turn a journalist back into a student."""
+    on = bool((request.get_json(silent=True) or {}).get("journalist"))
+    row = db().execute("SELECT role FROM users WHERE id = ?", (uid,)).fetchone()
+    if not row:
+        return jsonify(error="User not found."), 404
+    if row["role"] not in ("user", "journalist"):
+        return jsonify(error="Only students can be made journalists."), 400
+    db().execute("UPDATE users SET role = ? WHERE id = ?", ("journalist" if on else "user", uid))
     db().commit()
     return jsonify(ok=True)
 
@@ -435,6 +452,126 @@ def uploaded_file(name):
     if (UPLOADS / name).exists():  # older versions stored files on disk
         return send_from_directory(UPLOADS, name, mimetype="application/pdf")
     abort(404)
+
+
+# ------------------------------------------------------------------ college & hostel updates (journalists and above)
+#
+# Short text updates. Everyone signed in can read them. Journalists, admins, co-owners and the owner
+# can post; a post's author and admins+ can edit or delete it (only the owner can touch posts by the
+# owner or a co-owner, like published posts). Hostel updates carry a year and a hostel.
+
+NEWS_SECTIONS = ("college", "hostel")
+NEWS_YEARS = ("all", "1", "2", "3", "4")
+NEWS_HOSTELS = ("both", "boys", "girls")
+
+
+def _can_post_news(u):
+    return u["role"] in ("journalist", "admin", "coowner", "owner")
+
+
+def _can_edit_news(u, row):
+    if row["author_id"] == u["id"]:
+        return True
+    if not _is_admin(u):
+        return False
+    return row["author_role"] not in ("owner", "coowner") or outranks(u, row["author_role"])
+
+
+def _news_row(nid):
+    return db().execute("""SELECT n.*, u.name AS author_name, u.role AS author_role FROM news n
+                           JOIN users u ON u.id = n.author_id WHERE n.id = ?""", (nid,)).fetchone()
+
+
+def news_to_dict(r, u):
+    return {"id": r["id"], "section": r["section"], "title": r["title"], "body": r["body"],
+            "year": r["year"], "hostel": r["hostel"], "created_at": r["created_at"], "updated_at": r["updated_at"],
+            "author_id": r["author_id"], "author_name": r["author_name"], "author_role": r["author_role"],
+            "can_edit": _can_edit_news(u, r)}
+
+
+def _news_fields(data, section):
+    """Validated (title, body, year, hostel) from a request, or an error string."""
+    title = re.sub(r"\s+", " ", str(data.get("title") or "")).strip()[:120]
+    body = str(data.get("body") or "").strip()[:3000]
+    if len(body) < 3:
+        return "Please write the update (at least 3 characters)."
+    if section != "hostel":
+        return title, body, "all", "both"
+    year = str(data.get("year") or "all")
+    hostel = str(data.get("hostel") or "both")
+    if year not in NEWS_YEARS:
+        return "Choose a valid year."
+    if hostel not in NEWS_HOSTELS:
+        return "Choose boys, girls or both hostels."
+    return title, body, year, hostel
+
+
+@bp.get("/api/updates/<section>")
+@login_required
+def api_news(section):
+    """List updates, newest first. Hostel updates can be filtered with ?year=1..4 and ?hostel=boys|girls;
+    an update for all years or both hostels matches every filter."""
+    if section not in NEWS_SECTIONS:
+        abort(404)
+    sql = """SELECT n.*, u.name AS author_name, u.role AS author_role FROM news n
+             JOIN users u ON u.id = n.author_id WHERE n.section = ?"""
+    args = [section]
+    year, hostel = request.args.get("year", ""), request.args.get("hostel", "")
+    if section == "hostel" and year in NEWS_YEARS[1:]:
+        sql += " AND n.year IN ('all', ?)"
+        args.append(year)
+    if section == "hostel" and hostel in NEWS_HOSTELS[1:]:
+        sql += " AND n.hostel IN ('both', ?)"
+        args.append(hostel)
+    rows = db().execute(sql + " ORDER BY n.created_at DESC, n.id DESC LIMIT 200", args).fetchall()
+    u = current_user()
+    return jsonify(updates=[news_to_dict(r, u) for r in rows], can_post=_can_post_news(u))
+
+
+@bp.post("/api/updates/<section>")
+@journalist_required
+def api_news_create(section):
+    if section not in NEWS_SECTIONS:
+        abort(404)
+    fields = _news_fields(request.get_json(silent=True) or {}, section)
+    if isinstance(fields, str):
+        return jsonify(error=fields), 400
+    title, body, year, hostel = fields
+    cur = db().execute("""INSERT INTO news (section, title, body, year, hostel, author_id, created_at)
+                          VALUES (?,?,?,?,?,?,?)""", (section, title, body, year, hostel, current_user()["id"], now_iso()))
+    db().commit()
+    return jsonify(ok=True, id=cur.lastrowid)
+
+
+@bp.post("/api/updates/item/<int:nid>/edit")
+@journalist_required
+def api_news_edit(nid):
+    row = _news_row(nid)
+    if not row:
+        return jsonify(error="Update not found."), 404
+    if not _can_edit_news(current_user(), row):
+        return jsonify(error="You can only edit your own updates."), 403
+    fields = _news_fields(request.get_json(silent=True) or {}, row["section"])
+    if isinstance(fields, str):
+        return jsonify(error=fields), 400
+    title, body, year, hostel = fields
+    db().execute("UPDATE news SET title = ?, body = ?, year = ?, hostel = ?, updated_at = ? WHERE id = ?",
+                 (title, body, year, hostel, now_iso(), nid))
+    db().commit()
+    return jsonify(ok=True)
+
+
+@bp.post("/api/updates/item/<int:nid>/delete")
+@journalist_required
+def api_news_delete(nid):
+    row = _news_row(nid)
+    if not row:
+        return jsonify(error="Update not found."), 404
+    if not _can_edit_news(current_user(), row):
+        return jsonify(error="You can only delete your own updates."), 403
+    db().execute("DELETE FROM news WHERE id = ?", (nid,))
+    db().commit()
+    return jsonify(ok=True)
 
 
 # ------------------------------------------------------------------ public chat

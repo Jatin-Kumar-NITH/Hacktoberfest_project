@@ -48,9 +48,12 @@
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
       <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Mess Menu</span></a>
+      <a href="#college-updates" data-page="college-updates"><span class="ico">📰</span><span>College Updates</span></a>
+      <a href="#hostel-updates" data-page="hostel-updates"><span class="ico">🛏</span><span>Hostel Updates</span></a>
       <a href="#chat" data-page="chat"><span class="ico">✉</span><span>Campus Chat</span></a>
       {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">↑</span><span>Publish</span></a>{% endif %}
       {% if me.role in ['owner', 'coowner'] %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">⚙</span><span>Manage Admins</span></a>{% endif %}
+      {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#journalists" data-page="journalists" class="nav-admin"><span class="ico">✍</span><span>Journalists</span></a>{% endif %}
       <a href="#about" data-page="about"><span class="ico">ⓘ</span><span>About</span></a>
     </nav>
     <button class="theme-toggle" type="button"><span class="theme-label">Dark mode</span><span>◐</span></button>
@@ -58,7 +61,7 @@
       <div class="avatar role-{{ me.role }}">{{ me.name[:1] | upper }}</div>
       <div class="user-meta">
         <strong>{{ me.name }}</strong>
-        <span class="role-tag role-{{ me.role }}">{{ {'owner': 'Owner', 'coowner': 'Co-owner', 'admin': 'Admin', 'user': 'Student'}[me.role] }}</span>
+        <span class="role-tag role-{{ me.role }}">{{ {'owner': 'Owner', 'coowner': 'Co-owner', 'admin': 'Admin', 'journalist': 'Journalist'}.get(me.role, 'Student') }}</span>
       </div>
       <button class="logout" id="logoutBtn" title="Log out">⎋</button>
     </div>
@@ -72,6 +75,11 @@
     <div class="role-banner role-{{ me.role }}">
       <span>{{ {'owner': 'Owner mode', 'coowner': 'Co-owner mode'}.get(me.role, 'Admin mode') }} · You can publish notices, assignments and PDFs{{ ' and give admin or co-owner access' if me.role == 'owner' else (' and give admin access' if me.role == 'coowner' else '') }}.</span>
       <a href="#publish">Publish →</a>
+    </div>
+    {% elif me.role == 'journalist' %}
+    <div class="role-banner role-journalist">
+      <span>Journalist mode · You can post College Updates and Hostel Updates.</span>
+      <a href="#college-updates">Post an update →</a>
     </div>
     {% endif %}
 
@@ -521,6 +529,45 @@
       <p class="fine">Emergency (India): call <strong>112</strong> for police, fire or ambulance.</p>
     </section>
 
+    <!-- ============ COLLEGE UPDATES ============ -->
+    <section class="page" id="page-college-updates" hidden>
+      <header class="page-head"><div><h1>College Updates</h1><p class="sub">News from around the college, posted by journalists and admins.</p></div></header>
+      <form class="card news-form" data-news-form="college" hidden>
+        <h3>Post a college update</h3>
+        <label class="field"><span class="label">Headline (optional)</span><input type="text" name="title" maxlength="120"></label>
+        <label class="field"><span class="label">Update</span><textarea name="body" rows="4" maxlength="3000" required></textarea></label>
+        <div class="news-form-actions"><button class="primary inline" type="submit">Post update</button><span class="muted news-msg"></span></div>
+      </form>
+      <div class="card"><div id="newsList-college"></div></div>
+    </section>
+
+    <!-- ============ HOSTEL UPDATES ============ -->
+    <section class="page" id="page-hostel-updates" hidden>
+      <header class="page-head"><div><h1>Hostel Updates</h1><p class="sub">Hostel news by year and hostel. Pick a year and boys or girls to see the updates meant for you.</p></div></header>
+      <div class="news-filters">
+        <div class="year-tabs" id="hnYearTabs">
+          <button class="year-tab" data-hn-year="all">All years</button>
+          {% for y, n in [('1','1st'),('2','2nd'),('3','3rd'),('4','4th')] %}<button class="year-tab" data-hn-year="{{ y }}">{{ n }} Year</button>{% endfor %}
+        </div>
+        <div class="year-tabs" id="hnHostelTabs">
+          <button class="year-tab" data-hn-hostel="all">Both</button>
+          <button class="year-tab" data-hn-hostel="boys">Boys</button>
+          <button class="year-tab" data-hn-hostel="girls">Girls</button>
+        </div>
+      </div>
+      <form class="card news-form" data-news-form="hostel" hidden>
+        <h3>Post a hostel update</h3>
+        <div class="two-col">
+          <label class="field"><span class="label">Year</span><select name="year"><option value="all">All years</option><option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year</option></select></label>
+          <label class="field"><span class="label">Hostel</span><select name="hostel"><option value="both">Boys and girls</option><option value="boys">Boys' hostel</option><option value="girls">Girls' hostel</option></select></label>
+        </div>
+        <label class="field"><span class="label">Headline (optional)</span><input type="text" name="title" maxlength="120"></label>
+        <label class="field"><span class="label">Update</span><textarea name="body" rows="4" maxlength="3000" required></textarea></label>
+        <div class="news-form-actions"><button class="primary inline" type="submit">Post update</button><span class="muted news-msg"></span></div>
+      </form>
+      <div class="card"><div id="newsList-hostel"></div></div>
+    </section>
+
     <!-- ============ CAMPUS CHAT ============ -->
     <section class="page" id="page-chat" hidden>
       <header class="page-head"><div><h1>Campus Chat</h1><p class="sub">A public chat for everyone on CampusMate, plus private channels admins create for chosen members. Be kind. Admin messages are highlighted.</p></div></header>
@@ -608,6 +655,18 @@
         <input type="search" id="userSearch" class="user-search" placeholder="Search users by name or email…">
         <p class="muted user-count" id="userCount"></p>
         <table class="user-table"><thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Last login</th><th>Chat</th><th></th></tr></thead><tbody id="userBody"></tbody></table>
+      </div>
+    </section>
+    {% endif %}
+
+    {% if me.role in ['admin', 'coowner', 'owner'] %}
+    <!-- ============ JOURNALISTS (admins and above) ============ -->
+    <section class="page" id="page-journalists" hidden>
+      <header class="page-head"><div><h1>Journalists</h1><p class="sub">Journalists can post College Updates and Hostel Updates. Admins, co-owners and the owner can make a student a journalist or remove it.</p></div></header>
+      <div class="card">
+        <input type="search" id="jrSearch" class="user-search" placeholder="Search people by name or email…">
+        <p class="muted user-count" id="jrCount"></p>
+        <table class="user-table"><thead><tr><th>Person</th><th>Role</th><th></th></tr></thead><tbody id="jrBody"></tbody></table>
       </div>
     </section>
     {% endif %}
