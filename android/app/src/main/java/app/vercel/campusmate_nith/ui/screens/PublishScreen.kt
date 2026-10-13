@@ -144,7 +144,7 @@ fun PublishScreen(vm: AppViewModel, nav: Nav) {
                 PubLine(p.published_by, p.author_role, p.published_at, "")
                 Actions {
                     p.pdf?.let { PdfButton(vm, it) }
-                    if (canDelete(vm, p.db_id, p.author_role)) DeletePostButton(vm, p.db_id)
+                    if (canDelete(vm, p.db_id, p.author_role, p.author_id)) DeletePostButton(vm, p.db_id)
                 }
             }
         }

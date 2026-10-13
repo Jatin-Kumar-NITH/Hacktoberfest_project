@@ -38,6 +38,9 @@ import app.vercel.campusmate_nith.ui.Screen
 import app.vercel.campusmate_nith.ui.SectionTitle
 import app.vercel.campusmate_nith.ui.SmallButton
 import app.vercel.campusmate_nith.ui.Tag
+import app.vercel.campusmate_nith.ui.DeleteAction
+import app.vercel.campusmate_nith.ui.EditField
+import app.vercel.campusmate_nith.ui.ItemEditorDialog
 
 @Composable
 fun SyllabusScreen(vm: AppViewModel, nav: Nav) {
@@ -54,6 +57,16 @@ fun SyllabusScreen(vm: AppViewModel, nav: Nav) {
         if (mats.isNotEmpty()) {
             item { SectionTitle("Study material from admins") }
             items(mats, key = { it.id }) { m ->
+                var editing by remember { mutableStateOf(false) }
+                if (editing) ItemEditorDialog(
+                    vm, "Edit study material",
+                    listOf(
+                        EditField("title", "Title", m.title, max = 150),
+                        EditField("code", "Subject code", m.code.orEmpty(), max = 40),
+                        EditField("body", "Description (optional)", m.body, kind = "textarea", max = 8000),
+                    ),
+                    pdfLabel = "Replace PDF (optional)", onDismiss = { editing = false },
+                ) { fields, pdf -> vm.api.editPost(m.db_id, fields, pdf) }
                 CmCard {
                     m.code?.let { CodeTag(it) }
                     Text(m.title, fontWeight = FontWeight.SemiBold)
@@ -61,7 +74,10 @@ fun SyllabusScreen(vm: AppViewModel, nav: Nav) {
                     PubLine(m.published_by, m.author_role, m.published_at, "")
                     Actions {
                         m.pdf?.let { PdfButton(vm, it, "Open PDF") }
-                        if (canDelete(vm, m.db_id, m.author_role)) DeletePostButton(vm, m.db_id)
+                        if (canDelete(vm, m.db_id, m.author_role, m.author_id)) {
+                            SmallButton("✎ Edit", { editing = true })
+                            DeletePostButton(vm, m.db_id)
+                        }
                     }
                 }
             }
@@ -86,6 +102,16 @@ private fun SubjectCard(vm: AppViewModel, nav: Nav, code: String, sec: Section?,
     val cls = sec?.classes?.filter { it.code == code }.orEmpty()
     val mine = cls.filter { it.group == null || vm.group.isEmpty() || it.group == vm.group }
     var showText by remember { mutableStateOf(false) }
+    var editing by remember { mutableStateOf(false) }
+    if (editing && sub != null) ItemEditorDialog(
+        vm, "Edit $code syllabus",
+        listOf(
+            EditField("name", "Subject name", sub.name, max = 150),
+            EditField("text", "Syllabus text", sub.text, kind = "textarea", max = 20000),
+            EditField("note", "Note (optional)", sub.note.orEmpty(), max = 300),
+        ),
+        pdfLabel = "Replace PDF (optional)", onDismiss = { editing = false },
+    ) { fields, pdf -> vm.api.editSubject(vm.year, code, fields, pdf) }
     CmCard {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             CodeTag(code)
@@ -114,6 +140,10 @@ private fun SubjectCard(vm: AppViewModel, nav: Nav, code: String, sec: Section?,
                 vm.pendingQuestion = "Summarise the syllabus of $code${if (sub.name != code) " " + sub.name else ""} unit by unit, in simple words."
                 nav.go("ask")
             })
+            if (vm.isAdmin) {
+                SmallButton("✎ Edit", { editing = true })
+                DeleteAction(vm) { vm.api.deleteSubject(vm.year, code) }
+            }
         }
         if (showText) Text(sub.text, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = P.ink2)
     }

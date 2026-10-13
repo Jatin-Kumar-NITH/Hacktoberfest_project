@@ -44,6 +44,19 @@ class Store(context: Context) {
             if (v == null) prefs.edit().remove("plan").apply() else write("plan", SavedPlan.serializer(), v)
         }
 
+    /** Roll numbers looked up on the Results page, newest first (like the website's cm_results_recent). */
+    var recentRolls: List<String>
+        get() = read("results_recent", ListSerializer(String.serializer()), emptyList())
+        set(v) = write("results_recent", ListSerializer(String.serializer()), v.take(6))
+
+    /** Year and hostel picked on Hostel updates ("" follows the profile). */
+    var newsYear: String
+        get() = prefs.getString("news_year", "") ?: ""
+        set(v) = prefs.edit().putString("news_year", v).apply()
+    var newsHostel: String
+        get() = prefs.getString("news_hostel", "") ?: ""
+        set(v) = prefs.edit().putString("news_hostel", v).apply()
+
     var assignmentsDone: Map<String, Boolean>
         get() = read("assign_done", MapSerializer(String.serializer(), Boolean.serializer()), emptyMap())
         set(v) = write("assign_done", MapSerializer(String.serializer(), Boolean.serializer()), v)

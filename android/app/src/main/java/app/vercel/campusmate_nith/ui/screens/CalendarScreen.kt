@@ -64,6 +64,9 @@ import app.vercel.campusmate_nith.ui.Screen
 import app.vercel.campusmate_nith.ui.SmallButton
 import app.vercel.campusmate_nith.ui.Tag
 import app.vercel.campusmate_nith.ui.soonIso
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.material3.FilterChip
+import app.vercel.campusmate_nith.data.YEAR_NAMES
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
@@ -90,11 +93,12 @@ fun CalTag(type: String) {
 @Composable
 fun CalendarScreen(vm: AppViewModel, nav: Nav) {
     var editing by remember { mutableStateOf(false) }
-    val cal = vm.campus.calendar
     if (editing) {
-        CalendarEditor(vm, cal, onClose = { editing = false })
+        CalendarEditor(vm, vm.campus.calendar, onClose = { editing = false })
         return
     }
+    val all = vm.campus.calendar
+    val cal = vm.myCalendar   // only this year's entries and the all-years ones
     var month by remember { mutableStateOf(YearMonth.now()) }
     var selected by remember { mutableStateOf<String?>(null) }
     var filter by remember { mutableStateOf("upcoming") }
@@ -104,7 +108,7 @@ fun CalendarScreen(vm: AppViewModel, nav: Nav) {
         item {
             Column {
                 Text(cal.name, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                Muted("Confirmed holidays and important dates for everyone")
+                Muted("Confirmed holidays and important dates for ${YEAR_NAMES[vm.year]}")
                 cal.edited_by?.let { Muted("Last edited by $it · ${fmtTime(cal.edited_at)}", size = 12) }
             }
         }
@@ -114,7 +118,10 @@ fun CalendarScreen(vm: AppViewModel, nav: Nav) {
             val left = cal.events.filter { it.type == "holiday" && it.end.ifEmpty { it.date } >= today }
             val now = holidayOn(cal, today)
             CmCard {
-                if (cal.events.isEmpty()) EmptyLine(if (vm.isAdmin) "No dates added yet. Use “Edit academic calendar” to add holidays." else "No dates added yet. Admins will add confirmed holidays here.")
+                if (cal.events.isEmpty()) EmptyLine(
+                    (if (all.events.isNotEmpty()) "No dates for ${YEAR_NAMES[vm.year]} yet. " else "No dates added yet. ") +
+                        if (vm.isAdmin) "Use “Edit academic calendar” to add holidays." else "Admins will add confirmed holidays here.",
+                )
                 else {
                     now?.let { Text("🎉 Today: ${it.title} · holiday, no classes", color = P.red, fontWeight = FontWeight.SemiBold) }
                     left.firstOrNull { it.date > today }?.let { Text("Next holiday: ${it.title} · ${rangeLabel(it)} · ${whenLabel(it)}", fontWeight = FontWeight.SemiBold) }
@@ -212,8 +219,11 @@ private class CalEdit(e: CalEvent) {
     var title by mutableStateOf(e.title)
     var type by mutableStateOf(e.type)
     var note by mutableStateOf(e.note)
+    /** "all", or the years (1-4) this entry is for. */
+    var years by mutableStateOf(e.yearList.toSet())
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun CalendarEditor(vm: AppViewModel, cal: AcademicCalendar, onClose: () -> Unit) {
     var name by remember { mutableStateOf(cal.name) }
@@ -233,6 +243,18 @@ private fun CalendarEditor(vm: AppViewModel, cal: AcademicCalendar, onClose: () 
                 Field(r.title, { r.title = it }, "Title, e.g. Diwali", maxLength = 120)
                 Dropdown("Type", CAL_TYPES.entries.map { it.key to it.value }, r.type, { r.type = it })
                 Field(r.note, { r.note = it }, "Note (optional)", maxLength = 200)
+                Muted("For", size = 13)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    FilterChip(selected = "all" in r.years, onClick = { r.years = setOf("all") }, label = { Text("All years") })
+                    (1..4).forEach { y ->
+                        val on = y.toString() in r.years
+                        FilterChip(selected = on, label = { Text(YEAR_NAMES[y] ?: "$y") }, onClick = {
+                            val next = (r.years - "all").let { if (on) it - y.toString() else it + y.toString() }
+                            // none or all four ticked means everyone, like the website
+                            r.years = if (next.isEmpty() || next.size == 4) setOf("all") else next
+                        })
+                    }
+                }
                 SmallButton("Remove", { rows.removeAt(i) }, danger = true)
             }
         }
@@ -249,6 +271,7 @@ private fun CalendarEditor(vm: AppViewModel, cal: AcademicCalendar, onClose: () 
                                 buildJsonObject {
                                     put("date", JsonPrimitive(r.date)); put("end", JsonPrimitive(r.end)); put("title", JsonPrimitive(r.title))
                                     put("type", JsonPrimitive(r.type)); put("note", JsonPrimitive(r.note))
+                                    put("years", JsonArray(r.years.sorted().map { JsonPrimitive(it) }))
                                 }
                             }))
                         }

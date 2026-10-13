@@ -13,6 +13,7 @@ import app.vercel.campusmate_nith.data.Store
 import app.vercel.campusmate_nith.data.dayClasses
 import app.vercel.campusmate_nith.data.dayName
 import app.vercel.campusmate_nith.data.hh
+import app.vercel.campusmate_nith.data.forYear
 import app.vercel.campusmate_nith.data.holidayOn
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -25,8 +26,8 @@ fun studentSection(c: Campus, store: Store): Section? {
 }
 
 /** Real classes (not free periods) on a date, or none on a holiday. */
-fun classesOn(c: Campus, sec: Section, group: String, date: LocalDate): List<ClassItem> {
-    if (holidayOn(c.calendar, date.toString()) != null) return emptyList()
+fun classesOn(c: Campus, sec: Section, group: String, date: LocalDate, year: Int): List<ClassItem> {
+    if (holidayOn(c.calendar.forYear(year), date.toString()) != null) return emptyList()
     return dayClasses(sec, dayName(date), group).filter { it.type != "Free" }
 }
 
@@ -40,7 +41,7 @@ object ClassReminders {
         val sec = studentSection(c, store) ?: return null
         for (i in 0..7) {
             val date = from.toLocalDate().plusDays(i.toLong())
-            for (cls in classesOn(c, sec, store.group, date)) {
+            for (cls in classesOn(c, sec, store.group, date, store.year)) {
                 val at = date.atTime(cls.start.coerceIn(0, 23), 0).minusMinutes(store.classLead.toLong())
                 if (at.isAfter(from)) return Next(at, cls, cls.room.ifEmpty { sec.classroom })
             }

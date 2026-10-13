@@ -149,13 +149,84 @@ class Api(context: Context) {
         call(postJson("/api/attendance", json.encodeToString(a)))
     }
 
-    suspend fun chat(after: Int): ChatResponse = json.decodeFromString(call(get("/api/chat?after=$after")))
-    suspend fun sendChat(body: String) {
-        call(postJson("/api/chat", buildJsonObject { put("body", body) }.toString()))
+    private fun chatPath(channel: Int?) = if (channel == null) "/api/chat" else "/api/channels/$channel/messages"
+
+    /** The public campus chat, or a private channel's messages when [channel] is set. */
+    suspend fun chat(after: Int, channel: Int? = null): ChatResponse =
+        json.decodeFromString(call(get("${chatPath(channel)}?after=$after")))
+    suspend fun sendChat(body: String, channel: Int? = null) {
+        call(postJson(chatPath(channel), buildJsonObject { put("body", body) }.toString()))
     }
-    suspend fun deleteChat(id: Int) {
-        call(postJson("/api/chat/$id/delete", "{}"))
+    suspend fun deleteChat(id: Int, channel: Int? = null) {
+        call(postJson(if (channel == null) "/api/chat/$id/delete" else "/api/channels/$channel/messages/$id/delete", "{}"))
     }
+
+    // private chat channels
+    suspend fun channels(): ChannelsResponse = json.decodeFromString(call(get("/api/channels")))
+    suspend fun channel(id: Int): ChannelInfo = json.decodeFromString(call(get("/api/channels/$id")))
+    suspend fun createChannel(name: String, memberIds: List<Int>): Int {
+        val body = buildJsonObject {
+            put("name", name)
+            put("member_ids", kotlinx.serialization.json.JsonArray(memberIds.map { kotlinx.serialization.json.JsonPrimitive(it) }))
+        }
+        return json.decodeFromString<JsonObject>(call(postJson("/api/channels", body.toString())))["id"]?.stringOrNull()?.toIntOrNull() ?: 0
+    }
+    suspend fun addMembers(channel: Int, userIds: List<Int>) {
+        val body = buildJsonObject { put("user_ids", kotlinx.serialization.json.JsonArray(userIds.map { kotlinx.serialization.json.JsonPrimitive(it) })) }
+        call(postJson("/api/channels/$channel/members", body.toString()))
+    }
+    suspend fun removeMember(channel: Int, userId: Int) {
+        call(postJson("/api/channels/$channel/members/$userId/remove", "{}"))
+    }
+    suspend fun deleteChannel(channel: Int) {
+        call(postJson("/api/channels/$channel/delete", "{}"))
+    }
+    suspend fun people(): List<Person> = json.decodeFromString<PeopleResponse>(call(get("/api/people"))).people
+
+    // college & hostel updates
+    suspend fun news(section: String, year: String? = null, hostel: String? = null): NewsResponse {
+        val q = if (section == "hostel") "?year=${year.orEmpty()}&hostel=${hostel.orEmpty()}" else ""
+        return json.decodeFromString(call(get("/api/updates/$section$q")))
+    }
+    private fun newsBody(title: String, body: String, year: String, hostel: String) =
+        buildJsonObject { put("title", title); put("body", body); put("year", year); put("hostel", hostel) }.toString()
+    suspend fun postNews(section: String, title: String, body: String, year: String, hostel: String) {
+        call(postJson("/api/updates/$section", newsBody(title, body, year, hostel)))
+    }
+    suspend fun editNews(id: Int, title: String, body: String, year: String, hostel: String) {
+        call(postJson("/api/updates/item/$id/edit", newsBody(title, body, year, hostel)))
+    }
+    suspend fun deleteNews(id: Int) {
+        call(postJson("/api/updates/item/$id/delete", "{}"))
+    }
+
+    suspend fun results(roll: String): ResultsResponse =
+        json.decodeFromString(call(get("/api/results?q=" + java.net.URLEncoder.encode(roll, "UTF-8"))))
+
+    suspend fun setJournalist(userId: Int, on: Boolean) {
+        call(postJson("/api/users/$userId/journalist", buildJsonObject { put("journalist", on) }.toString()))
+    }
+
+    /** A multipart form POST with an optional PDF, as the website's edit forms send. */
+    private suspend fun form(path: String, fields: List<Pair<String, String>>, pdf: Pair<String, ByteArray>?) {
+        val body = MultipartBody.Builder().setType(MultipartBody.FORM)
+        fields.forEach { (k, v) -> body.addFormDataPart(k, v) }
+        if (pdf != null) body.addFormDataPart("pdf", pdf.first, pdf.second.toRequestBody("application/pdf".toMediaType()))
+        call(post(path, body.build()))
+    }
+    suspend fun editPost(dbId: Int, fields: List<Pair<String, String>>, pdf: Pair<String, ByteArray>?) =
+        form("/api/posts/$dbId/edit", fields, pdf)
+    suspend fun editAssignment(id: String, fields: List<Pair<String, String>>, pdf: Pair<String, ByteArray>?) =
+        form("/api/edit/assignment/${enc(id)}", fields, pdf)
+    suspend fun deleteAssignment(id: String) {
+        call(postJson("/api/edit/assignment/${enc(id)}/delete", "{}"))
+    }
+    suspend fun editSubject(year: Int, code: String, fields: List<Pair<String, String>>, pdf: Pair<String, ByteArray>?) =
+        form("/api/edit/syllabus/$year/${enc(code)}", fields, pdf)
+    suspend fun deleteSubject(year: Int, code: String) {
+        call(postJson("/api/edit/syllabus/$year/${enc(code)}/delete", "{}"))
+    }
+    private fun enc(s: String) = java.net.URLEncoder.encode(s, "UTF-8").replace("+", "%20")
     suspend fun ban(userId: Int, hours: Int) {
         call(postJson("/api/chat/ban", buildJsonObject { put("user_id", userId); put("hours", hours) }.toString()))
     }

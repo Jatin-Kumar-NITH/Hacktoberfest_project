@@ -59,7 +59,8 @@ fun LoginScreen(vm: AppViewModel) {
             Muted("Sign in with your institutional Google account", size = 13)
             vm.signInError?.let {
                 Spacer(Modifier.height(16.dp))
-                Alert(it, AlertKind.Error)
+                // selectable, so the details can be copied and sent to whoever looks after the app
+                androidx.compose.foundation.text.selection.SelectionContainer { Alert(it, AlertKind.Error) }
             }
             Spacer(Modifier.height(32.dp))
             listOf(

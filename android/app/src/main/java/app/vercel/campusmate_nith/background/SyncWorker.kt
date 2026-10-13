@@ -29,6 +29,8 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
             Result.success()
         } catch (e: ApiException) {
             if (e.status == 401 || e.status == 403) Result.success() else Result.retry()
+        } catch (e: Exception) {
+            Result.failure()   // unreadable data: try again on the next scheduled run
         }
     }
 

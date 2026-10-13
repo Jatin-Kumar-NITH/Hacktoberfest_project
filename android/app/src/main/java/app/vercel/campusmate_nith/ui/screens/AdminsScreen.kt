@@ -27,6 +27,7 @@ import app.vercel.campusmate_nith.ui.Alert
 import app.vercel.campusmate_nith.ui.AlertKind
 import app.vercel.campusmate_nith.ui.AppViewModel
 import app.vercel.campusmate_nith.ui.CmCard
+import app.vercel.campusmate_nith.ui.Actions
 import app.vercel.campusmate_nith.ui.Field
 import app.vercel.campusmate_nith.ui.Loading
 import app.vercel.campusmate_nith.ui.Muted
@@ -58,9 +59,9 @@ fun AdminsScreen(vm: AppViewModel, nav: Nav) {
     LaunchedEffect(Unit) { load() }
 
     Screen("Manage admins", vm, onBack = { nav.back() }) {
-        if (vm.user?.isOwner != true) { item { Alert("Only the owner can manage admins.", AlertKind.Warn) }; return@Screen }
-        val admins = users.count { it.role != "user" }
-        item { Muted("${users.size} accounts · $admins owner/admin · ${users.size - admins} students") }
+        if (vm.user?.isOwner != true) { item { Alert("Only the owner or a co-owner can manage admins.", AlertKind.Warn) }; return@Screen }
+        val admins = users.count { it.role !in setOf("user", "journalist") }
+        item { Muted("${users.size} accounts · $admins owner/co-owner/admin · ${users.size - admins} students") }
         item { Field(q, { q = it }, "Search by name or email") }
         if (loading) item { Loading("Loading accounts…") }
         error?.let { item { Alert(it, AlertKind.Error) } }
@@ -75,16 +76,26 @@ fun AdminsScreen(vm: AppViewModel, nav: Nav) {
                 }
                 Muted("Joined ${fmtTime(u.created_at)} · last login ${u.last_login_at?.let { fmtTime(it) } ?: "—"}", size = 12)
                 if (u.chat_banned != 0) Text("🚫 Banned from chat", color = P.red)
-                if (u.role == "owner") Muted("You", size = 13)
-                else {
-                    val make = u.role == "user"
-                    val act: () -> Unit = {
-                        scope.launch {
-                            try { vm.api.setRole(u.id, if (make) "admin" else "user"); load() }
-                            catch (e: ApiException) { Toast.makeText(ctx, e.message, Toast.LENGTH_LONG).show() }
-                        }
+                // same buttons as the website's Manage admins table
+                val setRole: (String) -> Unit = { role ->
+                    scope.launch {
+                        try { vm.api.setRole(u.id, role); load() }
+                        catch (e: ApiException) { Toast.makeText(ctx, e.message, Toast.LENGTH_LONG).show() }
                     }
-                    if (make) AiButton("Make admin", act) else SmallButton("Remove admin", act, danger = true)
+                }
+                val trueOwner = vm.user?.isTrueOwner == true
+                when {
+                    u.id == vm.user?.id -> Muted("You", size = 13)
+                    u.role == "owner" -> Muted("Owner", size = 13)
+                    u.role == "coowner" ->
+                        if (trueOwner) SmallButton("Remove co-owner", { setRole("admin") }, danger = true) else Muted("Co-owner", size = 13)
+                    else -> Actions {
+                        if (u.role == "admin") SmallButton("Remove admin", { setRole("user") }, danger = true)
+                        else AiButton("Make admin", { setRole("admin") })
+                        if (u.role == "user") SmallButton("Make journalist", { setRole("journalist") })
+                        if (u.role == "journalist") SmallButton("Remove journalist", { setRole("user") }, danger = true)
+                        if (trueOwner) SmallButton("Make co-owner", { setRole("coowner") })
+                    }
                 }
             }
         }

@@ -11,9 +11,21 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 data class User(val id: Int = 0, val name: String = "", val email: String = "", val role: String = "user") {
-    val isAdmin get() = role == "admin" || role == "owner"
-    val isOwner get() = role == "owner"
+    /** Admin, co-owner or owner: publishes, edits campus data, moderates chat, makes channels. */
+    val isAdmin get() = role in setOf("admin", "coowner", "owner")
+    /** Owner or co-owner: manages admins. */
+    val isOwner get() = role == "owner" || role == "coowner"
+    /** Only the real owner can give or take co-owner. */
+    val isTrueOwner get() = role == "owner"
+    /** Journalists and staff can post College and Hostel Updates. */
+    val canPostNews get() = role in setOf("journalist", "admin", "coowner", "owner")
 }
+
+/** Same ranks as accounts.py. */
+val RANK = mapOf("owner" to 4, "coowner" to 3, "admin" to 2, "journalist" to 1, "user" to 0)
+
+/** Whether someone with [actor] role may act against someone with [target] role. */
+fun outranks(actor: String, target: String) = actor == "owner" || (RANK[actor] ?: 0) > (RANK[target] ?: 0)
 
 @Serializable
 data class CampusResponse(
@@ -190,6 +202,21 @@ data class Hostel(
     val mess_timings: Map<String, String> = emptyMap(),
     val edited_by: String? = null,
     val edited_at: String? = null,
+    /** A year's own menu, which wins over the all-years one for that year. */
+    val years: Map<String, HostelMenu> = emptyMap(),
+) {
+    /** The menu students of [year] see: their year's own menu, else the all-years one. */
+    fun forYear(year: Int): Hostel = years[year.toString()]?.let {
+        copy(mess_menu = it.mess_menu, mess_timings = it.mess_timings, edited_by = it.edited_by, edited_at = it.edited_at)
+    } ?: this
+}
+
+@Serializable
+data class HostelMenu(
+    val mess_menu: Map<String, Map<String, String>> = emptyMap(),
+    val mess_timings: Map<String, String> = emptyMap(),
+    val edited_by: String? = null,
+    val edited_at: String? = null,
 )
 
 @Serializable
@@ -208,7 +235,12 @@ data class CalEvent(
     val title: String = "",
     val type: String = "holiday",
     val note: String = "",
-)
+    /** ["all"] or some of 1-4; entries saved before years existed have none and are for everyone. */
+    val years: List<JsonElement>? = null,
+) {
+    fun forYear(year: Int): Boolean = years?.asStrings()?.let { it.isEmpty() || "all" in it || year.toString() in it } ?: true
+    val yearList: List<String> get() = years?.asStrings()?.ifEmpty { null } ?: listOf("all")
+}
 
 @Serializable
 data class Post(
@@ -374,7 +406,13 @@ data class Ban(
 )
 
 @Serializable
-data class ChatResponse(val messages: List<ChatMessage> = emptyList(), val latest: Int = 0, val banned: Ban? = null)
+data class ChatResponse(
+    val messages: List<ChatMessage> = emptyList(),
+    val latest: Int = 0,
+    val banned: Ban? = null,
+    /** Ids of the latest messages, so messages deleted by someone else can be dropped. */
+    val ids: List<Int>? = null,
+)
 
 @Serializable
 data class BansResponse(val bans: List<Ban> = emptyList())
@@ -406,4 +444,92 @@ data class AppVersion(
     val versionName: String = "",
     val apk: String = "",
     val debugApk: String = "",
+)
+
+// ---------------------------------------------------------------- college & hostel updates
+
+@Serializable
+data class NewsItem(
+    val id: Int = 0,
+    val section: String = "college",
+    val title: String = "",
+    val body: String = "",
+    val year: String = "all",
+    val hostel: String = "both",
+    val created_at: String = "",
+    val updated_at: String? = null,
+    val author_id: Int = 0,
+    val author_name: String = "",
+    val author_role: String = "user",
+    val can_edit: Boolean = false,
+)
+
+@Serializable
+data class NewsResponse(val updates: List<NewsItem> = emptyList(), val can_post: Boolean = false)
+
+// ---------------------------------------------------------------- private chat channels
+
+@Serializable
+data class Channel(
+    val id: Int = 0,
+    val name: String = "",
+    val created_at: String = "",
+    val created_by_name: String = "",
+    val member_count: Int = 0,
+    val latest: Int = 0,
+)
+
+@Serializable
+data class ChannelsResponse(val channels: List<Channel> = emptyList(), val can_create: Boolean = false)
+
+@Serializable
+data class Person(val id: Int = 0, val name: String = "", val email: String = "", val role: String = "user")
+
+@Serializable
+data class ChannelBasic(val id: Int = 0, val name: String = "")
+
+@Serializable
+data class ChannelInfo(val channel: ChannelBasic = ChannelBasic(), val members: List<Person> = emptyList(), val can_manage: Boolean = false)
+
+@Serializable
+data class PeopleResponse(val people: List<Person> = emptyList())
+
+// ---------------------------------------------------------------- results (nithresults.xyz via /api/results)
+
+@Serializable
+data class ResultSubject(
+    val code: String = "",
+    val subject: String = "",
+    val credit: Double = 0.0,
+    val grade: String = "",
+    val points: Double? = null,
+)
+
+@Serializable
+data class ResultSemester(
+    val number: Int = 0,
+    val name: String = "",
+    val subjects: List<ResultSubject> = emptyList(),
+    val credits: Double = 0.0,
+    val sgpa: Double? = null,
+    val cgpa: Double? = null,
+)
+
+@Serializable
+data class ResultStudent(
+    val name: String = "",
+    val roll: String = "",
+    val father: String = "",
+    val year: JsonElement? = null,
+    val semesters: List<ResultSemester> = emptyList(),
+    val credits: Double = 0.0,
+    val cgpa: Double? = null,
+)
+
+@Serializable
+data class ResultsResponse(
+    val students: List<ResultStudent> = emptyList(),
+    val fetched_at: Double = 0.0,
+    val cached: Boolean = false,
+    val stale: Boolean = false,
 )

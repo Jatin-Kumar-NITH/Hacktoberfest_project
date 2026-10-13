@@ -33,6 +33,7 @@ import app.vercel.campusmate_nith.data.SyllabusYear
 import app.vercel.campusmate_nith.data.Timetable
 import app.vercel.campusmate_nith.data.User
 import app.vercel.campusmate_nith.data.attStats
+import app.vercel.campusmate_nith.data.forYear
 import app.vercel.campusmate_nith.data.googleIdToken
 import app.vercel.campusmate_nith.data.pdfPath
 import kotlinx.coroutines.Job
@@ -109,6 +110,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val mySection get() = sectionOf(year, section)
     fun syllabus(y: Int = year): SyllabusYear = campus.syllabus.years[y.toString()] ?: SyllabusYear()
     fun subjectName(code: String, y: Int = year): String = syllabus(y).subjects[code]?.name?.takeIf { it != code }.orEmpty()
+    /** The academic calendar entries for the student's year. */
+    val myCalendar get() = campus.calendar.forYear(year)
     fun myHostel(): Hostel = campus.hostel.hostels[hostel] ?: campus.hostel.hostels.values.firstOrNull() ?: Hostel()
     val myLabel get() = "${app.vercel.campusmate_nith.data.YEAR_NAMES[year]} · Section $section${if (group.isNotEmpty()) " · $group" else ""}"
 
@@ -134,11 +137,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 cm.background { Updates.takeNew(store, r.campus) }
                 afterCampusChange()
                 if (initial || !attDirty) loadAttendance()
-            } catch (e: ApiException) {
-                if (e.status == 401) {
+            } catch (e: Exception) {
+                if (e is ApiException && e.status == 401) {
                     signOutLocal()
                 } else {
-                    loadError = e.message
+                    // a parsing problem must not crash the app; show it like any other load error
+                    loadError = if (e is ApiException) e.message else "Couldn't read the data from CampusMate (${e.javaClass.simpleName}: ${e.message})."
                     if (user == null) auth = AuthState.SignedOut
                 }
             } finally {
@@ -153,21 +157,30 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             signingIn = true
             signInError = null
             try {
-                val clientId = api.config()
+                val clientId = step("Couldn't load the sign-in settings from CampusMate") { api.config() }
                 if (clientId.isEmpty()) throw ApiException("Google login is not set up on the server yet (GOOGLE_CLIENT_ID is missing).")
                 val token = googleIdToken(activity, clientId)
-                api.login(token)
-                user = api.me()
+                step("Google signed you in, but CampusMate didn't accept it") { api.login(token) }
+                user = step("Signed in, but couldn't load your account") { api.me() }
                 auth = AuthState.SignedIn
                 refresh(initial = true)
             } catch (e: SignInCancelled) {
                 // the student closed the picker
             } catch (e: Exception) {
-                signInError = e.message ?: "Sign-in failed. Please try again."
+                signInError = e.message ?: "Sign-in failed. Please try again. (${e.javaClass.simpleName})"
             } finally {
                 signingIn = false
             }
         }
+    }
+
+    /** Runs one sign-in step and says which one failed, with the server's reason. */
+    private suspend fun <T> step(what: String, block: suspend () -> T): T = try {
+        block()
+    } catch (e: ApiException) {
+        throw ApiException("$what: ${e.message}", e.status, e.banned)
+    } catch (e: Exception) {
+        throw ApiException("$what (${e.javaClass.simpleName}: ${e.message}).")
     }
 
     fun logout() {
@@ -312,7 +325,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     /** What /api/ask uses to answer questions about the student's own saved things. */
     fun clientContext(): kotlinx.serialization.json.JsonObject {
         val deadlines = history.flatMap { h -> h.result.deadlines.map { Triple(it.date_iso ?: it.date, it.what, h.result.title) } }.take(20)
-        val stats = attSubjects().map { attStats(attendance, it) }.filter { it.total > 0 }
+        val stats = attSubjects().map { attStats(attendance, it, myCalendar) }.filter { it.total > 0 }
         return kotlinx.serialization.json.buildJsonObject {
             put("deadlines", kotlinx.serialization.json.buildJsonArray {
                 deadlines.forEach { (d, w, f) ->

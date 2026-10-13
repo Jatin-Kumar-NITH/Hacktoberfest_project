@@ -82,13 +82,13 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
 
         // ---- classes (today, or the next day that has some)
         item {
-            val hol = holidayOn(c.calendar, tIso)
+            val hol = holidayOn(vm.myCalendar, tIso)
             var label = "Today's classes"
             var classes = if (hol != null) emptyList() else dayClasses(sec, todayName(), vm.group)
             if (classes.isEmpty()) {
                 for (i in 1..21) {
                     val d = today().plusDays(i.toLong())
-                    if (holidayOn(c.calendar, d.toString()) != null) continue
+                    if (holidayOn(vm.myCalendar, d.toString()) != null) continue
                     val found = dayClasses(sec, dayName(d), vm.group)
                     if (found.isNotEmpty()) {
                         classes = found
@@ -165,7 +165,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
 
         // ---- attendance
         item {
-            val stats = vm.attSubjects().map { attStats(vm.attendance, it) }.filter { it.total > 0 }
+            val stats = vm.attSubjects().map { attStats(vm.attendance, it, vm.myCalendar) }.filter { it.total > 0 }
             CmCard(onClick = { nav.go("attendance") }) {
                 SectionTitle("My attendance")
                 if (stats.isEmpty()) EmptyLine("Not tracking yet. Mark today's classes as present or absent to see your attendance here.")
@@ -201,7 +201,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
 
         // ---- mess menu
         item {
-            val h = vm.myHostel()
+            val h = vm.myHostel().forYear(vm.year)
             CmCard(onClick = { nav.go("mess") }) {
                 SectionTitle("Today's menu · ${h.name}")
                 val meals = h.mess_menu[todayName()].orEmpty()
@@ -221,7 +221,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
 
         // ---- holidays
         item {
-            val hols = c.calendar.events.filter { it.type == "holiday" && it.end.ifEmpty { it.date } >= tIso }.take(3)
+            val hols = vm.myCalendar.events.filter { it.type == "holiday" && it.end.ifEmpty { it.date } >= tIso }.take(3)
             CmCard {
                 SectionTitle("Upcoming holidays") { SmallButton("Calendar", { nav.go("calendar") }) }
                 if (hols.isEmpty()) EmptyLine("No upcoming holidays added yet.")
