@@ -73,6 +73,12 @@ fun CampusMateTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable 
         labelLarge = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
     )
     androidx.compose.runtime.CompositionLocalProvider(LocalPalette provides p) {
-        MaterialTheme(colorScheme = scheme, typography = type, content = content)
+        MaterialTheme(colorScheme = scheme, typography = type) {
+            // Text outside a Scaffold or Surface (the sign-in and profile screens) otherwise
+            // defaults to black, which disappears on the dark theme's black and grey cards.
+            androidx.compose.runtime.CompositionLocalProvider(
+                androidx.compose.material3.LocalContentColor provides p.ink, content = content,
+            )
+        }
     }
 }
