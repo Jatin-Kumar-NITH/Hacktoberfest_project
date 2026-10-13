@@ -121,6 +121,7 @@ fun ChatScreen(vm: AppViewModel, nav: Nav) {
             val fresh = r.messages.filter { m -> m.id > latest && messages.none { it.id == m.id } }
             messages.addAll(fresh)
             fresh.maxOfOrNull { it.id }?.let { latest = maxOf(latest, it) }
+            vm.store.setChatSeen(ch?.toString() ?: "campus", r.latest)   // read here, so don't notify it later
             if (fresh.isNotEmpty() && (atBottom || latest == r.latest)) list.scrollToItem(list.layoutInfo.totalItemsCount.coerceAtLeast(1) - 1)
         } catch (e: ApiException) {
             if (e.status == 404 && ch != null) { channel = null; loadChannels() }   // removed from the channel
@@ -134,6 +135,18 @@ fun ChatScreen(vm: AppViewModel, nav: Nav) {
 
     LaunchedEffect(Unit) { loadBans(); loadChannels() }
     // restarts whenever the channel changes
+    // while a chat is on screen (and the app is in front) its messages don't also arrive as notifications
+    val app = LocalContext.current.applicationContext as app.vercel.campusmate_nith.CampusMateApplication
+    val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(channel, owner) {
+        val key = channel?.toString() ?: "campus"
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_START) app.openChat = key
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) app.openChat = null
+        }
+        owner.lifecycle.addObserver(observer)
+        onDispose { owner.lifecycle.removeObserver(observer); app.openChat = null }
+    }
     LaunchedEffect(channel) {
         messages.clear(); latest = 0
         hint = if (channel == null) PUBLIC_HINT else PRIVATE_HINT

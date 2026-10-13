@@ -19,13 +19,8 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
         val store = app.store
         if (store.campusCache == null) return Result.success()   // signed out
         return try {
-            val r = app.api.campus()
-            store.campusCache = r
-            store.lastSync = System.currentTimeMillis()
-            val news = Updates.takeNew(store, r.campus)
-            if (store.notifyNew) Updates.notify(applicationContext, news)
-            ClassReminders.schedule(applicationContext, r.campus)
-            TodayWidget.refresh(applicationContext)
+            syncCampus(app)
+            Push.sync(app)   // keeps push topics in step with your channels
             Result.success()
         } catch (e: ApiException) {
             if (e.status == 401 || e.status == 403) Result.success() else Result.retry()
@@ -35,6 +30,19 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
     }
 
     companion object {
+        /** Fetches the campus data and notifies about anything new. Also run when a push arrives. */
+        suspend fun syncCampus(app: CampusMateApplication) {
+            val store = app.store
+            val r = app.api.campus()
+            store.campusCache = r
+            store.lastSync = System.currentTimeMillis()
+            val news = Updates.takeNew(store, r.campus)
+            if (store.notifyNew) Updates.notify(app, news)
+            ClassReminders.schedule(app, r.campus)
+            TodayWidget.refresh(app)
+        }
+
+
         fun schedule(context: Context) {
             val req = PeriodicWorkRequestBuilder<SyncWorker>(1, TimeUnit.HOURS)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())

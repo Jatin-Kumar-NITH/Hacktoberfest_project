@@ -18,6 +18,7 @@ import app.vercel.campusmate_nith.R
 object Notify {
     const val UPDATES = "updates"
     const val CLASSES = "classes"
+    const val CHAT = "chat"
 
     /** Screens a notification, shortcut or widget may open. */
     val ROUTES = setOf(
@@ -31,6 +32,10 @@ object Notify {
         nm.createNotificationChannel(
             NotificationChannel(UPDATES, "New notices, assignments and exams", NotificationManager.IMPORTANCE_DEFAULT)
                 .apply { description = "When something new for your year and section is posted" },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHAT, "Chat messages", NotificationManager.IMPORTANCE_DEFAULT)
+                .apply { description = "New messages in your private channels, and the campus chat if you turn it on" },
         )
         nm.createNotificationChannel(
             NotificationChannel(CLASSES, "Class reminders", NotificationManager.IMPORTANCE_HIGH)

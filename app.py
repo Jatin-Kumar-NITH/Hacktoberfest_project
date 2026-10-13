@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
 import accounts
+import push
 from accounts import admin_required, current_user, login_required, public_user
 from PIL import Image, ImageOps
 
@@ -367,6 +368,7 @@ def edit_exams():
         return jsonify(error="Too many exam rows."), 400
     rows.sort(key=lambda r: (r["date"], r["time"]))
     accounts.set_setting(f"exams:{year}", {"name": _txt(data.get("name"), 120), "rows": rows})
+    push.send("campus", kind="campus")
     return jsonify(ok=True, exams=load_campus()["exams"]["years"][year])
 
 
@@ -657,8 +659,9 @@ def index():
 
 @app.get("/api/config")
 def api_config():
-    # public: the Android app needs the web client ID to ask Google for an ID token
-    return jsonify(google_client_id=accounts.google_client_id())
+    # public: the Android app needs the web client ID to ask Google for an ID token,
+    # and the Firebase app values (not secrets) to receive push notifications
+    return jsonify(google_client_id=accounts.google_client_id(), firebase=push.app_config())
 
 
 @app.get("/api/me")

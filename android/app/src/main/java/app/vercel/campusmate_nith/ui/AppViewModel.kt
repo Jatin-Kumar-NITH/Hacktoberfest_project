@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import app.vercel.campusmate_nith.BuildConfig
 import app.vercel.campusmate_nith.CampusMateApplication
 import app.vercel.campusmate_nith.background.ClassReminders
+import app.vercel.campusmate_nith.background.Push
 import app.vercel.campusmate_nith.background.TodayWidget
 import app.vercel.campusmate_nith.background.Updates
 import app.vercel.campusmate_nith.data.AppVersion
@@ -65,6 +66,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     // settings
     var notifyNew by mutableStateOf(store.notifyNew); private set
     var notifyClasses by mutableStateOf(store.notifyClasses); private set
+    var notifyChat by mutableStateOf(store.notifyChat); private set
+    var notifyCampusChat by mutableStateOf(store.notifyCampusChat); private set
+    /** True when the server has push set up, so notifications arrive straight away. */
+    val instantPush get() = store.firebaseConfig != null
     var classLead by mutableStateOf(store.classLead); private set
 
     // the student's year / section / group, like the website's sidebar pickers
@@ -137,6 +142,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 cm.background { Updates.takeNew(store, r.campus) }
                 afterCampusChange()
                 if (initial || !attDirty) loadAttendance()
+                if (initial) cm.background { Push.sync(cm) }
             } catch (e: Exception) {
                 if (e is ApiException && e.status == 401) {
                     signOutLocal()
@@ -191,6 +197,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun signOutLocal() {
+        cm.background { Push.stop(cm) }
         user = null
         auth = AuthState.SignedOut
         store.clearAccount()
@@ -225,6 +232,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun changeNotifyNew(on: Boolean) {
         notifyNew = on; store.notifyNew = on
+    }
+
+    fun changeNotifyChat(on: Boolean) {
+        notifyChat = on; store.notifyChat = on; cm.background { Push.sync(cm) }
+    }
+
+    fun changeNotifyCampusChat(on: Boolean) {
+        notifyCampusChat = on; store.notifyCampusChat = on; cm.background { Push.sync(cm) }
     }
 
     fun changeNotifyClasses(on: Boolean) {
