@@ -58,6 +58,15 @@
             </intent-filter>
         </receiver>
 
+        <!-- Instant notifications (Firebase pings, see background/Push.kt). -->
+        <service
+            android:name=".background.PushService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <!-- Shares downloaded PDFs with the phone's PDF viewer. -->
         <provider
             android:name="androidx.core.content.FileProvider"

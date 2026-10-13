@@ -79,12 +79,26 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
         item {
             CmCard {
                 SectionTitle("Notifications")
-                if (!allowed && (vm.notifyNew || vm.notifyClasses)) {
+                if (!allowed && (vm.notifyNew || vm.notifyClasses || vm.notifyChat)) {
                     Alert("Notifications are turned off for CampusMate on this phone.", AlertKind.Warn)
                     SmallButton("Allow notifications", { allowNotifications() })
                 }
-                ToggleRow("New notices, assignments and exams", "Checked about once an hour for your year and section", vm.notifyNew) {
+                ToggleRow(
+                    "New notices, assignments, exams and updates",
+                    if (vm.instantPush) "As soon as they're posted, for your year and section" else "Checked about once an hour for your year and section",
+                    vm.notifyNew,
+                ) {
                     vm.changeNotifyNew(it); if (it && !allowed) allowNotifications()
+                }
+                if (vm.instantPush) {
+                    HorizontalDivider(color = P.line)
+                    ToggleRow("Private channel messages", "New messages in channels you're in", vm.notifyChat) {
+                        vm.changeNotifyChat(it); if (it && !allowed) allowNotifications()
+                    }
+                    HorizontalDivider(color = P.line)
+                    ToggleRow("Campus chat messages", "Every message in the campus chat. It can get busy", vm.notifyCampusChat) {
+                        vm.changeNotifyCampusChat(it); if (it && !allowed) allowNotifications()
+                    }
                 }
                 HorizontalDivider(color = P.line)
                 ToggleRow("Class reminders", "A heads-up before each class on your timetable", vm.notifyClasses) {

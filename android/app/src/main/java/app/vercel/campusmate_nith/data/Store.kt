@@ -104,8 +104,47 @@ class Store(context: Context) {
             if (v == null) prefs.edit().remove("seen_ids").apply() else prefs.edit().putStringSet("seen_ids", v).apply()
         }
 
+    // ------------------------------------------------------------ push notifications
+
+    /** Firebase values from the server, kept so a push can start the app's Firebase with no network. */
+    var firebaseConfig: FirebaseConfig?
+        get() = read("firebase_config", FirebaseConfig.serializer().nullable, null)
+        set(v) {
+            if (v == null) prefs.edit().remove("firebase_config").apply() else write("firebase_config", FirebaseConfig.serializer(), v)
+        }
+    /** Push topics this phone is subscribed to. */
+    var pushTopics: Set<String>
+        get() = prefs.getStringSet("push_topics", emptySet())!!.toSet()
+        set(v) = prefs.edit().putStringSet("push_topics", v).apply()
+    /** Messages in private channels you're in. */
+    var notifyChat: Boolean
+        get() = prefs.getBoolean("notify_chat", true)
+        set(v) = prefs.edit().putBoolean("notify_chat", v).apply()
+    /** Every message in the campus chat; off by default since it can be busy. */
+    var notifyCampusChat: Boolean
+        get() = prefs.getBoolean("notify_campus_chat", false)
+        set(v) = prefs.edit().putBoolean("notify_campus_chat", v).apply()
+    /** Names of your private channels, for notification titles. */
+    var channelNames: Map<String, String>
+        get() = read("channel_names", MapSerializer(String.serializer(), String.serializer()), emptyMap())
+        set(v) = write("channel_names", MapSerializer(String.serializer(), String.serializer()), v)
+
+    /** Newest chat message already seen in a chat ("campus" or a channel id); null until first checked. */
+    fun chatSeen(key: String): Int? = prefs.getInt("chat_seen_$key", -1).takeIf { it >= 0 }
+    fun setChatSeen(key: String, id: Int) {
+        if (id > (chatSeen(key) ?: -1)) prefs.edit().putInt("chat_seen_$key", id).apply()
+    }
+
+    /** College or hostel update ids already seen; null until first checked. */
+    fun newsSeen(section: String): Set<String>? =
+        if (prefs.contains("news_seen_$section")) prefs.getStringSet("news_seen_$section", emptySet())!!.toSet() else null
+    fun setNewsSeen(section: String, ids: Set<String>) = prefs.edit().putStringSet("news_seen_$section", ids).apply()
+
     fun clearAccount() {
-        prefs.edit().remove("campus_cache").remove("seen_ids").remove("last_sync").apply()
+        val e = prefs.edit().remove("campus_cache").remove("seen_ids").remove("last_sync")
+            .remove("push_topics").remove("channel_names").remove("news_seen_college").remove("news_seen_hostel")
+        prefs.all.keys.filter { it.startsWith("chat_seen_") }.forEach { e.remove(it) }
+        e.apply()
     }
 
     /** "Clear data on this phone": everything except the sign-in cookie and settings. */

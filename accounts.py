@@ -19,6 +19,7 @@ import sqlite3
 import time
 
 import db as database
+import push
 import uuid
 from datetime import datetime, timedelta, timezone
 from functools import wraps
@@ -417,6 +418,7 @@ def api_create_post():
                  (kind, title, body, code, due, marks, json.dumps(years), json.dumps(sections), pdf_name,
                   current_user()["id"], now_iso()))
     db().commit()
+    push.send("campus", kind="campus")
     return jsonify(ok=True)
 
 
@@ -602,6 +604,7 @@ def api_news_create(section):
     cur = db().execute("""INSERT INTO news (section, title, body, year, hostel, author_id, created_at)
                           VALUES (?,?,?,?,?,?,?)""", (section, title, body, year, hostel, current_user()["id"], now_iso()))
     db().commit()
+    push.send(f"news-{section}", kind="news", section=section)
     return jsonify(ok=True, id=cur.lastrowid)
 
 
@@ -681,6 +684,10 @@ def _send_message(body, channel_id):
     db().execute("INSERT INTO messages (user_id, body, created_at, channel_id) VALUES (?,?,?,?)",
                  (u["id"], body, now_iso(), channel_id))
     db().commit()
+    if channel_id is None:
+        push.send("chat", kind="chat")
+    else:
+        push.send(f"channel-{channel_id}", kind="chat", channel=channel_id)
     return jsonify(ok=True)
 
 

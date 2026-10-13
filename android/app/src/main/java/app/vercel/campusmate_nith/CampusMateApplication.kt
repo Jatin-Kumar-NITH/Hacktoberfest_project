@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.vercel.campusmate_nith.background.ClassReminders
 import app.vercel.campusmate_nith.background.Notify
+import app.vercel.campusmate_nith.background.Push
 import app.vercel.campusmate_nith.background.SyncWorker
 import app.vercel.campusmate_nith.background.TodayWidget
 import app.vercel.campusmate_nith.data.Api
@@ -26,6 +27,9 @@ class CampusMateApplication : Application() {
     /** "system", "light" or "dark", from Settings. */
     var themeMode by mutableStateOf("system")
 
+    /** The chat on screen right now ("campus" or a channel id), so its messages don't also notify. */
+    @Volatile var openChat: String? = null
+
     /** A screen a notification, shortcut or the widget asked to open. */
     var pendingRoute by mutableStateOf<String?>(null)
 
@@ -36,6 +40,7 @@ class CampusMateApplication : Application() {
         themeMode = store.theme
         Notify.createChannels(this)
         SyncWorker.schedule(this)
+        Push.start(this)   // so a push that wakes the app can be handled straight away
         background {
             ClassReminders.schedule(this@CampusMateApplication, store.campusCache?.campus)
             TodayWidget.refresh(this@CampusMateApplication)
