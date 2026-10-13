@@ -39,6 +39,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.vercel.campusmate_nith.ui.screens.AdminsScreen
+import app.vercel.campusmate_nith.ui.screens.JournalistsScreen
+import app.vercel.campusmate_nith.ui.screens.ResultsScreen
+import app.vercel.campusmate_nith.ui.screens.UpdatesScreen
 import app.vercel.campusmate_nith.ui.screens.AskScreen
 import app.vercel.campusmate_nith.ui.screens.AssignmentsScreen
 import app.vercel.campusmate_nith.ui.screens.AttendanceScreen
@@ -145,6 +148,10 @@ private fun Main(vm: AppViewModel) {
             composable("ask") { AskScreen(vm, nav) }
             composable("publish") { PublishScreen(vm, nav) }
             composable("admins") { AdminsScreen(vm, nav) }
+            composable("journalists") { JournalistsScreen(vm, nav) }
+            composable("college-updates") { UpdatesScreen(vm, nav, "college") }
+            composable("hostel-updates") { UpdatesScreen(vm, nav, "hostel") }
+            composable("results") { ResultsScreen(vm, nav) }
             composable("settings") { SettingsScreen(vm, nav) }
             composable("profile") { ProfileScreen(vm, firstRun = false, onDone = { nav.back() }) }
         }

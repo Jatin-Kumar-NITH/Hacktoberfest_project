@@ -70,7 +70,7 @@ fun AttendanceScreen(vm: AppViewModel, nav: Nav) {
     val att = vm.attendance
     val d = parseDate(date)!!
     val dn = dayName(d)
-    val hol = holidayOn(vm.campus.calendar, date)
+    val hol = holidayOn(vm.myCalendar, date)
     val classes = if (hol != null) emptyList() else dayClasses(vm.mySection, dn, vm.group).filter { it.type != "Free" }
     val subjects = vm.attSubjects()
 
@@ -157,7 +157,7 @@ fun AttendanceScreen(vm: AppViewModel, nav: Nav) {
         }
 
         // ---- summary
-        val stats = subjects.map { attStats(att, it) }
+        val stats = subjects.map { attStats(att, it, vm.myCalendar) }
         item {
             val a = stats.sumOf { it.attended }; val t = stats.sumOf { it.total }
             CmCard {

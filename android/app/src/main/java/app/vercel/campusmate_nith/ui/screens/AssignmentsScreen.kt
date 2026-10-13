@@ -33,6 +33,9 @@ import app.vercel.campusmate_nith.ui.AppViewModel
 import app.vercel.campusmate_nith.ui.ChipRow
 import app.vercel.campusmate_nith.ui.CmCard
 import app.vercel.campusmate_nith.ui.CodeTag
+import app.vercel.campusmate_nith.ui.DeleteAction
+import app.vercel.campusmate_nith.ui.EditField
+import app.vercel.campusmate_nith.ui.ItemEditorDialog
 import app.vercel.campusmate_nith.ui.EmptyLine
 import app.vercel.campusmate_nith.ui.Muted
 import app.vercel.campusmate_nith.ui.Nav
@@ -54,6 +57,22 @@ fun AssignmentsScreen(vm: AppViewModel, nav: Nav) {
         item { ChipRow(listOf("pending" to "Pending", "done" to "Submitted", "all" to "All"), filter) { filter = it } }
         if (list.isEmpty()) item { CmCard { EmptyLine(if (filter == "pending") "Nothing pending. 🎉" else "Nothing here yet.") } }
         items(list, key = { it.id }) { a ->
+            var editing by remember { mutableStateOf(false) }
+            val builtin = a.dbId == null
+            if (editing) ItemEditorDialog(
+                vm, "Edit assignment",
+                listOfNotNull(
+                    EditField("title", "Title", a.title, max = 150),
+                    EditField("code", "Subject code", if (a.code == "General") "" else a.code, max = 40),
+                    EditField("body", "Description / instructions",
+                        if (builtin || a.details != "See the attached PDF.") a.details else "", kind = "textarea", max = 8000),
+                    EditField("due", "Due date", a.due.orEmpty(), kind = "date"),
+                    EditField("marks", "Marks", a.marks?.toString().orEmpty(), kind = "number"),
+                    if (builtin) EditField("submit", "How to submit", a.submit, max = 300) else null,
+                ),
+                pdfLabel = if (a.pdf != null) "Replace PDF (optional)" else "Attach PDF (optional)",
+                onDismiss = { editing = false },
+            ) { fields, pdf -> if (builtin) vm.api.editAssignment(a.id, fields, pdf) else vm.api.editPost(a.dbId!!, fields, pdf) }
             val done = vm.assignmentsDone[a.id] == true
             val n = a.due?.let { daysUntil(it) }
             val soon = !done && n != null && n in 0..3
@@ -94,7 +113,11 @@ fun AssignmentsScreen(vm: AppViewModel, nav: Nav) {
                         vm.pendingQuestion = "How should I start \"${a.title}\" (${a.code})? Which syllabus topics does it need and what should I revise first?"
                         nav.go("ask")
                     })
-                    if (canDelete(vm, a.dbId, a.authorRole)) DeletePostButton(vm, a.dbId!!)
+                    // built-in assignments from the data files: any admin; published ones follow the post rule
+                    if (vm.isAdmin && (builtin || canDelete(vm, a.dbId, a.authorRole, a.authorId))) {
+                        SmallButton("✎ Edit", { editing = true })
+                        DeleteAction(vm) { if (builtin) vm.api.deleteAssignment(a.id) else vm.api.deletePost(a.dbId!!) }
+                    }
                 }
             }
         }

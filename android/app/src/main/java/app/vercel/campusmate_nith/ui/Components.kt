@@ -164,7 +164,12 @@ fun CodeTag(code: String) = Tag(code, P.accent, P.accentSoft)
 
 @Composable
 fun RoleTag(role: String) {
-    if (role == "user") Tag(ROLE_LABEL[role] ?: "Student") else Tag(ROLE_LABEL[role] ?: "Admin", P.gold, P.goldSoft)
+    when (role) {
+        "user" -> Tag(ROLE_LABEL[role] ?: "Student")
+        "journalist" -> Tag(ROLE_LABEL[role] ?: "Journalist", P.accent, P.accentSoft)
+        "owner", "coowner" -> Tag(ROLE_LABEL[role] ?: "Owner", P.onGold, P.gold)
+        else -> Tag(ROLE_LABEL[role] ?: "Admin", P.gold, P.goldSoft)
+    }
 }
 
 @Composable

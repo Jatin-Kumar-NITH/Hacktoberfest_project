@@ -18,7 +18,7 @@ val WEEK6 = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satu
 val WEEK7 = WEEK6 + "Sunday"
 val MEALS = listOf("Breakfast", "Lunch", "Snacks", "Dinner")
 val YEAR_NAMES = mapOf(1 to "1st Year", 2 to "2nd Year", 3 to "3rd Year", 4 to "4th Year")
-val ROLE_LABEL = mapOf("owner" to "Owner", "admin" to "Admin", "user" to "Student")
+val ROLE_LABEL = mapOf("owner" to "Owner", "coowner" to "Co-owner", "admin" to "Admin", "journalist" to "Journalist", "user" to "Student")
 val CAL_TYPES = linkedMapOf("holiday" to "Holiday", "exam" to "Exam", "event" to "Event", "semester" to "Semester")
 val SECTION_IDS = ('A'..'J').map { it.toString() } + "Z"
 
@@ -80,6 +80,9 @@ fun Targeted.isSectionSpecific() = "all" !in sectionList
 fun dayClasses(sec: Section, day: String, group: String): List<ClassItem> =
     sec.classes.filter { it.day == day && (group.isEmpty() || it.group == null || it.group == group) }.sortedBy { it.start }
 
+/** Only the entries for students of [year] (plus the all-years ones), like the website's year-wise calendar. */
+fun AcademicCalendar.forYear(year: Int) = copy(events = events.filter { it.forYear(year) })
+
 fun eventsOn(cal: AcademicCalendar, iso: String) = cal.events.filter { it.date <= iso && iso <= it.end.ifEmpty { it.date } }
 fun holidayOn(cal: AcademicCalendar, iso: String) = cal.events.firstOrNull { it.type == "holiday" && it.date <= iso && iso <= it.end.ifEmpty { it.date } }
 
@@ -109,6 +112,7 @@ data class BoardItem(
     val pdf: String?,
     val publishedAt: String?,
     val authorRole: String?,
+    val authorId: Int? = null,
 ) : Targeted
 
 /** Assignment from data/assignments.json or an admin's post. */
@@ -130,6 +134,7 @@ data class AssignmentItem(
     val authorRole: String?,
     override val yearList: List<String>,
     override val sectionList: List<String>,
+    val authorId: Int? = null,
 ) : Targeted
 
 fun boardItems(c: Campus): List<BoardItem> {
@@ -138,7 +143,7 @@ fun boardItems(c: Campus): List<BoardItem> {
     }
     val fromPosts = c.posts.filter { it.kind == "notice" || it.kind == "announcement" }.map {
         BoardItem(it.id, it.db_id, it.kind, localDate(it.published_at), it.title, it.published_by, it.yearList, it.sectionList,
-            it.body, it.pdf, it.published_at, it.author_role)
+            it.body, it.pdf, it.published_at, it.author_role, it.author_id)
     }
     return (fromFile + fromPosts).sortedByDescending { it.publishedAt ?: it.date }
 }
@@ -151,7 +156,7 @@ fun assignmentItems(c: Campus): List<AssignmentItem> {
     val fromPosts = c.posts.filter { it.kind == "assignment" }.map {
         AssignmentItem(it.id, it.db_id, it.code ?: "General", it.title, localDate(it.published_at), it.due, it.marks, true,
             it.body.ifEmpty { "See the attached PDF." }, emptyList(), "Follow the instructions in the assignment.", it.pdf,
-            it.published_at, it.published_by, it.author_role, it.yearList, it.sectionList)
+            it.published_at, it.published_by, it.author_role, it.yearList, it.sectionList, it.author_id)
     }
     return fromFile + fromPosts
 }
@@ -160,12 +165,14 @@ fun assignmentItems(c: Campus): List<AssignmentItem> {
 
 data class AttStats(val code: String, val attended: Int, val total: Int, val pct: Double?, val advice: String, val ok: Boolean)
 
-fun attStats(a: Attendance, code: String): AttStats {
+fun attStats(a: Attendance, code: String, cal: AcademicCalendar? = null): AttStats {
     val b = a.base[code] ?: AttBase()
     var attended = b.attended
     var total = b.total
     a.records.forEach { r ->
         if (r.code != code || r.status == "cancelled") return@forEach
+        // a holiday has no regular classes, even if they were marked before the holiday was added
+        if (cal != null && !r.slot.startsWith("x") && holidayOn(cal, r.date) != null) return@forEach
         total++
         if (r.status == "present") attended++
     }

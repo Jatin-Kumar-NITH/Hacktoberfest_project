@@ -22,6 +22,7 @@ import app.vercel.campusmate_nith.data.BoardItem
 import app.vercel.campusmate_nith.data.YEAR_NAMES
 import app.vercel.campusmate_nith.data.boardItems
 import app.vercel.campusmate_nith.data.dmy
+import app.vercel.campusmate_nith.data.outranks
 import app.vercel.campusmate_nith.data.forStudent
 import app.vercel.campusmate_nith.data.isSectionSpecific
 import app.vercel.campusmate_nith.ui.Actions
@@ -59,9 +60,10 @@ fun BoardScreen(vm: AppViewModel, nav: Nav) {
     }
 }
 
-/** Admins can delete posts; only the owner can delete the owner's posts. */
-fun canDelete(vm: AppViewModel, dbId: Int?, authorRole: String?) =
-    vm.isAdmin && dbId != null && (vm.user?.isOwner == true || authorRole != "owner")
+/** Same rule as the website: admins manage posts, but only the owner touches the owner's or a co-owner's (besides their own). */
+fun canDelete(vm: AppViewModel, dbId: Int?, authorRole: String?, authorId: Int?) =
+    vm.isAdmin && dbId != null && (authorId == vm.user?.id || authorRole !in setOf("owner", "coowner") ||
+        outranks(vm.user?.role.orEmpty(), authorRole.orEmpty()))
 
 @Composable
 fun DeletePostButton(vm: AppViewModel, dbId: Int) {
@@ -104,7 +106,7 @@ private fun NoticeCard(vm: AppViewModel, nav: Nav, n: BoardItem) {
             if (flat.length > 170) SmallButton(if (open) "Show less" else "Read full notice", { open = !open })
             AiButton("Explain with AI", { vm.pendingExplain = n.id to n.text; nav.go("explain") })
             SmallButton("Share", { shareText(ctx, n.title, "${n.title}\n${n.from} · ${dmy(n.date)}\n\n${n.text.trim()}\n\nShared from CampusMate") })
-            if (canDelete(vm, n.dbId, n.authorRole)) DeletePostButton(vm, n.dbId!!)
+            if (canDelete(vm, n.dbId, n.authorRole, n.authorId)) DeletePostButton(vm, n.dbId!!)
         }
     }
 }

@@ -37,16 +37,23 @@ import app.vercel.campusmate_nith.ui.Screen
 import app.vercel.campusmate_nith.ui.SectionTitle
 import app.vercel.campusmate_nith.ui.SmallButton
 import kotlinx.coroutines.launch
+import app.vercel.campusmate_nith.data.YEAR_NAMES
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
 @Composable
 fun MessScreen(vm: AppViewModel, nav: Nav) {
     var editing by remember { mutableStateOf(false) }
+    // year tab picked here; null follows the student's own year (admins also get "All years")
+    var menuYear by remember { mutableStateOf<String?>(null) }
     val hostels = vm.campus.hostel.hostels
-    val h = vm.myHostel()
+    val base = vm.myHostel()
+    val y = menuYear ?: vm.year.toString()
+    val own: Hostel? = if (y == "all") base else base.years[y]?.let { base.forYear(y.toInt()) }
+    val h = own ?: base
+    val yearName = if (y == "all") "All years" else YEAR_NAMES[y.toInt()] ?: y
     if (editing) {
-        MenuEditor(vm, vm.hostel, h, onClose = { editing = false })
+        MenuEditor(vm, vm.hostel, h, y, yearName, hasOwn = y != "all" && own != null, onClose = { editing = false })
         return
     }
     val empty = WEEK7.none { d -> MEALS.any { !h.mess_menu[d]?.get(it).isNullOrEmpty() } }
@@ -54,13 +61,21 @@ fun MessScreen(vm: AppViewModel, nav: Nav) {
     Screen("Mess menu", vm, onBack = { nav.back() }) {
         item { ChipRow(hostels.map { it.key to it.value.name }, vm.hostel) { vm.chooseHostel(it) } }
         item {
+            ChipRow((if (vm.isAdmin) listOf("all" to "All years") else emptyList()) + (1..4).map { it.toString() to (YEAR_NAMES[it] ?: "$it") }, y) {
+                menuYear = it
+            }
+        }
+        item {
             Column {
-                Text("${h.name} · weekly menu", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text("${base.name} · $yearName · weekly menu", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                 Muted("Today is $today")
                 h.edited_by?.let { Muted("Last edited by $it · ${fmtTime(h.edited_at)}", size = 12) }
             }
         }
-        if (vm.isAdmin) item { SmallButton("Edit this menu", { editing = true }) }
+        if (y != "all" && own == null) item { Muted("$yearName uses the All years menu for this hostel.", size = 13) }
+        if (vm.isAdmin) item {
+            SmallButton(if (y == "all") "✎ Edit the All years menu" else if (own != null) "✎ Edit $yearName menu" else "✎ Make a $yearName menu", { editing = true })
+        }
         if (MEALS.any { !h.mess_timings[it].isNullOrEmpty() }) item {
             CmCard {
                 SectionTitle("Timings")
@@ -83,13 +98,35 @@ fun MessScreen(vm: AppViewModel, nav: Nav) {
 }
 
 @Composable
-private fun MenuEditor(vm: AppViewModel, id: String, h: Hostel, onClose: () -> Unit) {
+private fun MenuEditor(vm: AppViewModel, id: String, h: Hostel, year: String, yearName: String, hasOwn: Boolean, onClose: () -> Unit) {
     val menu = remember { mutableStateMapOf<String, String>().apply { WEEK7.forEach { d -> MEALS.forEach { m -> put("$d|$m", h.mess_menu[d]?.get(m).orEmpty()) } } } }
     val times = remember { mutableStateMapOf<String, String>().apply { MEALS.forEach { put(it, h.mess_timings[it].orEmpty()) } } }
     var saving by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    Screen("Edit · ${h.name}", vm, onBack = onClose) {
+    suspend fun save(extra: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {
+        saving = true; error = null
+        try {
+            val body = buildJsonObject {
+                put("hostel", JsonPrimitive(id))
+                put("year", JsonPrimitive(year))
+                extra()
+            }
+            val res = vm.api.edit("/api/edit/menu", body.toString())
+            val saved = json.decodeFromJsonElement(Hostel.serializer(), res["hostel"]!!)
+            val c = vm.campus
+            vm.replaceCampus(c.copy(hostel = c.hostel.copy(hostels = c.hostel.hostels + (id to saved))))
+            onClose()
+        } catch (e: ApiException) {
+            error = e.message
+        } finally {
+            saving = false
+        }
+    }
+    Screen("Edit · ${h.name} · $yearName", vm, onBack = onClose) {
+        if (year != "all" && !hasOwn) item {
+            Muted("$yearName has no menu of its own yet. Saving creates one, starting from the All years menu below.", size = 13)
+        }
         item {
             CmCard {
                 SectionTitle("Timings")
@@ -106,25 +143,17 @@ private fun MenuEditor(vm: AppViewModel, id: String, h: Hostel, onClose: () -> U
         item {
             PrimaryButton("Save menu", {
                 scope.launch {
-                    saving = true; error = null
-                    try {
-                        val body = buildJsonObject {
-                            put("hostel", JsonPrimitive(id))
-                            put("mess_menu", buildJsonObject { WEEK7.forEach { d -> put(d, buildJsonObject { MEALS.forEach { m -> put(m, JsonPrimitive(menu["$d|$m"].orEmpty())) } }) } })
-                            put("mess_timings", buildJsonObject { MEALS.forEach { m -> put(m, JsonPrimitive(times[m].orEmpty())) } })
-                        }
-                        val res = vm.api.edit("/api/edit/menu", body.toString())
-                        val saved = json.decodeFromJsonElement(Hostel.serializer(), res["hostel"]!!)
-                        val c = vm.campus
-                        vm.replaceCampus(c.copy(hostel = c.hostel.copy(hostels = c.hostel.hostels + (id to saved))))
-                        onClose()
-                    } catch (e: ApiException) {
-                        error = e.message
-                    } finally {
-                        saving = false
+                    save {
+                        put("mess_menu", buildJsonObject { WEEK7.forEach { d -> put(d, buildJsonObject { MEALS.forEach { m -> put(m, JsonPrimitive(menu["$d|$m"].orEmpty())) } }) } })
+                        put("mess_timings", buildJsonObject { MEALS.forEach { m -> put(m, JsonPrimitive(times[m].orEmpty())) } })
                     }
                 }
             }, loading = saving)
+        }
+        if (hasOwn) item {
+            SmallButton("Remove the $yearName menu", {
+                scope.launch { save { put("clear", JsonPrimitive(true)) } }
+            }, danger = true)
         }
         item { SmallButton("Cancel", onClose) }
     }

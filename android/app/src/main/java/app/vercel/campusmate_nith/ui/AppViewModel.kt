@@ -33,6 +33,7 @@ import app.vercel.campusmate_nith.data.SyllabusYear
 import app.vercel.campusmate_nith.data.Timetable
 import app.vercel.campusmate_nith.data.User
 import app.vercel.campusmate_nith.data.attStats
+import app.vercel.campusmate_nith.data.forYear
 import app.vercel.campusmate_nith.data.googleIdToken
 import app.vercel.campusmate_nith.data.pdfPath
 import kotlinx.coroutines.Job
@@ -109,6 +110,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val mySection get() = sectionOf(year, section)
     fun syllabus(y: Int = year): SyllabusYear = campus.syllabus.years[y.toString()] ?: SyllabusYear()
     fun subjectName(code: String, y: Int = year): String = syllabus(y).subjects[code]?.name?.takeIf { it != code }.orEmpty()
+    /** The academic calendar entries for the student's year. */
+    val myCalendar get() = campus.calendar.forYear(year)
     fun myHostel(): Hostel = campus.hostel.hostels[hostel] ?: campus.hostel.hostels.values.firstOrNull() ?: Hostel()
     val myLabel get() = "${app.vercel.campusmate_nith.data.YEAR_NAMES[year]} · Section $section${if (group.isNotEmpty()) " · $group" else ""}"
 
@@ -322,7 +325,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     /** What /api/ask uses to answer questions about the student's own saved things. */
     fun clientContext(): kotlinx.serialization.json.JsonObject {
         val deadlines = history.flatMap { h -> h.result.deadlines.map { Triple(it.date_iso ?: it.date, it.what, h.result.title) } }.take(20)
-        val stats = attSubjects().map { attStats(attendance, it) }.filter { it.total > 0 }
+        val stats = attSubjects().map { attStats(attendance, it, myCalendar) }.filter { it.total > 0 }
         return kotlinx.serialization.json.buildJsonObject {
             put("deadlines", kotlinx.serialization.json.buildJsonArray {
                 deadlines.forEach { (d, w, f) ->

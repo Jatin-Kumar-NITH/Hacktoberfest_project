@@ -11,6 +11,7 @@ import app.vercel.campusmate_nith.R
 import app.vercel.campusmate_nith.data.ClassItem
 import app.vercel.campusmate_nith.data.dayName
 import app.vercel.campusmate_nith.data.hh
+import app.vercel.campusmate_nith.data.forYear
 import app.vercel.campusmate_nith.data.holidayOn
 import java.time.LocalDate
 import java.time.LocalTime
@@ -55,12 +56,12 @@ class TodayWidget : AppWidgetProvider() {
             val today = LocalDate.now()
             val nowHour = LocalTime.now().hour
             var day = today
-            var list: List<ClassItem> = classesOn(campus, sec, store.group, today).filter { it.end > nowHour }
-            var note: String? = holidayOn(campus.calendar, today.toString())?.let { "Holiday today: ${it.title}" }
+            var list: List<ClassItem> = classesOn(campus, sec, store.group, today, store.year).filter { it.end > nowHour }
+            var note: String? = holidayOn(campus.calendar.forYear(store.year), today.toString())?.let { "Holiday today: ${it.title}" }
             if (list.isEmpty()) {
                 for (i in 1..7) {
                     val d = today.plusDays(i.toLong())
-                    val l = classesOn(campus, sec, store.group, d)
+                    val l = classesOn(campus, sec, store.group, d, store.year)
                     if (l.isNotEmpty()) { day = d; list = l; break }
                 }
             }

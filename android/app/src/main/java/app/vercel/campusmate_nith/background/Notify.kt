@@ -22,7 +22,7 @@ object Notify {
     /** Screens a notification, shortcut or widget may open. */
     val ROUTES = setOf(
         "home", "timetable", "board", "chat", "more", "assignments", "exams", "calendar", "attendance",
-        "syllabus", "explain", "planner", "mess", "ask", "settings",
+        "syllabus", "explain", "planner", "mess", "ask", "settings", "college-updates", "hostel-updates", "results",
     )
 
     fun createChannels(context: Context) {

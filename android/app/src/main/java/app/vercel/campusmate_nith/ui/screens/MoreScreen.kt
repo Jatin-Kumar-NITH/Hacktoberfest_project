@@ -11,6 +11,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.outlined.AdminPanelSettings
+import androidx.compose.material.icons.outlined.Apartment
+import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.material.icons.outlined.HistoryEdu
+import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -54,6 +58,11 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         Entry("attendance", "My attendance", "Track and plan your 75%", Icons.Outlined.CheckCircle),
         Entry("syllabus", "Syllabus", "Units, credits and PDFs", Icons.AutoMirrored.Outlined.MenuBook),
         Entry("mess", "Mess menu", "What's cooking this week", Icons.Outlined.Restaurant),
+        Entry("results", "Results", "SGPA and CGPA by roll number", Icons.Outlined.Grade),
+    )
+    val news = listOf(
+        Entry("college-updates", "College updates", "News from around the college", Icons.Outlined.Newspaper),
+        Entry("hostel-updates", "Hostel updates", "News for your hostel and year", Icons.Outlined.Apartment),
     )
     val ai = listOf(
         Entry("ask", "Ask CampusMate", "Questions about your campus data", Icons.Outlined.AutoAwesome),
@@ -62,7 +71,8 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
     )
     val admin = buildList {
         if (vm.isAdmin) add(Entry("publish", "Publish", "Notices, announcements, assignments, material", Icons.Outlined.Publish))
-        if (u?.isOwner == true) add(Entry("admins", "Manage admins", "Give or remove admin rights", Icons.Outlined.AdminPanelSettings))
+        if (vm.isAdmin) add(Entry("journalists", "Journalists", "Choose who can post updates", Icons.Outlined.HistoryEdu))
+        if (u?.isOwner == true) add(Entry("admins", "Manage admins", "Give or remove admin and co-owner rights", Icons.Outlined.AdminPanelSettings))
     }
     Screen("More", vm) {
         item { UpdateBanner(vm) }
@@ -77,6 +87,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
             }
         }
         item { Group("Campus", study, nav) }
+        item { Group("Updates", news, nav) }
         item { Group("AI tools", ai, nav) }
         if (admin.isNotEmpty()) item { Group("Admin", admin, nav) }
         item { Group("App", listOf(Entry("settings", "Settings", "Theme, notifications, widget, updates", Icons.Outlined.Settings)), nav) }
