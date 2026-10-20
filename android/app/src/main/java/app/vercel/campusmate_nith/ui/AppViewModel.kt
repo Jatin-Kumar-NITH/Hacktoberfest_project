@@ -76,6 +76,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var examBranch by mutableStateOf(store.examBranch); private set
     var hostel by mutableStateOf(store.hostel)
     var profileChosen by mutableStateOf(store.profileChosen); private set
+    var tutorialSeen by mutableStateOf(store.tutorialSeen); private set
 
     var history by mutableStateOf(store.noticeHistory); private set
     var plan by mutableStateOf(store.plan); private set
@@ -124,7 +125,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         r.me?.let { user = it; auth = AuthState.SignedIn }
         // keep the saved section valid for this year's timetable
         val sec = sectionOf(year, section)
-        if (sec.id != section) setProfile(year, sec.id, "")
+        if (sec.id != section) setProfile(year, sec.id, "", chosen = profileChosen)
     }
 
     fun refresh(initial: Boolean = false) {
@@ -211,14 +212,26 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         store.seenIds = null   // different papers now: start counting "new" from here
     }
 
-    fun setProfile(y: Int, sec: String, grp: String) {
+    /** [chosen] false keeps a new student on the setup screen (the data only fixed up a stale section). */
+    fun setProfile(y: Int, sec: String, grp: String, chosen: Boolean = true) {
         if (y != year) { examBranch = ""; store.examBranch = "" }
         year = y; section = sec; group = grp
         store.year = y; store.section = sec; store.group = grp
-        store.profileChosen = true; profileChosen = true
+        store.profileChosen = chosen; profileChosen = chosen
         askHistory = emptyList()
         store.seenIds = null   // a new section: start counting "new" from now
         afterCampusChange()
+    }
+
+    /** End of the first-run setup: save the class, then show the tour. */
+    fun finishSetup(y: Int, sec: String, grp: String, branch: String) {
+        store.tutorialSeen = false; tutorialSeen = false
+        setProfile(y, sec, grp)
+        chooseExamBranch(branch)
+    }
+
+    fun changeTutorialSeen(seen: Boolean) {
+        store.tutorialSeen = seen; tutorialSeen = seen
     }
 
     /** Keeps the reminders and the widget in step with the timetable and the student's section. */
