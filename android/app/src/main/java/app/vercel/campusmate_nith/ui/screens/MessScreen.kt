@@ -130,7 +130,7 @@ private fun MenuEditor(vm: AppViewModel, id: String, h: Hostel, year: String, ye
         item {
             CmCard {
                 SectionTitle("Timings")
-                MEALS.forEach { m -> Field(times[m].orEmpty(), { times[m] = it }, "$m, e.g. 7:30–9:30 AM", maxLength = 40) }
+                MEALS.forEach { m -> Field(times[m].orEmpty(), { times[m] = it }, "$m, e.g. 7:30–9:30 AM", maxLength = 60) }
             }
         }
         items(WEEK7) { d ->
