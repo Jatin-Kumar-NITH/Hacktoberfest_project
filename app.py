@@ -258,6 +258,8 @@ def load_campus():
         if ov and ov["updated_at"] >= campus["exams"].get("updated", ""):
             campus["exams"]["years"][y] = {**campus["exams"]["years"].get(y, {}), **ov["value"],
                                            "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+    for y, tt in campus["timetables"].items():
+        _fill_groups(tt, load(f"year{y}_timetable.json"))
     ov = accounts.get_setting("assignments")
     if ov:
         edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
@@ -283,6 +285,25 @@ def load_campus():
             if ov and _has_dishes(ov["value"]):
                 hostel["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
     return campus
+
+
+def _group_num(gid):
+    m = re.fullmatch(r"Gr\.(\d+)", gid or "")
+    return int(m.group(1)) if m else 99
+
+
+def _fill_groups(tt, base):
+    """A section's group picker lists every lab group its timetable uses, not only the groups whose
+    roll numbers are known, so e.g. 1st year section J (labs for Gr.1-Gr.3, rolls for two) offers all three.
+    Roll numbers come from data/ so a timetable saved by admins picks up rolls added to the file later."""
+    base_rolls = {(s["id"], g["id"]): g.get("rolls", "") for s in base.get("sections", []) for g in s.get("groups") or []}
+    for sec in tt.get("sections", []):
+        groups = {g["id"]: g.get("rolls", "") for g in sec.get("groups") or []}
+        for c in sec.get("classes", []):
+            if c.get("group"):
+                groups.setdefault(c["group"], "")
+        sec["groups"] = [{"id": g, "rolls": groups[g] or base_rolls.get((sec["id"], g), "")}
+                         for g in sorted(groups, key=_group_num)]
 
 
 def _has_dishes(menu):
