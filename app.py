@@ -390,7 +390,7 @@ def edit_menu():
     else:
         menu_in, times_in = data.get("mess_menu") or {}, data.get("mess_timings") or {}
         menu = {d: {m: _txt((menu_in.get(d) or {}).get(m), 200) for m in MEALS} for d in DAYS7}
-        timings = {m: _txt(times_in.get(m), 40) for m in MEALS}
+        timings = {m: _txt(times_in.get(m), 60) for m in MEALS}
         accounts.set_setting(key, {"mess_menu": menu, "mess_timings": timings})
     return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
 

@@ -507,7 +507,7 @@ function renderHostel() {
   MEALS.forEach((m) => {
     const th = el("th", "", m);
     if (menuEditing) {
-      const t = el("input"); t.type = "text"; t.placeholder = "Time, e.g. 7:30–9:30 AM"; t.value = h.mess_timings[m] || ""; t.dataset.timing = m; t.maxLength = 40;
+      const t = el("input"); t.type = "text"; t.placeholder = "Time, e.g. 7:30–9:30 AM"; t.value = h.mess_timings[m] || ""; t.dataset.timing = m; t.maxLength = 60;
       th.appendChild(t);
     } else if (h.mess_timings[m]) th.appendChild(el("small", "", h.mess_timings[m]));
     head.appendChild(th);
