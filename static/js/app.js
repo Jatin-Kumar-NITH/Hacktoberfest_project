@@ -684,6 +684,7 @@ let profile = store.get("cm_profile", { year: 1, section: "A", group: "" });
 let myYear = [1, 2, 3, 4].includes(Number(profile.year)) ? Number(profile.year) : 1;
 let mySection = secOf(myYear, profile.section).id;
 let myGroup = profile.group || "";
+let myBranch = profile.branch || "";
 let ttYear = myYear, ttSection = mySection;
 
 function fillPickers() {
@@ -699,11 +700,11 @@ function fillPickers() {
   $("myGroup").value = myGroup;
 }
 function saveProfile() {
-  store.set("cm_profile", { year: myYear, section: mySection, group: myGroup });
+  store.set("cm_profile", { year: myYear, section: mySection, group: myGroup, branch: myBranch });
   ttYear = myYear; ttSection = mySection; menuYear = null; askHistory = [];
   fillPickers(); route();
 }
-$("myYear").addEventListener("change", (e) => { myYear = Number(e.target.value); mySection = secOf(myYear, mySection).id; myGroup = ""; saveProfile(); });
+$("myYear").addEventListener("change", (e) => { myYear = Number(e.target.value); mySection = secOf(myYear, mySection).id; myGroup = ""; myBranch = ""; saveProfile(); });
 $("mySection").addEventListener("change", (e) => { mySection = e.target.value; myGroup = ""; saveProfile(); });
 $("myGroup").addEventListener("change", (e) => { myGroup = e.target.value; saveProfile(); });
 fillPickers();
@@ -986,13 +987,24 @@ function renderAssignments() {
 }
 
 // ---------- exams
+// Papers differ by branch from 2nd year on; rows list the branches they're for ("all" = everyone).
+const examBranches = (ex) => [...new Set((ex ? ex.rows : []).flatMap((r) => r.branches || []).filter((b) => b !== "all"))].sort();
+const examBranch = () => (examBranches(CAMPUS.exams.years[String(myYear)]).includes(myBranch) ? myBranch : "");
+const forBranch = (r, b) => !b || (r.branches || ["all"]).some((x) => x === "all" || x === b);
+const exName = (r) => r.name || subjName(myYear, r.code);
 const myExams = () => {
-  const ex = CAMPUS.exams.years[String(myYear)];
-  return ex ? ex.rows.filter((r) => forStudent(r, myYear, mySection)).sort((a, b) => a.date.localeCompare(b.date)) : [];
+  const ex = CAMPUS.exams.years[String(myYear)], b = examBranch();
+  return ex ? ex.rows.filter((r) => forStudent(r, myYear, mySection) && forBranch(r, b)).sort((a, b) => a.date.localeCompare(b.date)) : [];
 };
 function renderExams() {
   const ex = CAMPUS.exams.years[String(myYear)];
-  $("exSub").textContent = `${ex ? ex.name : "No exams scheduled"} · ${YEAR_NAMES[myYear]}, Section ${mySection}`;
+  const branches = examBranches(ex), b = examBranch();
+  $("exBranchPick").hidden = !branches.length;
+  const opts = [el("option", "", "All branches")]; opts[0].value = "";
+  branches.forEach((x) => { const o = el("option", "", x); o.value = x; opts.push(o); });
+  $("exBranch").replaceChildren(...opts); $("exBranch").value = b;
+  $("exBranchHint").hidden = !branches.length || !!b;
+  $("exSub").textContent = `${ex ? ex.name : "No exams scheduled"} · ${YEAR_NAMES[myYear]}, ${b || `Section ${mySection}`}`;
   $("exEditBar").hidden = !IS_ADMIN || !$("exEditor").hidden;
   $("exEdited").textContent = editedLine(ex);
   const rows0 = myExams();
@@ -1007,22 +1019,30 @@ function renderExams() {
     tr.appendChild(el("td", "ex-date", `${DAY_NAMES[d.getDay()].slice(0, 3)}, ${dmy(r.date)}`));
     tr.appendChild(el("td", "", r.time));
     const codeTd = el("td", "ex-code", r.code);
-    const nm = subjName(myYear, r.code);
+    const nm = exName(r);
     if (nm) codeTd.appendChild(el("span", "ex-name", nm));
+    const br = (r.branches || []).filter((x) => x !== "all");
+    if (!b && br.length) codeTd.appendChild(el("span", "ex-name", br.join(", ")));
     tr.appendChild(codeTd);
     tr.appendChild(el("td", "", r.venue));
     tr.appendChild(el("td", "ex-left", daysUntilLabel(r.date)));
     body.appendChild(tr);
   });
   $("exRules").replaceChildren(...CAMPUS.exams.rules.map((x) => el("li", "", x)));
+  const notes = (ex && ex.notes) || [];
+  $("exNotes").hidden = !notes.length || !rows0.length;
+  $("exNotesList").replaceChildren(...notes.map((x) => el("li", "", x)));
 }
+$("exBranch").addEventListener("change", (e) => { myBranch = e.target.value; saveProfile(); });
 function exRow(r = {}) {
   const tr = el("tr");
   const inp = (cls, type, val, ph, max) => { const td = el("td"); const i = el("input", cls); i.type = type; i.value = val || ""; if (ph) i.placeholder = ph; if (max) i.maxLength = max; td.appendChild(i); tr.appendChild(td); };
   inp("e-date", "date", r.date);
   inp("e-time", "text", r.time, "9:30–11:00 AM", 40);
   inp("e-code", "text", r.code, "e.g. MA-111", 60);
+  inp("e-name", "text", r.name, "e.g. Linear Algebra & Calculus", 160);
   inp("e-secs", "text", (r.sections || []).filter((x) => x !== "all").join(", "), "all", 40);
+  inp("e-branches", "text", (r.branches || []).filter((x) => x !== "all").join(", "), "all", 200);
   inp("e-venue", "text", r.venue, "e.g. As per seating plan", 60);
   const td = el("td"); const del = el("button", "remove", "×"); del.addEventListener("click", () => tr.remove()); td.appendChild(del); tr.appendChild(td);
   return tr;
@@ -1041,7 +1061,9 @@ if ($("exEditBtn")) {
   $("exSave").addEventListener("click", async () => {
     const rows = [...$("exRows").children].map((tr) => ({
       date: tr.querySelector(".e-date").value, time: tr.querySelector(".e-time").value, code: tr.querySelector(".e-code").value,
-      sections: tr.querySelector(".e-secs").value.toUpperCase().split(/[\s,]+/).filter(Boolean), venue: tr.querySelector(".e-venue").value,
+      name: tr.querySelector(".e-name").value,
+      sections: tr.querySelector(".e-secs").value.toUpperCase().split(/[\s,]+/).filter(Boolean),
+      branches: tr.querySelector(".e-branches").value.split(",").map((x) => x.trim()).filter(Boolean), venue: tr.querySelector(".e-venue").value,
     })).filter((r) => r.code.trim() || r.date);
     $("exSave").disabled = true; $("exErr").hidden = true;
     try {
@@ -1055,7 +1077,7 @@ if ($("exEditBtn")) {
 }
 $("exPlan").addEventListener("click", () => {
   const rows = myExams().filter((r) => daysUntil(r.date) >= 0).slice(0, 8);
-  resetSubjects(rows.map((r) => ({ name: subjName(myYear, r.code) ? `${r.code} ${subjName(myYear, r.code)}` : r.code,
+  resetSubjects(rows.map((r) => ({ name: exName(r) ? `${r.code} ${exName(r)}` : r.code,
     exam_date: r.date, difficulty: "medium", topics: "" })));
   planSample = false;
   location.hash = "#planner";
@@ -1721,7 +1743,7 @@ async function askQuestion(q) {
   try {
     const res = await fetch("/api/ask", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: q, year: myYear, section: mySection, group: myGroup, client: clientContext(), history: askHistory }),
+      body: JSON.stringify({ question: q, year: myYear, section: mySection, group: myGroup, branch: examBranch(), client: clientContext(), history: askHistory }),
     });
     const data = await res.json().catch(() => ({ error: "The server sent an unreadable reply." }));
     typing.remove();

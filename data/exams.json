@@ -1,25 +1,3108 @@
 {
- "note": "Exam schedules are added by admins.",
+ "note": "Official UG End-Semester Theory Examination date sheet, November/December 2026, NIT Hamirpur (Office of Dean Academic).",
+ "official": true,
+ "updated": "2026-10-20T19:00:00Z",
+ "source": "NIT Hamirpur UG date sheet, End-Semester Theory Examination November/December 2026",
  "years": {
   "1": {
-   "name": "",
-   "rows": []
+   "name": "End-Semester Theory Examination, Nov/Dec 2026 (1st Semester)",
+   "notes": [
+    "All 1st semester papers are in Session A (9:00 AM – 12:00 PM). The venue shown is the room allotted to your section."
+   ],
+   "rows": [
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "A"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S1"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "B"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S2"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "C"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S3, S4 & S5"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "D"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B3, B4 & B5"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "E"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F4, F5 & F6"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-111",
+     "name": "Linear Algebra & Calculus",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-112",
+     "name": "Architectural Mathematics",
+     "sections": [
+      "Z"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "Studio (Department of Architecture)"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-101",
+     "name": "Communication Skills",
+     "sections": [
+      "A"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S1"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-101",
+     "name": "Communication Skills",
+     "sections": [
+      "B"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S2"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-101",
+     "name": "Communication Skills",
+     "sections": [
+      "C"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S3, S4 & S5"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-101",
+     "name": "Communication Skills",
+     "sections": [
+      "D"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B3, B4 & B5"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-101",
+     "name": "Communication Skills",
+     "sections": [
+      "E"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F4, F5 & F6"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MB-101",
+     "name": "Entrepreneurship & Marketing Dynamics",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MB-101",
+     "name": "Entrepreneurship & Marketing Dynamics",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MB-101",
+     "name": "Entrepreneurship & Marketing Dynamics",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MB-101",
+     "name": "Entrepreneurship & Marketing Dynamics",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MB-101",
+     "name": "Entrepreneurship & Marketing Dynamics",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "AR-113",
+     "name": "History of Architecture–I",
+     "sections": [
+      "Z"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "Studio (Department of Architecture)"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-103",
+     "name": "Human Values and Ethical Mindfulness",
+     "sections": [
+      "A"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S1"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-103",
+     "name": "Human Values and Ethical Mindfulness",
+     "sections": [
+      "B"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S2"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-103",
+     "name": "Human Values and Ethical Mindfulness",
+     "sections": [
+      "C"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S3, S4 & S5"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-103",
+     "name": "Human Values and Ethical Mindfulness",
+     "sections": [
+      "D"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B3, B4 & B5"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "HS-103",
+     "name": "Human Values and Ethical Mindfulness",
+     "sections": [
+      "E"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F4, F5 & F6"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EN-101",
+     "name": "Energy, Environment & Life Science",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EN-101",
+     "name": "Energy, Environment & Life Science",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EN-101",
+     "name": "Energy, Environment & Life Science",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EN-101",
+     "name": "Energy, Environment & Life Science",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EN-101",
+     "name": "Energy, Environment & Life Science",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "AR-115",
+     "name": "Disaster Management",
+     "sections": [
+      "Z"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "Studio (Department of Architecture)"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-101",
+     "name": "Engineering Physics",
+     "sections": [
+      "A"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S1"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-101",
+     "name": "Engineering Physics",
+     "sections": [
+      "B"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S2"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-101",
+     "name": "Engineering Physics",
+     "sections": [
+      "C"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S3, S4 & S5"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-101",
+     "name": "Engineering Physics",
+     "sections": [
+      "D"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B3, B4 & B5"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-101",
+     "name": "Engineering Physics",
+     "sections": [
+      "E"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F4, F5 & F6"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-101",
+     "name": "Basic Electronics Engineering",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-101",
+     "name": "Basic Electronics Engineering",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-101",
+     "name": "Basic Electronics Engineering",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-101",
+     "name": "Basic Electronics Engineering",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-101",
+     "name": "Basic Electronics Engineering",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-101",
+     "name": "Basics of Mechanical Engineering",
+     "sections": [
+      "A"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S1"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-101",
+     "name": "Basics of Mechanical Engineering",
+     "sections": [
+      "B"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S2"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-101",
+     "name": "Basics of Mechanical Engineering",
+     "sections": [
+      "C"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "S3, S4 & S5"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-101",
+     "name": "Basics of Mechanical Engineering",
+     "sections": [
+      "D"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B3, B4 & B5"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-101",
+     "name": "Basics of Mechanical Engineering",
+     "sections": [
+      "E"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F4, F5 & F6"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CY-101",
+     "name": "Engineering Chemistry",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CY-101",
+     "name": "Engineering Chemistry",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CY-101",
+     "name": "Engineering Chemistry",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CY-101",
+     "name": "Engineering Chemistry",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CY-101",
+     "name": "Engineering Chemistry",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-101",
+     "name": "Basic Electrical Engineering",
+     "sections": [
+      "F"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "B2"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-101",
+     "name": "Basic Electrical Engineering",
+     "sections": [
+      "G"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G1"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-101",
+     "name": "Basic Electrical Engineering",
+     "sections": [
+      "H"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G2"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-101",
+     "name": "Basic Electrical Engineering",
+     "sections": [
+      "I"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F1, F3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-101",
+     "name": "Basic Electrical Engineering",
+     "sections": [
+      "J"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "F2"
+    }
+   ]
   },
   "2": {
-   "name": "",
-   "rows": []
+   "name": "End-Semester Theory Examination, Nov/Dec 2026 (3rd Semester)",
+   "notes": [
+    "The venue shown is the room allotted to your branch. Seating plans are prepared centrally by the Office of Dean (Academic)."
+   ],
+   "rows": [
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-219",
+     "name": "Probability and Applied Statistics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-218",
+     "name": "Numerical Analysis and Statistics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CH-211",
+     "name": "Numerical Methods in Chemical Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-211",
+     "name": "Numerical Methods and Computations",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-211",
+     "name": "Numerical Methods and Computations",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-203",
+     "name": "Engineering Mathematics-III",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-211",
+     "name": "Linear System Analysis and Transforms",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-211",
+     "name": "Numerical Methods and Computations",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-211",
+     "name": "Mathematical Physics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "AR-213",
+     "name": "History of Architecture-III",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CS-212",
+     "name": "Discrete Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-211",
+     "name": "Digital Electronics and Logic Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CH-212",
+     "name": "Fluid Mechanics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MS-211",
+     "name": "Transport Phenomena",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CE-211",
+     "name": "Determinate Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-211",
+     "name": "Mechanics of Solids",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-212",
+     "name": "Network Analysis & Synthesis",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-212",
+     "name": "Discrete Mathematics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-212",
+     "name": "Quantum Physics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "AR-215",
+     "name": "Climate and Built Environment",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CS-213",
+     "name": "Object Oriented Programming",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-212",
+     "name": "Analog Electronics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CH-213",
+     "name": "Chemical Engineering Thermodynamics-I",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MS-212",
+     "name": "Materials Thermodynamics and Kinetics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CE-212",
+     "name": "Fluid Mechanics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-212",
+     "name": "Engineering Thermodynamics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-213",
+     "name": "Applied Electromagnetic Field Theory",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-213",
+     "name": "Probability and Stochastic Processes",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-213",
+     "name": "Solid State Physics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CE-201",
+     "name": "Analysis of Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CS-214",
+     "name": "Data Structure",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-213",
+     "name": "Communication Theory",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CH-214",
+     "name": "Chemical Process Calculations",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MS-213",
+     "name": "Introduction to Materials Science",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CE-213",
+     "name": "Engineering Geology & Rock Mechanics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-213",
+     "name": "Manufacturing Processes-I",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-214",
+     "name": "Measurements & Instrumentation",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-214",
+     "name": "Computer Organization & Architecture",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-214",
+     "name": "Electromagnetic Theory",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CS-215",
+     "name": "Computer Graphics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-214",
+     "name": "VLSI Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CH-215",
+     "name": "Mechanical Operation",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MS-214",
+     "name": "Mechanical Behavior of Materials",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "CE-214",
+     "name": "Surveying",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "ME-214",
+     "name": "Metrology, Measurement and Control",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EE-215",
+     "name": "Analog & Digital Electronics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "MA-215",
+     "name": "Data Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "PH-215",
+     "name": "Data Structure",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-12-05",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-219",
+     "name": "Digital Electronics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-05",
+     "time": "Session A · 9:00 AM – 12:00 PM",
+     "code": "EC-215",
+     "name": "Network Analysis and Synthesis",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    }
+   ]
   },
   "3": {
-   "name": "",
-   "rows": []
+   "name": "End-Semester Theory Examination, Nov/Dec 2026 (5th Semester)",
+   "notes": [
+    "Open electives are on 05-12-2026, Session B (1:30 PM – 4:30 PM). Rooms by subject: CE-305 Road Safety: G1 & G3; EC-304 VLSI Design and Techniques: B4; CH-302 Water and Waste Water Treatment Technology: B2 & B3; EN-313 Climate Change and Sustainability: G2 & G4; HS-302 Macroeconomics: S1 & S3; HS-303 English Language Through Literature: S2 & S4; CY-303 Bionanotechnology: G5 & G6; CS-301 Data Structures: S5 & S6; HS-305 Psychology of Health and Wellbeing: F2 & F4; ME-303 Total Quality Management: B5; PH-301 Physics of Semiconductor Devices: F6; EE-302 Neural Network and Fuzzy Logic System: F5; EN-311 Renewable Energy Sources: F1 & F3.",
+    "Minor Degree papers (5th semester) are in room G5.",
+    "Other papers: the venue shown is the room allotted to your branch."
+   ],
+   "rows": [
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-311",
+     "name": "Analysis and Design of Algorithms",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-311",
+     "name": "Microwave Devices and Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-311",
+     "name": "Mass Transfer-I",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-311",
+     "name": "Iron and Steel Making",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-311",
+     "name": "RCC Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-311",
+     "name": "Machine Design-I",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-311",
+     "name": "Induction & Synchronous Machines",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-311",
+     "name": "Number Theory and Abstract Algebra",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-311",
+     "name": "Nuclear & Particle Physics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-23",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-313",
+     "name": "Building Services-II",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-312",
+     "name": "Compiler Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-312",
+     "name": "Digital Communication and Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-312",
+     "name": "Chemical Reaction Engineering-I",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-312",
+     "name": "Metal Working Science and Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-312",
+     "name": "Water Supply and Treatment",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-312",
+     "name": "Heat Transfer",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-312",
+     "name": "Power System Protection",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-312",
+     "name": "Operations Research",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-312",
+     "name": "Signals & Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-26",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-331",
+     "name": "Sustainable Vernacular Practices in Himachal Pradesh",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-313",
+     "name": "Computer Networks",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-313",
+     "name": "Control Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-313",
+     "name": "Process Dynamics and Control",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-313",
+     "name": "Characterization of Material",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-313",
+     "name": "Highway Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-313",
+     "name": "Dynamics of Machines",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-313",
+     "name": "Methods of Signal & System Analysis",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-313",
+     "name": "Computer Networks",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-313",
+     "name": "Statistical Mechanics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-28",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-352",
+     "name": "Society and Built Environment",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-314",
+     "name": "Artificial Intelligence",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-314",
+     "name": "VLSI Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-353 / CH-354",
+     "name": "Food Science and Engineering / Fluidization Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-331",
+     "name": "Corrosion Science and Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-352 / CE-354",
+     "name": "Geographic Information System / Advanced Soil Mechanics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-351 / ME-353",
+     "name": "Finite Elements in Engineering / Turbomachines",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-314",
+     "name": "Linear Control Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-314",
+     "name": "Database Management Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-01",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-352",
+     "name": "Photovoltaic Solar Cells",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-351 / CS-352",
+     "name": "Advance Operating System / Graph Theory",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-351",
+     "name": "Switching and Finite Automata Theory",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "HS-311",
+     "name": "Engineering Economics and Accountancy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "HS-311",
+     "name": "Engineering Economics and Accountancy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "HS-311",
+     "name": "Engineering Economics and Accountancy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "HS-311",
+     "name": "Engineering Economics and Accountancy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-352 / EE-354",
+     "name": "Non-Conventional Energy / Energy Auditing and Management",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-03",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-354",
+     "name": "Software Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-05",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "Open Elective",
+     "name": "Your open elective paper (all branches)",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "Depends on the subject, see the list below"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-310",
+     "name": "Theoretical Computer Science (Minor Degree students only)",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G5"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-310",
+     "name": "Algebra (Minor Degree students only)",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "all"
+     ],
+     "venue": "G5"
+    }
+   ]
   },
   "4": {
-   "name": "",
-   "rows": []
+   "name": "End-Semester Theory Examination, Nov/Dec 2026 (7th & 9th Semester)",
+   "notes": [
+    "5th year (9th semester) Dual Degree and B.Arch. papers are listed here under '9th sem'.",
+    "The venue shown is the room allotted to your branch. Seating plans are prepared centrally by the Office of Dean (Academic)."
+   ],
+   "rows": [
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-411",
+     "name": "Advance Computer Architecture",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-611",
+     "name": "Advance Topics in Software Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-611",
+     "name": "Topics in Computer Networks",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 9th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-411",
+     "name": "Computer Architecture and Organization",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-411",
+     "name": "Computer Architecture and Organization",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-612",
+     "name": "Mobile Communication",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 9th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-411",
+     "name": "Process Plant Design and Economics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-411",
+     "name": "Ceramic Science and Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-411",
+     "name": "Steel Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-411",
+     "name": "Computer Aided Manufacturing",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-411",
+     "name": "Communication Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-411",
+     "name": "Advanced Differential Equations",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-411",
+     "name": "Materials Synthesis and Characterization",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-412",
+     "name": "Landscape Architecture",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 7th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-25",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-512",
+     "name": "Energy Efficient Architecture",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 9th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-412",
+     "name": "Information Security & Privacy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-411",
+     "name": "Information Security & Privacy",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-412",
+     "name": "Wireless Communication",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-412",
+     "name": "Wireless Communication",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-412",
+     "name": "Process Equipment Design-II",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-412",
+     "name": "Tribology of Materials",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-412",
+     "name": "Traffic Engineering and Transportation Planning",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-412",
+     "name": "Refrigeration and Air Conditioning",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-412",
+     "name": "High Voltage Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-412",
+     "name": "Theory of Computation",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-412",
+     "name": "Physics of Nanosystems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-413",
+     "name": "Energy Efficient Architecture",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 7th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-27",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-513",
+     "name": "Urban Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 9th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-413",
+     "name": "Data Warehousing & Data Mining",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-412",
+     "name": "Data Ware Housing & Data Mining",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-413",
+     "name": "Optical Fiber Communication",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-631",
+     "name": "Information Theory and Coding",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-413",
+     "name": "Process Modeling and Simulation",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-413",
+     "name": "Thin Film Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-413",
+     "name": "Quantity Surveying and Estimating",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-413",
+     "name": "Computer Aided Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-413",
+     "name": "Modern Control Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-413",
+     "name": "Operating Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-413",
+     "name": "Semiconductor Optoelectronic Devices",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-414",
+     "name": "Ekistics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 7th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-11-30",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-514",
+     "name": "Earthquake Resistant Building Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 9th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-431 / CS-433",
+     "name": "Information Theory and Coding / Big Data Analytics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-633",
+     "name": "Applied Optimization",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-433",
+     "name": "VLSI Testing",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-635",
+     "name": "AI and Machine Learning",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-432 / CH-436",
+     "name": "Polymer Science and Engineering / Petrochemical Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-453",
+     "name": "Magnetic Materials for Industry",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-431 / CE-432",
+     "name": "Bridge Engineering / Design of Hydraulic Structures",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-431 / ME-435",
+     "name": "Design of Heat Exchanger / Optimization Methods in Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-431 / EE-435",
+     "name": "Transformer Engineering / Power Quality and Harmonics",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-432",
+     "name": "Fractional Differential Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-433",
+     "name": "Thin Film Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-431",
+     "name": "Building Maintenance",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 7th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-02",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-530",
+     "name": "Architectural Conservation",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 9th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-451 / CS-452",
+     "name": "Advance Mobile Communication / Deep Learning",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-736",
+     "name": "Architecture of Large Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-451 / EC-452",
+     "name": "Information Theory and Coding / Analog IC Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-715",
+     "name": "VLSI Test and Testability",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-451",
+     "name": "Industrial Pollution Abetment",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-472",
+     "name": "Phase Diagrams",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-453 / CE-454",
+     "name": "Ground Improvement Techniques / Construction Management",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-451 / ME-452 / ME-453",
+     "name": "Smart Manufacturing / Condition Monitoring & Diagnosis / Compressible Flow",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-451 / EE-452 / EE-453",
+     "name": "Power System Dispatch and Control / Optimal Control Theory / Hybrid Electric Vehicles",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-451",
+     "name": "Deep Learning",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-451",
+     "name": "Semiconductor Fabrication Techniques",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    },
+    {
+     "date": "2026-12-04",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "AR-451",
+     "name": "Low-Cost Building",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Architecture 7th sem"
+     ],
+     "venue": "Studio – I & II"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-471 / CA-472",
+     "name": "Internet of Things / Pattern Recognition",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE B.Tech"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CS-747",
+     "name": "Deep Learning for Computer Vision",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "CSE Dual Degree 7th sem"
+     ],
+     "venue": "S1, S2 & S3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-471 / EC-472",
+     "name": "Artificial Intelligence and Machine Learning / Embedded Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE B.Tech"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EC-745",
+     "name": "RF and Microwave Circuit Design",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "ECE Dual Degree 7th sem"
+     ],
+     "venue": "F1, F2 & F3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CH-471",
+     "name": "Petroleum Refining",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Chemical"
+     ],
+     "venue": "S4, S5 & S6"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MS-492",
+     "name": "Structure of Materials",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Materials Science"
+     ],
+     "venue": "F4"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "CE-473 / CE-474",
+     "name": "Open Channel Hydraulics / Road Safety Engineering",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Civil"
+     ],
+     "venue": "G1 & G3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "ME-471 / ME-472 / ME-473",
+     "name": "Total Quality Management / Bearing & Lubrication / Propulsion Systems",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mechanical"
+     ],
+     "venue": "G2 & G4"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "EE-471 / EE-472 / EE-473",
+     "name": "Electrical Safety & Standards / Modelling & Analysis of Electrical Machines / Robust Control System",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Electrical"
+     ],
+     "venue": "B2 & B3"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "MA-471",
+     "name": "Blockchain Technology",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Mathematics & SC"
+     ],
+     "venue": "B4 & B5"
+    },
+    {
+     "date": "2026-12-07",
+     "time": "Session B · 1:30 PM – 4:30 PM",
+     "code": "PH-471",
+     "name": "Semiconductor Heterostructure Devices",
+     "sections": [
+      "all"
+     ],
+     "branches": [
+      "Physics"
+     ],
+     "venue": "F5 & F6"
+    }
+   ]
   }
  },
  "rules": [
-  "Carry your college ID card and admit card.",
-  "Reach the exam hall 15 minutes early."
+  "Session A is 9:00 AM – 12:00 PM and Session B is 1:30 PM – 4:30 PM.",
+  "You will not be allowed into the examination hall after the prescribed time.",
+  "Strictly prohibited inside the Vivekanand Lecture Hall Complex (VLHC) during the exam: mobile phones, personal bags or handbags, study material (books, notes, loose papers), palmtops and electronic gadgets, scientific or programmable calculators with memory, and any course material written or stored on slips, calculator covers, clipboards or body parts.",
+  "Do not bring mobile phones or bags to the exam centre, not even to leave at the entrance or the gate of the hall.",
+  "Check that no prohibited material is on or around your seat before the exam starts. If any is found, that paper is cancelled and disciplinary action follows.",
+  "Follow the instructions displayed at the venue and any notices from the Examination Section.",
+  "PwD candidates get 20 extra minutes per hour (60 minutes for an end-semester paper), may use a lamp and magnifying glass, and get large-font papers if they have low vision. Room G-6 is set aside for them if needed.",
+  "Students with an infectious disease who wish to appear write in isolation in room G5; students using a scribe write in G6. For 5th semester Minor Degree papers, both write in G6."
  ]
 }

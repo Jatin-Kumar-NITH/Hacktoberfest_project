@@ -27,6 +27,10 @@ class Store(context: Context) {
     var group: String
         get() = prefs.getString("group", "") ?: ""
         set(v) = prefs.edit().putString("group", v).apply()
+    /** Branch picked on the exam page ("" = all branches). */
+    var examBranch: String
+        get() = prefs.getString("exam_branch", "") ?: ""
+        set(v) = prefs.edit().putString("exam_branch", v).apply()
     var hostel: String
         get() = prefs.getString("hostel", "boys") ?: "boys"
         set(v) = prefs.edit().putString("hostel", v).apply()

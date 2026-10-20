@@ -122,7 +122,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
                 .filter { forStudent(it, vm.year, vm.section) && vm.assignmentsDone[it.id] != true && (it.due == null || daysUntil(it.due) >= 0) }
                 .sortedWith(compareBy({ it.due ?: "9999" }, { it.posted })).take(3)
             val nextExam = c.exams.years[vm.year.toString()]?.rows
-                ?.filter { forStudent(it, vm.section) && daysUntil(it.date) >= 0 }?.minByOrNull { it.date }
+                ?.filter { forStudent(it, vm.section, vm.myExamBranch()) && daysUntil(it.date) >= 0 }?.minByOrNull { it.date }
             CmCard {
                 SectionTitle("Due soon")
                 if (pending.isEmpty() && nextExam == null) EmptyLine("Nothing due. 🎉")

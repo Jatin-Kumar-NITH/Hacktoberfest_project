@@ -254,8 +254,10 @@ def load_campus():
         if ov:
             campus["timetables"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
         ov = accounts.get_setting(f"exams:{y}")
-        if ov:
-            campus["exams"]["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+        # an edit saved before the date sheet in exams.json was last updated is stale, so the file wins
+        if ov and ov["updated_at"] >= campus["exams"].get("updated", ""):
+            campus["exams"]["years"][y] = {**campus["exams"]["years"].get(y, {}), **ov["value"],
+                                           "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
     ov = accounts.get_setting("assignments")
     if ov:
         edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
@@ -361,9 +363,10 @@ def edit_exams():
         if not code:
             return jsonify(error=f"Row {i}: enter the subject."), 400
         secs = [x for x in (r.get("sections") or []) if x in SECTION_IDS] or ["all"]
-        rows.append({"date": d, "time": _txt(r.get("time"), 40), "code": code, "sections": secs,
-                     "venue": _txt(r.get("venue"), 60)})
-    if len(rows) > 80:
+        branches = [b for b in (_txt(x, 40) for x in (r.get("branches") or [])[:20]) if b and b != "all"] or ["all"]
+        rows.append({"date": d, "time": _txt(r.get("time"), 40), "code": code, "name": _txt(r.get("name"), 160),
+                     "sections": secs, "branches": branches, "venue": _txt(r.get("venue"), 60)})
+    if len(rows) > 300:
         return jsonify(error="Too many exam rows."), 400
     rows.sort(key=lambda r: (r["date"], r["time"]))
     accounts.set_setting(f"exams:{year}", {"name": _txt(data.get("name"), 120), "rows": rows})
@@ -815,7 +818,7 @@ Student's question: {question}
 """
 
 
-def build_ask_context(year, section_id, group, client):
+def build_ask_context(year, section_id, group, client, branch=""):
     campus = load_campus()
     tt = campus["timetables"].get(str(year)) or campus["timetables"]["1"]
     sec = next((s for s in tt["sections"] if s["id"] == section_id), tt["sections"][0])
@@ -846,8 +849,19 @@ def build_ask_context(year, section_id, group, client):
 
     ex = campus["exams"]["years"].get(str(y))
     if ex:
-        parts.append(f"\n## Exam schedule: {ex['name']} (sample data, not the official date sheet)")
-        parts += [f"- {r['date']} {r['time']}: {r['code']} ({r['venue']})" for r in ex["rows"] if for_student(r, y, sec["id"])]
+        kind = "official date sheet" if campus["exams"].get("official") and not ex.get("edited_by") else "added by admins"
+        rows = [r for r in ex["rows"] if for_student(r, y, sec["id"])]
+        mine = [r for r in rows if branch and branch in r.get("branches", [])]
+        parts.append(f"\n## Exam schedule: {ex['name']} ({kind})" +
+                     (f". The student's branch is {branch}." if mine else
+                      ". Papers differ by branch; if the student hasn't said their branch, ask or list the options."))
+        for r in rows:
+            br = r.get("branches") or ["all"]
+            if mine and "all" not in br and branch not in br:
+                continue
+            who = "" if "all" in br else f" [branch: {', '.join(br)}]"
+            parts.append(f"- {r['date']} {r['time']}: {r['code']}{' ' + r['name'] if r.get('name') else ''} ({r['venue']}){who}")
+        parts += [f"Note: {n}" for n in ex.get("notes", [])]
         parts.append("Exam rules: " + " ".join(campus["exams"]["rules"]))
 
     codes = sorted({c["code"] for c in sec["classes"]})
@@ -938,7 +952,8 @@ def ask():
     group = str(data.get("group") or "")
     if not re.fullmatch(r"Gr\.\d", group):
         group = ""
-    label, context = build_ask_context(year, str(data.get("section") or ""), group, data.get("client") or {})
+    branch = _txt(data.get("branch"), 40)
+    label, context = build_ask_context(year, str(data.get("section") or ""), group, data.get("client") or {}, branch)
     history = ""
     turns = [t for t in _list(data.get("history")) if isinstance(t, dict)][-4:]
     if turns:

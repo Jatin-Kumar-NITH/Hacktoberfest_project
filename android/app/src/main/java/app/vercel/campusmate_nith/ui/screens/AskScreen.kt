@@ -76,7 +76,7 @@ fun AskScreen(vm: AppViewModel, nav: Nav) {
             try {
                 val body = buildJsonObject {
                     put("question", JsonPrimitive(q)); put("year", JsonPrimitive(vm.year)); put("section", JsonPrimitive(vm.section))
-                    put("group", JsonPrimitive(vm.group)); put("client", vm.clientContext())
+                    put("group", JsonPrimitive(vm.group)); put("branch", JsonPrimitive(vm.myExamBranch())); put("client", vm.clientContext())
                     put("history", JsonArray(vm.askHistory.map { buildJsonObject { put("q", JsonPrimitive(it.q)); put("a", JsonPrimitive(it.a)) } }))
                 }
                 val r = vm.api.ask(body)

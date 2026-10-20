@@ -141,11 +141,17 @@ data class Assignment(
 }
 
 @Serializable
-data class ExamFile(val note: String = "", val years: Map<String, ExamYear> = emptyMap(), val rules: List<String> = emptyList())
+data class ExamFile(
+    val note: String = "",
+    val official: Boolean = false,
+    val years: Map<String, ExamYear> = emptyMap(),
+    val rules: List<String> = emptyList(),
+)
 
 @Serializable
 data class ExamYear(
     val name: String = "",
+    val notes: List<String> = emptyList(),
     val rows: List<ExamRow> = emptyList(),
     val edited_by: String? = null,
     val edited_at: String? = null,
@@ -156,7 +162,11 @@ data class ExamRow(
     val date: String = "",
     val time: String = "",
     val code: String = "",
+    /** Subject name as printed on the date sheet. */
+    val name: String = "",
     val sections: List<String> = listOf("all"),
+    /** Branches the paper is for, e.g. "CSE" ("all" = everyone in the year). */
+    val branches: List<String> = listOf("all"),
     val venue: String = "",
 )
 
