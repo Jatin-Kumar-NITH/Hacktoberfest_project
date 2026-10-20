@@ -139,8 +139,8 @@ class TodayWidget : AppWidgetProvider() {
                     // with no group picked, a lab shows which group it's for ("CS-111-Gr.1")
                     val name = if (group.isEmpty() && !c.group.isNullOrEmpty()) c.label else c.code
                     v.setTextViewText(NAMES[i], name.ifEmpty { c.label }.ifEmpty { c.type })
-                    val room = c.room.ifEmpty { sec.classroom }
-                    v.setTextViewText(ROOMS[i], if (room.startsWith("Respective", ignoreCase = true)) "Lab" else room)
+                    // group labs have no room of their own; don't send them to the classroom
+                    v.setTextViewText(ROOMS[i], c.room.ifEmpty { if (c.type == "Lab") "" else sec.classroom })
                 }
             }
 

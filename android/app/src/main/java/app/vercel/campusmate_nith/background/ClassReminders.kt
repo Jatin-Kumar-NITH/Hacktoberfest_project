@@ -43,7 +43,7 @@ object ClassReminders {
             val date = from.toLocalDate().plusDays(i.toLong())
             for (cls in classesOn(c, sec, store.group, date, store.year)) {
                 val at = date.atTime(cls.start.coerceIn(0, 23), 0).minusMinutes(store.classLead.toLong())
-                if (at.isAfter(from)) return Next(at, cls, cls.room.ifEmpty { sec.classroom })
+                if (at.isAfter(from)) return Next(at, cls, cls.room.ifEmpty { if (cls.type == "Lab") "" else sec.classroom })
             }
         }
         return null
