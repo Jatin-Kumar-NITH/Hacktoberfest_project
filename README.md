@@ -371,7 +371,7 @@ During development, every feature was tested end to end with a stand-in for the 
 
 ## Credits
 
-- **Built by:** Jatin Kumar (NIT Hamirpur), for Hacktoberfest 2026
+- **Built by:** Jatin Kumar (NIT Hamirpur), for Hacktoberfest 2026 & co-developed by Mitesh Kini (NIT Hampirpur)
 - **AI model:** Gemma 4 by Google DeepMind, via the Gemini API
 - **Data sources:** Office of Dean Academic (1st-year timetable, 2026-27), NIT Hamirpur first-year curriculum (NEP-2020), MA-111 course assignments
 - Developed with help from AI coding assistants
