@@ -48,10 +48,20 @@
     }
    },
    "mess_timings": {
-    "Breakfast": "Mon–Fri 7:30–9:00 AM · Sat–Sun 8:00–9:30 AM",
+    "Breakfast": "7:30–9:00 AM",
     "Lunch": "12:30–2:00 PM",
-    "Snacks": "Mon–Fri 5:45–6:15 PM · Sat–Sun 5:00–5:30 PM",
+    "Snacks": "5:45–6:15 PM",
     "Dinner": "7:30–9:00 PM"
+   },
+   "day_timings": {
+    "Saturday": {
+     "Breakfast": "8:00–9:30 AM",
+     "Snacks": "5:00–5:30 PM"
+    },
+    "Sunday": {
+     "Breakfast": "8:00–9:30 AM",
+     "Snacks": "5:00–5:30 PM"
+    }
    }
   },
   "girls": {

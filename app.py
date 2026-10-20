@@ -396,7 +396,17 @@ def edit_menu():
         menu_in, times_in = data.get("mess_menu") or {}, data.get("mess_timings") or {}
         menu = {d: {m: _txt((menu_in.get(d) or {}).get(m), 200) for m in MEALS} for d in DAYS7}
         timings = {m: _txt(times_in.get(m), 60) for m in MEALS}
-        accounts.set_setting(key, {"mess_menu": menu, "mess_timings": timings})
+        # day_timings: times for the days that differ from mess_timings (e.g. weekend breakfast).
+        # Editors that don't send it keep the ones the menu has now.
+        if "day_timings" in data:
+            days_in = data.get("day_timings") or {}
+        else:
+            current = load_campus()["hostel"]["hostels"][hostel]
+            days_in = current.get("day_timings") if year == "all" else menu_for_year(current, year).get("day_timings")
+            days_in = days_in or {}
+        day_timings = {d: t for d in DAYS7
+                       if (t := {m: _txt((days_in.get(d) or {}).get(m), 60) for m in MEALS if (days_in.get(d) or {}).get(m)})}
+        accounts.set_setting(key, {"mess_menu": menu, "mess_timings": timings, "day_timings": day_timings})
     return jsonify(ok=True, hostel=load_campus()["hostel"]["hostels"][hostel])
 
 
@@ -904,6 +914,8 @@ def build_ask_context(year, section_id, group, client):
             timings = "; ".join(f"{k} {v}" for k, v in h["mess_timings"].items() if v)
             if timings:
                 parts.append("Mess timings: " + timings)
+            for day, t in (h.get("day_timings") or {}).items():
+                parts.append(f"Mess timings on {day}: " + "; ".join(f"{k} {v}" for k, v in t.items()))
             for day, meals in h["mess_menu"].items():
                 items = "; ".join(f"{k}: {v}" for k, v in meals.items() if v)
                 if items:

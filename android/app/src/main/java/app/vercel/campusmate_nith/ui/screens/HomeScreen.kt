@@ -211,7 +211,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
                     if (!items.isNullOrEmpty()) Column {
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(m, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                            h.mess_timings[m]?.takeIf { it.isNotEmpty() }?.let { Muted(it, size = 12) }
+                            h.timing(todayName(), m).takeIf { it.isNotEmpty() }?.let { Muted(it, size = 12) }
                         }
                         Text(items, fontSize = 14.sp, color = P.ink2)
                     }

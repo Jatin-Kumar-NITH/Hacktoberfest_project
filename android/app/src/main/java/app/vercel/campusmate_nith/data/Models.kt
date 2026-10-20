@@ -200,6 +200,8 @@ data class Hostel(
     val name: String = "",
     val mess_menu: Map<String, Map<String, String>> = emptyMap(),
     val mess_timings: Map<String, String> = emptyMap(),
+    /** Times for the days that differ from [mess_timings], e.g. weekend breakfast. */
+    val day_timings: Map<String, Map<String, String>> = emptyMap(),
     val edited_by: String? = null,
     val edited_at: String? = null,
     /** A year's own menu, which wins over the all-years one for that year. */
@@ -207,14 +209,18 @@ data class Hostel(
 ) {
     /** The menu students of [year] see: their year's own menu, else the all-years one. */
     fun forYear(year: Int): Hostel = years[year.toString()]?.let {
-        copy(mess_menu = it.mess_menu, mess_timings = it.mess_timings, edited_by = it.edited_by, edited_at = it.edited_at)
+        copy(mess_menu = it.mess_menu, mess_timings = it.mess_timings, day_timings = it.day_timings, edited_by = it.edited_by, edited_at = it.edited_at)
     } ?: this
+
+    /** When [meal] is served on [day]: that day's own time, else the usual one ("" if none). */
+    fun timing(day: String, meal: String): String = day_timings[day]?.get(meal)?.ifEmpty { null } ?: mess_timings[meal].orEmpty()
 }
 
 @Serializable
 data class HostelMenu(
     val mess_menu: Map<String, Map<String, String>> = emptyMap(),
     val mess_timings: Map<String, String> = emptyMap(),
+    val day_timings: Map<String, Map<String, String>> = emptyMap(),
     val edited_by: String? = null,
     val edited_at: String? = null,
 )

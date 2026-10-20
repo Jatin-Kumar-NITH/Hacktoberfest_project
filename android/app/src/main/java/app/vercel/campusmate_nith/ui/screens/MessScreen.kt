@@ -76,10 +76,10 @@ fun MessScreen(vm: AppViewModel, nav: Nav) {
         if (vm.isAdmin) item {
             SmallButton(if (y == "all") "✎ Edit the All years menu" else if (own != null) "✎ Edit $yearName menu" else "✎ Make a $yearName menu", { editing = true })
         }
-        if (MEALS.any { !h.mess_timings[it].isNullOrEmpty() }) item {
+        if (MEALS.any { h.timing(today, it).isNotEmpty() }) item {
             CmCard {
-                SectionTitle("Timings")
-                MEALS.forEach { m -> h.mess_timings[m]?.takeIf { it.isNotEmpty() }?.let { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { Text(m, fontWeight = FontWeight.SemiBold, fontSize = 14.sp); Muted(it) } } }
+                SectionTitle("Timings today")
+                MEALS.forEach { m -> h.timing(today, m).takeIf { it.isNotEmpty() }?.let { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { Text(m, fontWeight = FontWeight.SemiBold, fontSize = 14.sp); Muted(it) } } }
             }
         }
         if (empty) item { CmCard { EmptyLine("The menu for this hostel hasn't been added yet.") } }
@@ -88,7 +88,7 @@ fun MessScreen(vm: AppViewModel, nav: Nav) {
                 Text(if (d == today) "$d · today" else d, fontWeight = FontWeight.SemiBold)
                 MEALS.forEach { m ->
                     Column {
-                        Muted(m, size = 12)
+                        Muted(h.timing(d, m).takeIf { it.isNotEmpty() }?.let { "$m · $it" } ?: m, size = 12)
                         Text(h.mess_menu[d]?.get(m)?.ifEmpty { null } ?: "—", fontSize = 14.sp)
                     }
                 }
