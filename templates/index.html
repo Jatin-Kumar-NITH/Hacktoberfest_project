@@ -54,6 +54,7 @@
       <a href="#hostel-updates" data-page="hostel-updates"><span class="ico">🛏</span><span>Hostel Updates</span></a>
       <a href="#chat" data-page="chat"><span class="ico">✉</span><span>Campus Chat</span></a>
       {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#publish" data-page="publish" class="nav-admin"><span class="ico">↑</span><span>Publish</span></a>{% endif %}
+      {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#whatsapp" data-page="whatsapp" class="nav-admin"><span class="ico">💬</span><span>WhatsApp Inbox</span></a>{% endif %}
       {% if me.role in ['owner', 'coowner'] %}<a href="#admins" data-page="admins" class="nav-admin"><span class="ico">⚙</span><span>Manage Admins</span></a>{% endif %}
       {% if me.role in ['admin', 'coowner', 'owner'] %}<a href="#journalists" data-page="journalists" class="nav-admin"><span class="ico">✍</span><span>Journalists</span></a>{% endif %}
       <a href="#about" data-page="about"><span class="ico">ⓘ</span><span>About</span></a>
@@ -670,6 +671,28 @@
           <div class="card-head"><h2>Published on CampusMate</h2><span class="muted" id="pubCount"></span></div>
           <div id="pubList"></div>
         </div>
+      </div>
+    </section>
+    {% endif %}
+
+    {% if me.role in ['admin', 'coowner', 'owner'] %}
+    <!-- ============ WHATSAPP INBOX (admins and above) ============ -->
+    <section class="page" id="page-whatsapp" hidden>
+      <header class="page-head"><div><h1>WhatsApp Inbox</h1><p class="sub">Messages from section WhatsApp groups, sorted by AI into notices, assignments and exam changes. Nothing reaches students until you approve it.</p></div></header>
+      <div class="card">
+        <div class="card-head"><h2>Groups</h2><span class="muted" id="waBotState"></span></div>
+        <p class="muted">A group appears here after the bot sees its first message. Pick its year and section and switch it on; messages from groups that are off are kept but not sorted.</p>
+        <table class="user-table"><thead><tr><th>Group</th><th>Year</th><th>Section</th><th>On</th><th></th></tr></thead><tbody id="waGroups"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="kind-tabs" id="waTabs">
+          <button type="button" class="chip active" data-status="pending">To review</button>
+          <button type="button" class="chip" data-status="failed">AI failed</button>
+          <button type="button" class="chip" data-status="ignored">Ignored</button>
+          <button type="button" class="chip" data-status="approved">Published</button>
+          <button type="button" class="chip" data-status="rejected">Rejected</button>
+        </div>
+        <div id="waItems"></div>
       </div>
     </section>
     {% endif %}

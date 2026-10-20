@@ -679,6 +679,11 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 input[type=file] { font-size: 13px; }
 .pub-item { border-bottom: 1px solid var(--line); padding: 12px 0; }
 .pub-item:last-child { border-bottom: 0; }
+.wa-quote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--line); white-space: pre-wrap; font-size: 14px; }
+.wa-form { margin-top: 10px; }
+#page-whatsapp .card + .card { margin-top: 16px; }
+#waGroups select { min-width: 72px; padding: 8px 6px; }
+.wa-form .field input, .wa-form .field select, .wa-form .field textarea { width: 100%; }
 .pub-item-top strong { font-size: 15px; }
 .user-search { margin-bottom: 12px; }
 .user-table { width: 100%; border-collapse: collapse; font-size: 14px; }

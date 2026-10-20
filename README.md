@@ -130,6 +130,12 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - The **owner** and **co-owners** can give or remove admin access.
 - **Co-owners** have the same powers as the owner everywhere else (publishing, calendar edits, private channels, chat moderation), but only the owner can make or remove a co-owner, and a co-owner can never ban, remove or demote the owner. Co-owners show a gold "Co-owner" tag.
 
+### 💬 WhatsApp Inbox (admins)
+- A WhatsApp bot added to each section's official group sends the group's messages to `POST /api/bot/whatsapp`. Gemma sorts each one into a **notice**, **assignment**, **exam change** or *not useful* (Hindi and Hinglish included), and fills in the title, subject code, due date or exam date.
+- **Nothing is published automatically.** Admins review each suggestion on the WhatsApp Inbox page, fix anything they want, then **Approve & publish** (it becomes a normal post, or changes that year's exam schedule), **Reject**, or **Ask AI again**.
+- New groups appear switched off. An admin picks the group's year and section and switches it on; that decides who sees what's published from it. Small talk ("ok", "thanks") is skipped without an AI call, and ignored or rejected messages are deleted after 30 days.
+- Bot API: `Authorization: Bearer <WHATSAPP_BOT_TOKEN>`, body `{"group": {"id", "name"}, "messages": [{"id", "sender", "sent_at", "text", "media"?}]}`, up to 10 messages per request. `media` is optional: `{"mime": "image/jpeg" | "application/pdf", "data": "<base64>"}`; images are read by the AI and PDFs are attached to the published post. Messages already received (same group and message id) are skipped.
+
 ### Also
 - **Sign in with Google**, and stay logged in for 30 days.
 - **Dark mode** with a toggle; it follows your system setting by default.
@@ -271,6 +277,7 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 | `OWNER_NAME` | – | Display name for the owner. |
 | `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
 | `DATABASE_URL` | ✅ on Vercel | Postgres connection string (e.g. from Neon). If set, all data (accounts, posts, PDFs, chat, edits) is stored there permanently. If empty, a local SQLite file is used. `POSTGRES_URL` also works. |
+| `WHATSAPP_BOT_TOKEN` | – | Long random secret the WhatsApp bot sends to `/api/bot/whatsapp`. The intake is off without it. |
 | `CAMPUSMATE_DATA_DIR` | – | Where the SQLite file and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
 
 `.env` is listed in `.gitignore`, so **your keys are never committed**. Only `.env.example` (with blank values) is in the repository.

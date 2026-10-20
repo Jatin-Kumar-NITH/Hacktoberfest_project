@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
 import accounts
+import intake
 from accounts import admin_required, current_user, login_required, public_user
 from PIL import Image, ImageOps
 
@@ -291,6 +292,10 @@ def _has_dishes(menu):
 def menu_for_year(hostel, year):
     """The menu students of `year` see: that year's own menu, else the All years menu."""
     return hostel.get("years", {}).get(str(year)) or hostel
+
+
+# WhatsApp section groups -> admin review queue -> posts and exam changes (see intake.py)
+intake.init_app(app, ask=ask_gemma, campus=load_campus)
 
 
 # ------------------------------------------------------------------ admin editing (timetables, exams, menus)
