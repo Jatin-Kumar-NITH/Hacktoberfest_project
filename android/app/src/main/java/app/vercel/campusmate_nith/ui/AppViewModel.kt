@@ -24,9 +24,11 @@ import app.vercel.campusmate_nith.data.AskTurn
 import app.vercel.campusmate_nith.data.Attendance
 import app.vercel.campusmate_nith.data.Campus
 import app.vercel.campusmate_nith.data.CampusResponse
+import app.vercel.campusmate_nith.data.ExamYear
 import app.vercel.campusmate_nith.data.Hostel
 import app.vercel.campusmate_nith.data.NoticeEntry
 import app.vercel.campusmate_nith.data.SavedPlan
+import app.vercel.campusmate_nith.data.branchOptions
 import app.vercel.campusmate_nith.data.Section
 import app.vercel.campusmate_nith.data.SignInCancelled
 import app.vercel.campusmate_nith.data.SyllabusYear
@@ -71,6 +73,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var year by mutableStateOf(store.year); private set
     var section by mutableStateOf(store.section); private set
     var group by mutableStateOf(store.group); private set
+    var examBranch by mutableStateOf(store.examBranch); private set
     var hostel by mutableStateOf(store.hostel)
     var profileChosen by mutableStateOf(store.profileChosen); private set
 
@@ -199,7 +202,17 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         askLog.clear(); askHistory = emptyList()
     }
 
+    /** The picked exam branch if this year's exams have it, else "" (all branches). */
+    fun myExamBranch(ex: ExamYear? = campus.exams.years[year.toString()]) =
+        examBranch.takeIf { ex != null && it in ex.branchOptions() }.orEmpty()
+
+    fun chooseExamBranch(b: String) {
+        examBranch = b; store.examBranch = b
+        store.seenIds = null   // different papers now: start counting "new" from here
+    }
+
     fun setProfile(y: Int, sec: String, grp: String) {
+        if (y != year) { examBranch = ""; store.examBranch = "" }
         year = y; section = sec; group = grp
         store.year = y; store.section = sec; store.group = grp
         store.profileChosen = true; profileChosen = true

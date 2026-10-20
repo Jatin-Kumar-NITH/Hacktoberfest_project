@@ -5,6 +5,7 @@ import app.vercel.campusmate_nith.data.Campus
 import app.vercel.campusmate_nith.data.Store
 import app.vercel.campusmate_nith.data.assignmentItems
 import app.vercel.campusmate_nith.data.boardItems
+import app.vercel.campusmate_nith.data.branchOptions
 import app.vercel.campusmate_nith.data.dmy
 import app.vercel.campusmate_nith.data.forStudent
 import app.vercel.campusmate_nith.data.todayIso
@@ -14,7 +15,7 @@ data class Update(val id: String, val kind: String, val title: String, val text:
 
 object Updates {
     /** Everything the student can currently see, keyed by a stable id. */
-    fun current(c: Campus, year: Int, section: String): List<Update> {
+    fun current(c: Campus, year: Int, section: String, examBranch: String = ""): List<Update> {
         val out = mutableListOf<Update>()
         boardItems(c).filter { forStudent(it, year, section) }.forEach {
             val kind = if (it.kind == "announcement") "Announcement" else "Notice"
@@ -25,7 +26,9 @@ object Updates {
             out += Update("a:${it.id}", "Assignment", "${it.code}: ${it.title}", "Assignment$due", "assignments")
         }
         val today = todayIso()
-        c.exams.years[year.toString()]?.rows.orEmpty().filter { forStudent(it, section) }.forEach {
+        val ex = c.exams.years[year.toString()]
+        val branch = examBranch.takeIf { ex != null && it in ex.branchOptions() }.orEmpty()
+        ex?.rows.orEmpty().filter { forStudent(it, section, branch) }.forEach {
             if (it.date >= today) {
                 out += Update("e:${it.date}|${it.time}|${it.code}", "Exam", "${it.code} exam on ${dmy(it.date)}",
                     listOf(it.time, it.venue).filter { s -> s.isNotBlank() }.joinToString(" · ").ifEmpty { "Exam schedule" }, "exams")
@@ -39,7 +42,7 @@ object Updates {
      * The first run (or a change of section) only records what is there.
      */
     fun takeNew(store: Store, c: Campus): List<Update> {
-        val all = current(c, store.year, store.section)
+        val all = current(c, store.year, store.section, store.examBranch)
         val seen = store.seenIds
         store.seenIds = all.map { it.id }.toSet()
         if (seen == null) return emptyList()

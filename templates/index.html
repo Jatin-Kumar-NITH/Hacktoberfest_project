@@ -248,20 +248,23 @@
         <div><h1>Exam Schedule</h1><p class="sub" id="exSub"></p></div>
         <button class="primary inline" id="exPlan">◷ Make a study plan for these exams</button>
       </header>
+      <label class="field inline-field ex-branch" id="exBranchPick" hidden><span class="label">Your branch</span><select id="exBranch"></select></label>
+      <p class="muted ex-branch-hint" id="exBranchHint" hidden>Papers differ by branch. Pick yours to see only your exams.</p>
       <div class="ex-count" id="exCount"></div>
       <div class="edit-bar" id="exEditBar" hidden>
         <span class="muted" id="exEdited"></span>
         <button class="ai-btn" id="exEditBtn">✎ Edit exam schedule</button>
       </div>
       <div class="card editor" id="exEditor" hidden>
-        <div class="card-head"><h2 id="exEditorTitle">Edit exam schedule</h2><span class="muted">Sections: leave empty for all sections, or type e.g. A, B, C</span></div>
+        <div class="card-head"><h2 id="exEditorTitle">Edit exam schedule</h2><span class="muted">Sections and branches: leave empty for everyone, or type e.g. A, B, C or CSE, ECE</span></div>
         <label class="field inline-field"><span class="label">Exam name</span><input type="text" id="exName" maxlength="120" placeholder="e.g. Mid-Semester Examination, Odd Semester 2026-27"></label>
-        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Sections</th><th>Venue</th><th></th></tr></thead><tbody id="exRows"></tbody></table></div>
+        <div class="ed-scroll"><table class="ed-table"><thead><tr><th>Date</th><th>Time</th><th>Subject code</th><th>Subject name</th><th>Sections</th><th>Branches</th><th>Venue</th><th></th></tr></thead><tbody id="exRows"></tbody></table></div>
         <div class="ed-actions"><button class="ghost" id="exAddRow">+ Add paper</button><span class="spacer"></span><button class="ghost" id="exCancel">Cancel</button><button class="primary inline" id="exSave">Save exam schedule</button></div>
         <div class="alert error" id="exErr" hidden></div>
       </div>
       <div class="card" id="exTableCard"><table class="ex-table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Venue</th><th>Countdown</th></tr></thead><tbody id="exBody"></tbody></table></div>
       <p class="empty-line card" id="exEmpty" hidden>The exam schedule for your year hasn't been published yet.</p>
+      <div class="card ex-rules" id="exNotes" hidden><h2>Notes for your year</h2><ul class="bullets" id="exNotesList"></ul></div>
       <div class="card ex-rules"><h2>Exam rules</h2><ul class="bullets" id="exRules"></ul></div>
     </section>
 

@@ -73,7 +73,12 @@ fun forStudent(item: Targeted, year: Int, section: String): Boolean {
     return ("all" in ys || year.toString() in ys) && ("all" in ss || section in ss)
 }
 
-fun forStudent(row: ExamRow, section: String) = "all" in row.sections || section in row.sections
+/** Branch choices for a year's exams, from 2nd year on papers differ by branch. */
+fun ExamYear.branchOptions() = rows.flatMap { it.branches }.filter { it != "all" }.distinct().sorted()
+
+/** [branch] "" means every branch. */
+fun forStudent(row: ExamRow, section: String, branch: String = "") =
+    ("all" in row.sections || section in row.sections) && (branch.isEmpty() || "all" in row.branches || branch in row.branches)
 
 fun Targeted.isSectionSpecific() = "all" !in sectionList
 
