@@ -936,6 +936,9 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .landing-brand .logo { width: 30px; height: 30px; border-radius: 8px; font-size: 15px; }
 .landing-brand span span { color: var(--muted); font-weight: 500; }
 .landing-nav-right { display: flex; align-items: center; gap: 12px; }
+/* Google's sign-in button is a light-scheme iframe; on our dark scheme the browser would paint it an
+   opaque white box. Matching its scheme keeps the iframe transparent around the pill. */
+#google-button-nav iframe, #google-button-center iframe { color-scheme: normal; }
 .landing-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 96px 24px 72px; }
 .landing-eyebrow { font-size: 14px; font-weight: 600; color: var(--muted); margin: 0 0 14px; letter-spacing: 0; }
 .landing-title { font-size: clamp(40px, 7vw, 72px); line-height: 1.05; font-weight: 700; letter-spacing: -0.035em; margin: 0 0 20px; }
