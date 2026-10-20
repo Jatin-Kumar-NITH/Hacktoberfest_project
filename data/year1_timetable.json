@@ -88,7 +88,7 @@
      "faculty": "Keshav",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -99,7 +99,7 @@
      "faculty": "Navneet",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -110,7 +110,7 @@
      "faculty": "Manoj",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -165,7 +165,7 @@
      "faculty": "Keshav",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -176,7 +176,7 @@
      "faculty": "Navneet",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -187,7 +187,7 @@
      "faculty": "Manoj",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -253,7 +253,7 @@
      "faculty": "Keshav",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -264,7 +264,7 @@
      "faculty": "Navneet",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -275,7 +275,7 @@
      "faculty": "Manoj",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -352,7 +352,7 @@
      "faculty": "Jyoti",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -363,7 +363,7 @@
      "faculty": "Suresh",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -374,7 +374,7 @@
      "faculty": "P. Puri",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -418,7 +418,7 @@
      "faculty": "Jyoti",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -429,7 +429,7 @@
      "faculty": "Shailja",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -440,7 +440,7 @@
      "faculty": "P. Puri",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -451,7 +451,7 @@
      "faculty": "Jyoti",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -462,7 +462,7 @@
      "faculty": "Navneet",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -473,7 +473,7 @@
      "faculty": "P. Puri",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -814,7 +814,7 @@
      "faculty": "Priyanka",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -825,7 +825,7 @@
      "faculty": "Navneet",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -836,7 +836,7 @@
      "faculty": "Zareena",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -858,7 +858,7 @@
      "faculty": "Priyanka",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -869,7 +869,7 @@
      "faculty": "S Kaur",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -880,7 +880,7 @@
      "faculty": "Zareena",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -913,7 +913,7 @@
      "faculty": "Priyanka",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -924,7 +924,7 @@
      "faculty": "Suresh",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -935,7 +935,7 @@
      "faculty": "Zareena",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     }
    ]
   },
@@ -968,7 +968,7 @@
      "faculty": "Khalid",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -979,7 +979,7 @@
      "faculty": "Shailja",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -990,7 +990,7 @@
      "faculty": "Sumita",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1023,7 +1023,7 @@
      "faculty": "Sumita",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -1056,7 +1056,7 @@
      "faculty": "Khalid",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1067,7 +1067,7 @@
      "faculty": "Shailja",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1166,7 +1166,7 @@
      "faculty": "Khalid",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -1177,7 +1177,7 @@
      "faculty": "Shailja",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -1188,7 +1188,7 @@
      "faculty": "Sumita",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -1342,7 +1342,7 @@
      "faculty": "Akanksha",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1353,7 +1353,7 @@
      "faculty": "S Kaur",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1364,7 +1364,7 @@
      "faculty": "Sumita",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1397,7 +1397,7 @@
      "faculty": "Akanksha",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1408,7 +1408,7 @@
      "faculty": "S Kaur",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -1419,7 +1419,7 @@
      "faculty": "Sumita",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -1518,7 +1518,7 @@
      "faculty": "Akanksha",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -1529,7 +1529,7 @@
      "faculty": "S Kaur",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -1540,7 +1540,7 @@
      "faculty": "Sumita",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -1584,7 +1584,7 @@
      "faculty": "Varun",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1595,7 +1595,7 @@
      "faculty": "Ashok K, Avinash",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1606,7 +1606,7 @@
      "faculty": "Vidyotima",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1617,7 +1617,7 @@
      "faculty": "K S Ghosh",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1628,7 +1628,7 @@
      "faculty": "R. Chandel, Ravi",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1639,7 +1639,7 @@
      "faculty": "Vidyotima",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -1683,7 +1683,7 @@
      "faculty": "K.S Ghosh",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -1694,7 +1694,7 @@
      "faculty": "Krishan K, Vishal",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -1705,7 +1705,7 @@
      "faculty": "Vidyotima",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2024,7 +2024,7 @@
      "faculty": "M. Nayyer",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2035,7 +2035,7 @@
      "faculty": "J. Prakash",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2046,7 +2046,7 @@
      "faculty": "Angira, Neeraj",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2057,7 +2057,7 @@
      "faculty": "M. Nayyer",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2068,7 +2068,7 @@
      "faculty": "J. Prakash",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2079,7 +2079,7 @@
      "faculty": "M Bharti, Abhishek",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2090,7 +2090,7 @@
      "faculty": "M. Nayyer",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2101,7 +2101,7 @@
      "faculty": "P. Awasthi",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2112,7 +2112,7 @@
      "faculty": "Krishan K, Vishal",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2222,7 +2222,7 @@
      "faculty": "J. Kuchlyan",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2233,7 +2233,7 @@
      "faculty": "Saurabh, Avinash",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2244,7 +2244,7 @@
      "faculty": "Pratibha",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2288,7 +2288,7 @@
      "faculty": "J. Kuchlyan",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2299,7 +2299,7 @@
      "faculty": "Aman, Neeraj",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2310,7 +2310,7 @@
      "faculty": "Pratibha",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2343,7 +2343,7 @@
      "faculty": "Arun",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2354,7 +2354,7 @@
      "faculty": "Rakesh, Neeraj",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2365,7 +2365,7 @@
      "faculty": "Pratibha",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2640,7 +2640,7 @@
      "faculty": "Shobhna",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2651,7 +2651,7 @@
      "faculty": "Varun",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -2662,7 +2662,7 @@
      "faculty": "CS Prasad, Avinash",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2695,7 +2695,7 @@
      "faculty": "Shobhna",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2706,7 +2706,7 @@
      "faculty": "Varun",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Thursday",
@@ -2717,7 +2717,7 @@
      "faculty": "Avijit, Avinash",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -2728,7 +2728,7 @@
      "faculty": "Shobhna",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -2739,7 +2739,7 @@
      "faculty": "Varun",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -2750,7 +2750,7 @@
      "faculty": "Avijit, Avinash",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -2856,7 +2856,7 @@
      "faculty": "Tanuj",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -2867,7 +2867,7 @@
      "faculty": "Arun",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Monday",
@@ -2878,7 +2878,7 @@
      "faculty": "Vinod, Nimish",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2933,7 +2933,7 @@
      "faculty": "Tanuj",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2944,7 +2944,7 @@
      "faculty": "Arun",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Tuesday",
@@ -2955,7 +2955,7 @@
      "faculty": "Shiva, Neeraj",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Wednesday",
@@ -3043,7 +3043,7 @@
      "faculty": "Tanuj",
      "group": "Gr.3",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -3054,7 +3054,7 @@
      "faculty": "Arun",
      "group": "Gr.1",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",
@@ -3065,7 +3065,7 @@
      "faculty": "Gagnesh, Avinash",
      "group": "Gr.2",
      "type": "Lab",
-     "room": "Respective Dept./Centre lab"
+     "room": ""
     },
     {
      "day": "Friday",

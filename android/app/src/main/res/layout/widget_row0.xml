@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One class on the widget: start time, subject, room. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/w_row0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:visibility="gone">
 
     <TextView
         android:id="@+id/w_time0"
-        android:layout_width="72dp"
+        android:layout_width="42dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/accent"
-        android:textSize="13sp"
-        android:textStyle="bold" />
+        android:maxLines="1"
+        android:textColor="@color/widget_muted"
+        android:textSize="12sp"
+        android:fontFeatureSettings="tnum" />
 
     <TextView
         android:id="@+id/w_name0"
@@ -24,4 +27,15 @@
         android:maxLines="1"
         android:textColor="@color/widget_ink"
         android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/w_room0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="56dp"
+        android:textColor="@color/widget_muted"
+        android:textSize="11sp" />
 </LinearLayout>

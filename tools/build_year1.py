@@ -335,7 +335,7 @@ def parse_line(line, room):
     if "(T)" in code: kind = "Tutorial"
     if code.startswith("AR-11") and "(L)" not in code and "(T)" not in code: kind = "Studio"
     base = re.match(r"[A-Z]{2}-\s?\d{3}", code).group(0).replace(" ", "")
-    where = rest[0][1:] if rest else ("Respective Dept./Centre lab" if group else room)
+    where = rest[0][1:] if rest else ("" if group else room)
     return {"day": DAYS[d], "start": start, "end": end, "code": base, "label": text.replace("AR- ", "AR-"),
             "faculty": faculty, "group": group, "type": kind, "room": where}
 
