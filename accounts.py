@@ -318,6 +318,128 @@ def api_set_journalist(uid):
     return jsonify(ok=True)
 
 
+# ------------------------------------------------------------------ co-owner handover (yearly successor)
+# A co-owner picks a successor from signed-in users. The successor accepts on their own account; then the
+# successor becomes co-owner and the outgoing co-owner steps down to admin. A co-owner can only hand over
+# their own seat. The owner sees every pending handover and can cancel one. Pending handovers are kept in
+# settings as `handover:<from user id>` = {"to": <user id>, "created_at": ...}.
+
+HANDOVER_PREFIX = "handover:"
+
+
+def _pending_handovers():
+    rows = db().execute("SELECT key, value FROM settings WHERE key LIKE ?", (HANDOVER_PREFIX + "%",)).fetchall()
+    out = []
+    for r in rows:
+        try:
+            from_id = int(r["key"][len(HANDOVER_PREFIX):])
+            val = json.loads(r["value"])
+            out.append({"from_id": from_id, "to_id": int(val["to"]), "created_at": val.get("created_at")})
+        except (ValueError, KeyError, TypeError):
+            continue
+    return out
+
+
+def _handover_dict(h, people):
+    f, t = people.get(h["from_id"]), people.get(h["to_id"])
+    if not f or not t:
+        return None
+    return {"from": public_user(f), "to": public_user(t), "created_at": h["created_at"]}
+
+
+def _clear_stale_handovers():
+    """Drop handovers whose sender is no longer a co-owner, or whose successor is already owner or co-owner."""
+    pending = _pending_handovers()
+    if not pending:
+        return pending
+    roles = {r["id"]: r["role"] for r in db().execute("SELECT id, role FROM users").fetchall()}
+    live = []
+    for h in pending:
+        if roles.get(h["from_id"]) != "coowner" or roles.get(h["to_id"]) in (None, "owner", "coowner"):
+            db().execute("DELETE FROM settings WHERE key = ?", (HANDOVER_PREFIX + str(h["from_id"]),))
+        else:
+            live.append(h)
+    db().commit()
+    return live
+
+
+@bp.get("/api/handover")
+@login_required
+def api_handover():
+    """Pending handovers that concern the current user: sent by them, offered to them, and (owner) all."""
+    u = current_user()
+    pending = _clear_stale_handovers()
+    ids = {h["from_id"] for h in pending} | {h["to_id"] for h in pending}
+    people = {}
+    if ids:
+        marks = ",".join("?" * len(ids))
+        people = {r["id"]: dict(r) for r in db().execute(
+            f"SELECT id, name, email, role FROM users WHERE id IN ({marks})", tuple(ids)).fetchall()}
+    as_dict = lambda hs: [d for d in (_handover_dict(h, people) for h in hs) if d]
+    return jsonify(
+        outgoing=(as_dict([h for h in pending if h["from_id"] == u["id"]]) or [None])[0],
+        incoming=as_dict([h for h in pending if h["to_id"] == u["id"]]),
+        all=as_dict(pending) if u["role"] == "owner" else [],
+    )
+
+
+@bp.post("/api/handover")
+@owner_required
+def api_handover_create():
+    """A co-owner chooses who takes over their co-owner seat (replaces any earlier choice)."""
+    u = current_user()
+    if u["role"] != "coowner":
+        return jsonify(error="Only a co-owner can hand over their seat. The owner gives co-owner access directly."), 403
+    try:
+        to_id = int((request.get_json(silent=True) or {}).get("to"))
+    except (TypeError, ValueError):
+        return jsonify(error="Choose who should take over."), 400
+    if to_id == u["id"]:
+        return jsonify(error="You can't hand over to yourself."), 400
+    row = db().execute("SELECT role FROM users WHERE id = ?", (to_id,)).fetchone()
+    if not row:
+        return jsonify(error="User not found. They need to sign in to CampusMate once first."), 404
+    if row["role"] in ("owner", "coowner"):
+        return jsonify(error="That person is already the owner or a co-owner."), 400
+    set_setting(HANDOVER_PREFIX + str(u["id"]), {"to": to_id, "created_at": now_iso()})
+    return jsonify(ok=True)
+
+
+@bp.post("/api/handover/<int:from_id>/cancel")
+@login_required
+def api_handover_cancel(from_id):
+    """The co-owner who sent it, the owner, or the chosen successor (declining) can cancel a handover."""
+    u = current_user()
+    h = next((h for h in _pending_handovers() if h["from_id"] == from_id), None)
+    if not h:
+        return jsonify(error="No pending handover."), 404
+    if u["id"] not in (h["from_id"], h["to_id"]) and u["role"] != "owner":
+        return jsonify(error="Only the owner or the people in this handover can cancel it."), 403
+    delete_setting(HANDOVER_PREFIX + str(from_id))
+    return jsonify(ok=True)
+
+
+@bp.post("/api/handover/<int:from_id>/accept")
+@login_required
+def api_handover_accept(from_id):
+    """The chosen successor accepts: they become co-owner and the outgoing co-owner becomes admin."""
+    u = current_user()
+    h = next((h for h in _clear_stale_handovers() if h["from_id"] == from_id), None)
+    if not h or h["to_id"] != u["id"]:
+        return jsonify(error="This handover is no longer available."), 404
+    conn = db()
+    # both updates are conditional so a role change in between (e.g. the owner revoked the seat) can't be undone
+    cur = conn.execute("UPDATE users SET role = 'admin' WHERE id = ? AND role = 'coowner'", (from_id,))
+    if cur.rowcount == 0:
+        conn.rollback()
+        return jsonify(error="This handover is no longer available."), 404
+    conn.execute("UPDATE users SET role = 'coowner' WHERE id = ? AND role NOT IN ('owner', 'coowner')", (u["id"],))
+    conn.execute("DELETE FROM settings WHERE key = ?", (HANDOVER_PREFIX + str(from_id),))
+    conn.commit()
+    _clear_stale_handovers()  # e.g. a second handover offered to the new co-owner
+    return jsonify(ok=True)
+
+
 # ------------------------------------------------------------------ site-editable data (timetables, exams, menus)
 
 def get_setting(key):

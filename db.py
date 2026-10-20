@@ -209,9 +209,10 @@ class Row(dict):
 
 
 class _Result:
-    def __init__(self, rows, lastrowid=None):
+    def __init__(self, rows, lastrowid=None, rowcount=-1):
         self._rows = rows
         self.lastrowid = lastrowid
+        self.rowcount = rowcount
 
     def fetchone(self):
         return self._rows[0] if self._rows else None
@@ -240,7 +241,7 @@ class PostgresConnection:
             names = [d.name if hasattr(d, "name") else d[0] for d in cur.description]
             rows = [Row(zip(names, r)) for r in cur.fetchall()]
         lastrowid = rows[0]["id"] if returning and rows else None
-        return _Result(rows, lastrowid)
+        return _Result(rows, lastrowid, cur.rowcount)
 
     def executescript(self, script):
         for stmt in [s.strip() for s in script.split(";") if s.strip()]:

@@ -2112,6 +2112,7 @@ if (IS_ADMIN && $("pubForm")) {
 // ========================================================== MANAGE ADMINS (owner and co-owners)
 let USERS = [];
 async function loadUsers() {
+  await loadHandover();
   const res = await fetch("/api/users");
   if (!res.ok) return;
   const data = await res.json();
@@ -2146,6 +2147,14 @@ function renderUsers() {
       if (ME.role === "owner") setRole("Remove co-owner", "ghost small danger", "admin");
       else act.appendChild(el("span", "muted", "Co-owner"));
     } else {
+      if (ME.role === "coowner") {
+        if (HANDOVER.outgoing && HANDOVER.outgoing.to.id === u.id) act.appendChild(el("span", "muted", "Your successor (waiting) "));
+        else {
+          const b = el("button", "ghost small", "Choose as successor");
+          b.addEventListener("click", () => chooseSuccessor(u));
+          act.appendChild(b);
+        }
+      }
       if (u.role === "admin") setRole("Remove admin", "ghost small danger", "user");
       else setRole("Make admin", "ai-btn", "admin");
       if (u.role === "user") setRole("Make journalist", "ghost small", "journalist");
@@ -2157,6 +2166,81 @@ function renderUsers() {
   });
 }
 if ($("userSearch")) $("userSearch").addEventListener("input", renderUsers);
+
+// ========================================================== CO-OWNER HANDOVER (yearly successor)
+// A co-owner chooses a successor; the successor accepts from a banner; the owner can cancel any handover.
+let HANDOVER = { outgoing: null, incoming: [], all: [] };
+async function handoverPost(url, body, failMsg) {
+  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  if (!res.ok) { alert((await res.json().catch(() => ({}))).error || failMsg); return false; }
+  return true;
+}
+async function chooseSuccessor(u) {
+  const replacing = HANDOVER.outgoing ? ` This replaces your earlier choice (${HANDOVER.outgoing.to.name}).` : "";
+  if (!confirm(`Hand over your co-owner seat to ${u.name}?\n\nWhen they accept, they become co-owner and you become an admin.${replacing}`)) return;
+  if (await handoverPost("/api/handover", { to: u.id }, "Could not choose a successor.")) loadUsers();
+}
+async function loadHandover() {
+  const res = await fetch("/api/handover");
+  if (!res.ok) return;
+  HANDOVER = await res.json();
+  renderHandoverBanner();
+  renderHandoverCard();
+}
+function renderHandoverBanner() {
+  const box = $("handoverBanner"); if (!box) return;
+  box.replaceChildren();
+  HANDOVER.incoming.forEach((h) => {
+    const row = el("div", "handover-row");
+    row.appendChild(el("span", "", `${h.from.name} chose you as the next co-owner. If you accept, you become co-owner and ${h.from.name} becomes an admin.`));
+    const btns = el("div", "handover-actions");
+    const yes = el("button", "ai-btn", "Accept");
+    yes.addEventListener("click", async () => {
+      if (!confirm("Become co-owner of CampusMate?")) return;
+      if (await handoverPost(`/api/handover/${h.from.id}/accept`, {}, "Could not accept.")) location.reload();
+    });
+    const no = el("button", "ghost small", "Decline");
+    no.addEventListener("click", async () => {
+      if (await handoverPost(`/api/handover/${h.from.id}/cancel`, {}, "Could not decline.")) loadHandover();
+    });
+    btns.append(yes, no); row.appendChild(btns); box.appendChild(row);
+  });
+  box.hidden = !HANDOVER.incoming.length;
+}
+function renderHandoverCard() {
+  const card = $("handoverCard"); if (!card) return;
+  card.replaceChildren();
+  const cancelBtn = (h, label) => {
+    const b = el("button", "ghost small danger", label);
+    b.addEventListener("click", async () => {
+      if (await handoverPost(`/api/handover/${h.from.id}/cancel`, {}, "Could not cancel.")) loadUsers();
+    });
+    return b;
+  };
+  if (ME.role === "coowner") {
+    card.appendChild(el("div", "card-head", "")).appendChild(el("h2", "", "Hand over your co-owner seat"));
+    const h = HANDOVER.outgoing;
+    if (h) {
+      const p = el("p", "");
+      p.append(el("span", "", "Waiting for "), el("strong", "", h.to.name), el("span", "muted", ` (${h.to.email})`),
+               el("span", "", " to accept. Once they do, they become co-owner and you become an admin. "));
+      card.append(p, cancelBtn(h, "Cancel handover"));
+    } else {
+      card.appendChild(el("p", "muted", "Co-owner changes every year. Use “Choose as successor” next to the person who should take over. They must have signed in once. When they accept, they become co-owner and you become an admin."));
+    }
+    card.hidden = false;
+  } else if (ME.role === "owner") {
+    card.appendChild(el("div", "card-head", "")).appendChild(el("h2", "", "Pending co-owner handovers"));
+    if (!HANDOVER.all.length) card.appendChild(el("p", "muted", "No co-owner has chosen a successor yet. You can still give or remove co-owner access directly below."));
+    HANDOVER.all.forEach((h) => {
+      const p = el("p", "handover-row");
+      p.append(el("span", "", `${h.from.name} → ${h.to.name} (${h.to.email}), waiting for ${h.to.name} to accept. `), cancelBtn(h, "Cancel"));
+      card.appendChild(p);
+    });
+    card.hidden = false;
+  }
+}
+loadHandover();
 
 // ========================================================== JOURNALISTS (admins and above)
 let PEOPLE = [];
