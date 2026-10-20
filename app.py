@@ -267,18 +267,23 @@ def load_campus():
             edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
             syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in syl["subjects"].items() if c not in gone}
     # menu:<hostel> is the "All years" menu; menu:<hostel>:<year> is a year's own menu and wins for that year
+    # a saved menu with no dishes in it is ignored, so it can't hide the menu in data/hostel.json
     for h in ("boys", "girls"):
         hostel = campus["hostel"]["hostels"][h]
         ov = accounts.get_setting(f"menu:{h}")
-        if ov:
+        if ov and _has_dishes(ov["value"]):
             hostel.update(ov["value"])
             hostel.update(edited_by=ov["updated_by"], edited_at=ov["updated_at"])
         hostel["years"] = {}
         for y in ("1", "2", "3", "4"):
             ov = accounts.get_setting(f"menu:{h}:{y}")
-            if ov:
+            if ov and _has_dishes(ov["value"]):
                 hostel["years"][y] = {**ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
     return campus
+
+
+def _has_dishes(menu):
+    return any(v for day in (menu.get("mess_menu") or {}).values() for v in day.values())
 
 
 def menu_for_year(hostel, year):
