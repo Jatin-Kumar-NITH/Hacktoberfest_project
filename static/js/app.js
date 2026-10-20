@@ -1446,10 +1446,28 @@ function renderDashHolidays() {
 }
 
 // ========================================================== MY ATTENDANCE (private, saved to the account)
+// Labs have their own attendance in college. When a lab shares its course code with lectures
+// (CS-111 lab, CE-101(P)), it is tracked as "<code> Lab" so it gets its own card.
+const LAB = " Lab";
+function attLabCodes(sec = secOf(myYear, mySection)) {
+  const theory = new Set(sec.classes.filter((c) => c.type !== "Lab" && c.type !== "Free").map((c) => c.code));
+  return new Set(sec.classes.filter((c) => c.type === "Lab" && theory.has(c.code)).map((c) => c.code));
+}
+const attCodeOf = (c, labs = attLabCodes()) => (c.type === "Lab" && labs.has(c.code) ? c.code + LAB : c.code);
+const attName = (code) => (code.endsWith(LAB) && subjName(myYear, code.slice(0, -LAB.length)) ? `${subjName(myYear, code.slice(0, -LAB.length))}${LAB}` : subjName(myYear, code));
+// Lab marks saved before labs were split counted under the lecture code; move them to the lab's own code.
+function attSplitLabs() {
+  const labs = attLabCodes();
+  let moved = 0;
+  ATT.records.forEach((r) => { if (r.type === "Lab" && labs.has(r.code)) { r.code += LAB; moved++; } });
+  return moved;
+}
+
 const ATT_KEY = `cm_attendance_${ME.id}`;
 const attEmpty = () => ({ target: 75, records: [], base: {}, subjects: [] });
 const attNorm = (a) => ({ ...attEmpty(), ...(a || {}), base: (a && a.base) || {}, records: (a && a.records) || [], subjects: (a && a.subjects) || [] });
 let ATT = attNorm(store.get(ATT_KEY, null));
+attSplitLabs();
 let attDate = todayISO(), attDirty = false, attTimer = null, attOpen = null;
 
 async function loadAttendance() {
@@ -1460,7 +1478,7 @@ async function loadAttendance() {
     if (!res.ok) throw new Error(data.error || "Could not load attendance.");
     if (attDirty) return; // the student already changed something; their newer copy is being saved
     ATT = attNorm(data.attendance);
-    store.set(ATT_KEY, ATT);
+    if (attSplitLabs()) saveAttendance(); else store.set(ATT_KEY, ATT);
   } catch (err) {
     $("attErr").textContent = `Couldn't load your saved attendance (${err.message}). Showing the copy in this browser.`;
     $("attErr").hidden = false;
@@ -1490,8 +1508,8 @@ function saveAttendance() {
 function attChanged() { attDirty = true; saveAttendance(); renderAttendance(); }
 
 function attSubjects() {
-  const sec = secOf(myYear, mySection);
-  const codes = [...new Set(sec.classes.filter((c) => c.type !== "Free").map((c) => c.code))].sort();
+  const sec = secOf(myYear, mySection), labs = attLabCodes(sec);
+  const codes = [...new Set(sec.classes.filter((c) => c.type !== "Free").map((c) => attCodeOf(c, labs)))].sort();
   [...ATT.subjects, ...Object.keys(ATT.base), ...ATT.records.map((r) => r.code)].forEach((c) => { if (!codes.includes(c)) codes.push(c); });
   return codes;
 }
@@ -1561,15 +1579,17 @@ function renderAttendance() {
   $("attGroupHint").hidden = !!myGroup || !classes.some((c) => c.group);
 
   const ul = $("attClasses"); ul.replaceChildren();
+  const labs = attLabCodes(sec);
   classes.forEach((c) => {
+    const code = attCodeOf(c, labs);
     const slot = `${c.start}${c.group ? "-" + c.group : ""}`;
     const id = `${attDate}|${c.code}|${slot}`;
     const rec = ATT.records.find((r) => r.id === id);
-    ul.appendChild(attRow(c.label, [c.type, subjName(myYear, c.code)].filter(Boolean).join(" · "), span(c), rec,
-      (status) => setMark(id, { date: attDate, code: c.code, slot, type: c.type }, status)));
+    ul.appendChild(attRow(c.label, [c.type, attName(code)].filter(Boolean).join(" · "), span(c), rec,
+      (status) => setMark(id, { date: attDate, code, slot, type: c.type }, status)));
   });
   ATT.records.filter((r) => r.date === attDate && r.slot.startsWith("x")).forEach((r) => {
-    ul.appendChild(attRow(r.code, ["Extra class", subjName(myYear, r.code)].filter(Boolean).join(" · "), "Extra", r,
+    ul.appendChild(attRow(r.code, ["Extra class", attName(r.code)].filter(Boolean).join(" · "), "Extra", r,
       (status) => setMark(r.id, { date: r.date, code: r.code, slot: r.slot, type: r.type }, status), true));
   });
   if (!ul.children.length) {
@@ -1579,7 +1599,7 @@ function renderAttendance() {
   }
 
   const subs = attSubjects();
-  $("attExtraCode").replaceChildren(...subs.map((c) => { const o = el("option", "", subjName(myYear, c) ? `${c} · ${subjName(myYear, c)}` : c); o.value = c; return o; }));
+  $("attExtraCode").replaceChildren(...subs.map((c) => { const o = el("option", "", attName(c) ? `${c} · ${attName(c)}` : c); o.value = c; return o; }));
   $("attExtraCode").disabled = $("attExtraP").disabled = $("attExtraA").disabled = !subs.length;
   renderAttSummary(subs);
 }
@@ -1600,7 +1620,7 @@ function attCard(s) {
   const head = el("div", "att-head");
   const left = el("div");
   left.appendChild(el("span", "as-code", s.code));
-  const nm = subjName(myYear, s.code);
+  const nm = attName(s.code);
   if (nm) left.appendChild(el("div", "att-name", nm));
   head.append(left, el("div", "att-pct", s.pct === null ? "Not marked" : fmtPct(s.pct)));
   card.appendChild(head);
