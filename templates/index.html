@@ -73,6 +73,7 @@
   </aside>
 
   <main class="main">
+    <div class="role-banner role-coowner handover-banner" id="handoverBanner" hidden></div>
     {% if me.role in ['admin', 'coowner', 'owner'] %}
     <div class="role-banner role-{{ me.role }}">
       <span>{{ {'owner': 'Owner mode', 'coowner': 'Co-owner mode'}.get(me.role, 'Admin mode') }} · You can publish notices, assignments and PDFs{{ ' and give admin or co-owner access' if me.role == 'owner' else (' and give admin access' if me.role == 'coowner' else '') }}.</span>
@@ -677,7 +678,8 @@
     {% if me.role in ['owner', 'coowner'] %}
     <!-- ============ MANAGE ADMINS (owner and co-owners) ============ -->
     <section class="page" id="page-admins" hidden>
-      <header class="page-head"><div><h1>Manage Admins</h1><p class="sub">{% if me.role == 'owner' %}Only you, the owner, can give or remove co-owner access. You and co-owners can give or remove admin access.{% else %}As a co-owner you can give or remove admin access. Only the owner can change co-owners.{% endif %}</p></div></header>
+      <header class="page-head"><div><h1>Manage Admins</h1><p class="sub">{% if me.role == 'owner' %}Only you, the owner, can give or remove co-owner access. You and co-owners can give or remove admin access.{% else %}As a co-owner you can give or remove admin access. Only the owner can change co-owners, but you can choose who takes over your own seat.{% endif %}</p></div></header>
+      <div class="card handover-card" id="handoverCard" hidden></div>
       <div class="card">
         <input type="search" id="userSearch" class="user-search" placeholder="Search users by name or email…">
         <p class="muted user-count" id="userCount"></p>

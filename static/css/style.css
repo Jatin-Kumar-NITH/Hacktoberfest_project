@@ -1101,3 +1101,10 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
   #userBody td:nth-child(6) { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   #userBody td:nth-child(6) > * { margin: 0; }
 }
+
+/* co-owner handover: successor's accept banner, owner/co-owner card on Manage Admins */
+.handover-banner { flex-direction: column; align-items: stretch; }
+.handover-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.handover-actions { display: flex; gap: 8px; }
+.handover-card { margin-bottom: 18px; }
+.handover-card p { margin: 8px 0; }
