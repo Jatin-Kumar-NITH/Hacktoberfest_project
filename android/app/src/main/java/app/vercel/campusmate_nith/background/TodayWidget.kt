@@ -136,8 +136,11 @@ class TodayWidget : AppWidgetProvider() {
                     v.setViewVisibility(ROWS[i], View.VISIBLE)
                     v.setTextViewText(TIMES[i], if (live) "Now" else short(c.start))
                     v.setTextColor(TIMES[i], context.getColor(if (live) R.color.accent else R.color.widget_muted))
-                    v.setTextViewText(NAMES[i], c.code.ifEmpty { c.label }.ifEmpty { c.type })
-                    v.setTextViewText(ROOMS[i], c.room.ifEmpty { sec.classroom })
+                    // with no group picked, a lab shows which group it's for ("CS-111-Gr.1")
+                    val name = if (group.isEmpty() && !c.group.isNullOrEmpty()) c.label else c.code
+                    v.setTextViewText(NAMES[i], name.ifEmpty { c.label }.ifEmpty { c.type })
+                    val room = c.room.ifEmpty { sec.classroom }
+                    v.setTextViewText(ROOMS[i], if (room.startsWith("Respective", ignoreCase = true)) "Lab" else room)
                 }
             }
 
