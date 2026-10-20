@@ -704,7 +704,7 @@ function fillPickers() {
   $("groupPick").hidden = groups.length === 0;
   if (!groups.find((g) => g.id === myGroup)) myGroup = "";
   const opts = [el("option", "", "All groups")]; opts[0].value = "";
-  groups.forEach((g) => { const o = el("option", "", `${g.id} (${g.rolls})`); o.value = g.id; opts.push(o); });
+  groups.forEach((g) => { const o = el("option", "", g.rolls ? `${g.id} (${g.rolls})` : g.id); o.value = g.id; opts.push(o); });
   $("myGroup").replaceChildren(...opts);
   $("myGroup").value = myGroup;
 }
@@ -815,7 +815,7 @@ function renderTimetable() {
   const add = (k, v) => { const d = el("div", "info-item"); d.append(el("span", "", k), el("strong", "", v)); info.appendChild(d); };
   add("Section", `${sec.name}${sec.branches ? " · " + sec.branches : ""}`);
   add("Classroom", sec.classroom + (tt.classrooms && tt.classrooms[sec.classroom] ? ` · ${tt.classrooms[sec.classroom]}` : ""));
-  if (sec.groups && sec.groups.length) add("Groups", sec.groups.map((g) => `${g.id}: ${g.rolls}`).join("   "));
+  if (sec.groups && sec.groups.length) add("Groups", sec.groups.map((g) => g.rolls ? `${g.id}: ${g.rolls}` : g.id).join("   "));
 
   const viewingMine = ttYear === myYear && ttSection === mySection;
   $("ttGroupHint").textContent = sec.groups && sec.groups.length
