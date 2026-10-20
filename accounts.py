@@ -205,7 +205,9 @@ journalist_required = _guard(lambda u: u["role"] in ("journalist", "admin", "coo
 @bp.before_app_request
 def csrf_guard():
     """Every state-changing API call must come from our own page (custom header = CSRF protection)."""
-    if request.method == "POST" and request.path.startswith("/api/") and request.headers.get("X-CampusMate") != "1":
+    # /api/bot/ is called by server-side bots with a bearer token, not by a browser with our cookie
+    if (request.method == "POST" and request.path.startswith("/api/") and not request.path.startswith("/api/bot/")
+            and request.headers.get("X-CampusMate") != "1"):
         return jsonify(error="Request blocked (missing security header). Refresh the page."), 400
 
 

@@ -101,6 +101,35 @@ CREATE TABLE IF NOT EXISTS news (
   author_id INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL,
   updated_at TEXT
+);
+CREATE TABLE IF NOT EXISTS wa_groups (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  year TEXT,
+  section TEXT,
+  enabled INTEGER NOT NULL DEFAULT 0,
+  last_seen_at TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS wa_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  group_id TEXT NOT NULL REFERENCES wa_groups(id),
+  msg_id TEXT NOT NULL,
+  sender TEXT NOT NULL DEFAULT '',
+  sent_at TEXT NOT NULL,
+  text TEXT NOT NULL DEFAULT '',
+  media_type TEXT,
+  image BLOB,
+  pdf TEXT,
+  status TEXT NOT NULL,
+  kind TEXT,
+  suggestion TEXT,
+  error TEXT,
+  result TEXT,
+  reviewed_by TEXT,
+  reviewed_at TEXT,
+  created_at TEXT NOT NULL,
+  UNIQUE (group_id, msg_id)
 )
 """
 
@@ -184,6 +213,35 @@ CREATE TABLE IF NOT EXISTS news (
   author_id INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL,
   updated_at TEXT
+);
+CREATE TABLE IF NOT EXISTS wa_groups (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  year TEXT,
+  section TEXT,
+  enabled INTEGER NOT NULL DEFAULT 0,
+  last_seen_at TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS wa_messages (
+  id SERIAL PRIMARY KEY,
+  group_id TEXT NOT NULL REFERENCES wa_groups(id),
+  msg_id TEXT NOT NULL,
+  sender TEXT NOT NULL DEFAULT '',
+  sent_at TEXT NOT NULL,
+  text TEXT NOT NULL DEFAULT '',
+  media_type TEXT,
+  image BYTEA,
+  pdf TEXT,
+  status TEXT NOT NULL,
+  kind TEXT,
+  suggestion TEXT,
+  error TEXT,
+  result TEXT,
+  reviewed_by TEXT,
+  reviewed_at TEXT,
+  created_at TEXT NOT NULL,
+  UNIQUE (group_id, msg_id)
 )
 """
 
@@ -196,7 +254,7 @@ EXTRA_COLUMNS = [
     ("messages", "channel_id", "INTEGER REFERENCES channels(id)", "INTEGER REFERENCES channels(id)"),
 ]
 
-TABLES_WITH_ID = ("users", "posts", "otps", "messages", "channels", "news")
+TABLES_WITH_ID = ("users", "posts", "otps", "messages", "channels", "news", "wa_messages")
 
 
 class Row(dict):

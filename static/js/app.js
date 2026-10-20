@@ -37,7 +37,7 @@ let currentId = null;
 // ---------------------------------------------------------- routing
 function route() {
   const page = (location.hash || "#dashboard").slice(1);
-  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "results", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
+  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "results", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "whatsapp", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
@@ -58,6 +58,7 @@ function route() {
   if (p === "chat") startChat(); else stopChat();
   if (p === "publish") renderPublish();
   if (p === "admins") loadUsers();
+  if (p === "whatsapp") loadWhatsApp();
   if (p === "college-updates") loadNews("college");
   if (p === "hostel-updates") loadNews("hostel");
   if (p === "journalists") loadJournalists();
@@ -2108,6 +2109,112 @@ if (IS_ADMIN && $("pubForm")) {
     finally { $("pubBtn").disabled = false; }
   });
 }
+
+// ========================================================== WHATSAPP INBOX (admins)
+// Group messages the bot sent in, with the AI's suggestion. Approving publishes a post or changes the exam schedule.
+let waStatus = "pending";
+const WA_KIND = { notice: "📢 Notice", assignment: "✎ Assignment", exam: "⚑ Exam change", none: "Not useful" };
+async function waPost(url, body) {
+  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "That didn't work.");
+  return data;
+}
+async function loadWhatsApp() {
+  const [g, i] = await Promise.all([fetch("/api/whatsapp/groups"), fetch(`/api/whatsapp/items?status=${waStatus}`)]);
+  if (g.ok) renderWaGroups(await g.json());
+  if (i.ok) renderWaItems(await i.json());
+}
+function renderWaGroups(data) {
+  $("waBotState").textContent = data.bot_ready ? "Bot connected" : "Bot off: set WHATSAPP_BOT_TOKEN on the server";
+  const body = $("waGroups"); body.replaceChildren();
+  if (!data.groups.length) { const tr = el("tr"); const td = el("td", "muted", "No groups yet."); td.colSpan = 5; tr.appendChild(td); body.appendChild(tr); }
+  data.groups.forEach((g) => {
+    const tr = el("tr");
+    const who = el("td"); who.append(el("strong", "", g.name), el("div", "muted", g.last_seen_at ? `Last message ${fmtTime(g.last_seen_at)}` : "")); tr.appendChild(who);
+    const year = selectEl([["", "—"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]], g.year || "");
+    const sec = selectEl([["", "All"], ...SECTION_IDS_JS.map((x) => [x, x])], g.section || "");
+    const on = el("input"); on.type = "checkbox"; on.checked = g.enabled;
+    [year, sec, on].forEach((x) => { const td = el("td"); td.appendChild(x); tr.appendChild(td); });
+    const save = el("button", "ghost small", "Save");
+    save.addEventListener("click", async () => {
+      try { await waPost(`/api/whatsapp/groups/${encodeURIComponent(g.id)}`, { year: year.value, section: sec.value, enabled: on.checked }); loadWhatsApp(); }
+      catch (err) { alert(err.message); }
+    });
+    const td = el("td"); td.appendChild(save); tr.appendChild(td);
+    body.appendChild(tr);
+  });
+}
+const SECTION_IDS_JS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "Z"];
+function waField(label, input) { const f = el("label", "field"); f.append(el("span", "label", label), input); return f; }
+function waInput(type, value, max) { const i = el("input"); i.type = type; i.value = value ?? ""; if (max) i.maxLength = max; return i; }
+function renderWaItems(data) {
+  const list = $("waItems"); list.replaceChildren();
+  document.querySelectorAll("#waTabs .chip").forEach((c) => {
+    const n = data.counts[c.dataset.status] || 0;
+    c.classList.toggle("active", c.dataset.status === waStatus);
+    c.textContent = c.textContent.replace(/ \(\d+\)$/, "") + (n ? ` (${n})` : "");
+  });
+  if (!data.items.length) list.appendChild(el("p", "empty-line", "Nothing here."));
+  data.items.forEach((it) => list.appendChild(waCard(it)));
+}
+function waCard(it) {
+  const s = it.suggestion || {};
+  const card = el("div", "pub-item");
+  const top = el("div", "pub-item-top");
+  top.append(el("span", "kind-badge", WA_KIND[it.kind] || "Not sorted yet"), el("strong", "", ` ${it.group_name}`));
+  card.appendChild(top);
+  card.appendChild(el("div", "muted", `${it.sender || "Unknown"} · ${fmtTime(it.sent_at)}${s.confidence != null ? ` · AI ${Math.round(s.confidence * 100)}% sure` : ""}`));
+  const quote = el("blockquote", "wa-quote", it.text || (it.media ? `(${it.media} without text)` : ""));
+  card.appendChild(quote);
+  if (it.pdf) { const a = pdfLink(it.pdf, "📄 Attached PDF"); card.appendChild(a); }
+  if (it.error) card.appendChild(el("div", "alert error", it.error));
+  if (it.status === "approved" || it.status === "rejected") {
+    card.appendChild(el("div", "muted", `${it.status === "approved" ? "Published" : "Rejected"} by ${it.reviewed_by} · ${fmtTime(it.reviewed_at)}`));
+    return card;
+  }
+  // editable suggestion
+  const form = el("div", "wa-form");
+  const kind = selectEl([["notice", "Notice"], ["assignment", "Assignment"], ["exam", "Exam change"]], ["notice", "assignment", "exam"].includes(it.kind) ? it.kind : "notice");
+  const year = selectEl([["", it.year ? `Group's year (${it.year})` : "All years"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]], "");
+  const secs = el("div", "check-row");
+  const picked = s.sections && s.sections.length ? s.sections : (it.section ? [it.section] : []);
+  SECTION_IDS_JS.forEach((x) => { const l = el("label"); const c = el("input"); c.type = "checkbox"; c.value = x; c.checked = picked.includes(x); l.append(c, ` ${x}`); secs.appendChild(l); });
+  const title = waInput("text", s.title, 150), body = el("textarea"); body.rows = 3; body.value = s.body || "";
+  const code = waInput("text", s.code, 40), due = waInput("date", s.due), marks = waInput("number", s.marks);
+  const ex = s.exam || {};
+  const exChange = selectEl([["new", "New exam"], ["reschedule", "Date changed"], ["cancel", "Cancelled"]], ex.change || "new");
+  const exCode = waInput("text", ex.code || s.code, 60), exName = waInput("text", ex.name, 160), exDate = waInput("date", ex.date);
+  const exTime = waInput("text", ex.time, 40), exVenue = waInput("text", ex.venue, 60);
+  const postBox = el("div"), asgBox = el("div", "two-col"), exBox = el("div");
+  postBox.append(waField("Title", title), waField("Text", body));
+  asgBox.append(waField("Due date", due), waField("Marks", marks));
+  const exRow1 = el("div", "two-col"); exRow1.append(waField("Change", exChange), waField("Subject code", exCode));
+  const exRow2 = el("div", "two-col"); exRow2.append(waField("Date", exDate), waField("Time", exTime));
+  const exRow3 = el("div", "two-col"); exRow3.append(waField("Subject name", exName), waField("Venue", exVenue));
+  exBox.append(exRow1, exRow2, exRow3);
+  const head = el("div", "two-col"); head.append(waField("Publish as", kind), waField("Year", year));
+  const codeRow = waField("Subject code (optional)", code);
+  const sync = () => { const k = kind.value; postBox.hidden = k === "exam"; codeRow.hidden = k === "exam"; asgBox.hidden = k !== "assignment"; exBox.hidden = k !== "exam"; };
+  kind.addEventListener("change", sync); sync();
+  const secWrap = el("div"); secWrap.append(el("small", "", "Sections (none = all sections)"), secs);
+  form.append(head, secWrap, postBox, codeRow, asgBox, exBox);
+  card.appendChild(form);
+  const act = el("div", "notice-actions");
+  const ok = el("button", "ai-btn", "Approve & publish"), no = el("button", "ghost small danger", "Reject"), again = el("button", "ghost small", "Ask AI again");
+  const run = async (btn, fn) => { btn.disabled = true; try { await fn(); loadWhatsApp(); } catch (err) { alert(err.message); btn.disabled = false; } };
+  ok.addEventListener("click", () => run(ok, () => waPost(`/api/whatsapp/items/${it.id}/approve`, {
+    kind: kind.value, year: year.value || undefined, sections: [...secs.querySelectorAll("input:checked")].map((c) => c.value),
+    title: title.value, body: body.value, code: code.value, due: due.value || null, marks: marks.value === "" ? null : Number(marks.value),
+    exam: { change: exChange.value, code: exCode.value, name: exName.value, date: exDate.value || null, time: exTime.value, venue: exVenue.value },
+  })));
+  no.addEventListener("click", () => run(no, () => waPost(`/api/whatsapp/items/${it.id}/reject`)));
+  again.addEventListener("click", () => run(again, () => waPost(`/api/whatsapp/items/${it.id}/retry`)));
+  act.append(ok, no, again);
+  card.appendChild(act);
+  return card;
+}
+if ($("waTabs")) document.querySelectorAll("#waTabs .chip").forEach((c) => c.addEventListener("click", () => { waStatus = c.dataset.status; loadWhatsApp(); }));
 
 // ========================================================== MANAGE ADMINS (owner and co-owners)
 let USERS = [];
