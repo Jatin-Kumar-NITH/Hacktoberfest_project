@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.RemoteViews
 import app.vercel.campusmate_nith.CampusMateApplication
 import app.vercel.campusmate_nith.R
+import app.vercel.campusmate_nith.data.Campus
 import app.vercel.campusmate_nith.data.ClassItem
 import app.vercel.campusmate_nith.data.MealNow
 import app.vercel.campusmate_nith.data.currentMeal
@@ -60,30 +61,39 @@ class TodayWidget : AppWidgetProvider() {
         }
 
         private fun build(context: Context): RemoteViews {
+            val store = (context.applicationContext as CampusMateApplication).store
+            val campus = store.campusCache?.campus
+            val now = LocalDateTime.now()
+            val (views, meal) = render(context, campus, store.year, store.section, store.group, store.hostel, now)
+            scheduleNext(context, now, meal)
+            return views
+        }
+
+        /** The widget for this student at [now], and the meal it shows (for the next redraw). */
+        internal fun render(
+            context: Context, campus: Campus?, year: Int, section: String, group: String, hostelKey: String, now: LocalDateTime,
+        ): Pair<RemoteViews, MealNow?> {
             val v = RemoteViews(context.packageName, R.layout.widget_today)
             v.setOnClickPendingIntent(R.id.widget_root, Notify.openIntent(context, "timetable"))
             v.setOnClickPendingIntent(R.id.w_meal, Notify.openIntent(context, "mess"))
             ROWS.forEach { v.setViewVisibility(it, View.GONE) }
             v.setViewVisibility(R.id.w_meal, View.GONE)
 
-            val store = (context.applicationContext as CampusMateApplication).store
-            val campus = store.campusCache?.campus
-            val sec = campus?.let { studentSection(it, store) }
+            val sec = campus?.timetables?.get(year.toString())?.sections.orEmpty().let { secs -> secs.firstOrNull { it.id == section } ?: secs.firstOrNull() }
             if (campus == null || sec == null) {
                 v.setTextViewText(R.id.w_title, "CampusMate")
                 v.setTextViewText(R.id.w_sub, "")
                 v.setTextViewText(R.id.w_empty, "Open CampusMate and sign in to see your classes here.")
                 v.setViewVisibility(R.id.w_empty, View.VISIBLE)
-                return v
+                return v to null
             }
 
-            val now = LocalDateTime.now()
             val today = now.toLocalDate()
             val nowMin = now.hour * 60 + now.minute
 
             // ---- meal: the student's hostel and year; hidden when that menu has no dishes
-            val hostel = campus.hostel.hostels[store.hostel] ?: campus.hostel.hostels.values.firstOrNull()
-            val meal = hostel?.forYear(store.year)?.let { currentMeal(it, today, nowMin) }
+            val hostel = campus.hostel.hostels[hostelKey] ?: campus.hostel.hostels.values.firstOrNull()
+            val meal = hostel?.forYear(year)?.let { currentMeal(it, today, nowMin) }
             if (meal != null) {
                 v.setViewVisibility(R.id.w_meal, View.VISIBLE)
                 v.setTextViewText(R.id.w_meal_name, meal.meal)
@@ -98,13 +108,13 @@ class TodayWidget : AppWidgetProvider() {
 
             // ---- classes: what's left today, else the next day with classes
             var day = today
-            var list: List<ClassItem> = classesOn(campus, sec, store.group, today, store.year).filter { it.end > now.hour }
-            val holiday = holidayOn(campus.calendar.forYear(store.year), today.toString())
+            var list: List<ClassItem> = classesOn(campus, sec, group, today, year).filter { it.end > now.hour }
+            val holiday = holidayOn(campus.calendar.forYear(year), today.toString())
             var note: String? = holiday?.let { "Holiday: ${it.title}" }
             if (list.isEmpty()) {
                 for (i in 1..7) {
                     val d = today.plusDays(i.toLong())
-                    val l = classesOn(campus, sec, store.group, d, store.year)
+                    val l = classesOn(campus, sec, group, d, year)
                     if (l.isNotEmpty()) { day = d; list = l; break }
                 }
             }
@@ -131,8 +141,7 @@ class TodayWidget : AppWidgetProvider() {
                 }
             }
 
-            scheduleNext(context, now, meal)
-            return v
+            return v to meal
         }
 
         /** Redraws at the next class hour or meal change, so "Now" and the meal stay right. */

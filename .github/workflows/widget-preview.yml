@@ -1,0 +1,60 @@
+# Temporary: screenshots of the home-screen widget for the PR. Removed before merge.
+name: Widget preview
+
+on:
+  pull_request:
+    paths: ["android/**", ".github/workflows/widget-preview.yml"]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Sample campus data from data/
+        run: |
+          mkdir -p android/app/src/debug/assets
+          python3 -c '
+          import json
+          L = lambda f: json.load(open("data/" + f))
+          campus = {"timetables": {str(y): L(f"year{y}_timetable.json") for y in (1, 2, 3, 4)},
+                    "hostel": L("hostel.json"), "calendar": L("academic_calendar.json")}
+          json.dump({"campus": campus}, open("android/app/src/debug/assets/preview_campus.json", "w"))
+          '
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          script: |
+            adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+            adb shell am start -S -W -n app.vercel.campusmate_nith/.WidgetPreviewActivity --ez dark false
+            sleep 5
+            adb exec-out screencap -p > widget-light.png
+            adb shell am start -S -W -n app.vercel.campusmate_nith/.WidgetPreviewActivity --ez dark true
+            sleep 5
+            adb exec-out screencap -p > widget-dark.png
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: widget-preview
+          path: widget-*.png
