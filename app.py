@@ -39,10 +39,32 @@ _client = None
 
 # ------------------------------------------------------------------ AI core
 
+def gemini_key():
+    """Read GEMINI_API_KEY from the server environment, forgiving common paste mistakes:
+    surrounding spaces or quotes, a "GEMINI_API_KEY=" prefix, or the key pasted on several lines."""
+    for line in os.getenv("GEMINI_API_KEY", "").splitlines():
+        line = line.strip()
+        if "=" in line and line.split("=", 1)[0].strip().upper().endswith("API_KEY"):
+            line = line.split("=", 1)[1].strip()
+        line = line.strip("'\"").strip()
+        if line:
+            return line
+    return ""
+
+
+def redact(text):
+    """Remove the API key (and anything shaped like a Google API key) from text before logging it."""
+    text = str(text)
+    key = gemini_key()
+    if key:
+        text = text.replace(key, "[redacted]")
+    return re.sub(r"AIza[0-9A-Za-z_\-]{20,}", "[redacted]", text)
+
+
 def get_client():
     """Create the Gemini API client once. The key stays on the server."""
     global _client
-    key = os.getenv("GEMINI_API_KEY", "").strip()
+    key = gemini_key()
     if not key or key == "your-key-here":
         raise RuntimeError("MISSING_KEY")
     if _client is None:
@@ -76,24 +98,28 @@ def ask_gemma(contents):
         except RuntimeError:
             raise
         except Exception as e:
-            print(f"[CampusMate] {model} failed: {str(e)[:200]}")
+            print(f"[CampusMate] {model} failed: {redact(e)[:300]}")
             last_error = e
     raise last_error
 
 
 def friendly_error(e):
+    """A short message that is safe to show users. Never includes the raw error text."""
     msg = str(e)
     if "MISSING_KEY" in msg:
-        return "No API key found. Add GEMINI_API_KEY=... to the .env file and restart the server."
+        return "The AI is not set up yet (no API key on the server). Please tell the site admin."
+    if "header" in msg.lower():
+        return "The AI is unavailable right now (the server's API key is set up wrongly). Please tell the site admin."
     if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
         return "The free Gemma quota is used up for the moment. Wait about a minute and try again."
     if "API key" in msg or "401" in msg or "403" in msg or "PERMISSION" in msg:
-        return "The API key was rejected. Check GEMINI_API_KEY in your .env file."
+        return "The AI is unavailable right now (the server's API key was rejected). Please tell the site admin."
     if "BAD_JSON" in msg or isinstance(e, json.JSONDecodeError):
         return "The AI reply could not be read. Please try again."
     if "500" in msg or "503" in msg or "INTERNAL" in msg or "UNAVAILABLE" in msg:
         return "Google's AI service is busy right now. Please try again in a few seconds."
-    return "The AI service failed: " + msg[:200]
+    print(f"[CampusMate] AI error: {type(e).__name__}: {redact(msg)[:300]}")
+    return "The AI is unavailable right now. Please try again in a little while."
 
 
 def _list(v):
