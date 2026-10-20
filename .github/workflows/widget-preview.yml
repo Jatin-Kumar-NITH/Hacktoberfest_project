@@ -54,6 +54,27 @@ jobs:
             sleep 5
             adb exec-out screencap -p > widget-dark.png
 
+      - name: Print screenshots into the log
+        run: |
+          pip install -q pillow
+          python3 -c '
+          import base64, io
+          from PIL import Image, ImageChops
+          for name in ("light", "dark"):
+              im = Image.open(f"widget-{name}.png").convert("RGB")
+              w, h = im.size
+              body = im.crop((0, int(h * 0.05), w, int(h * 0.95)))
+              bg = Image.new("RGB", body.size, body.getpixel((2, body.height // 2)))
+              box = ImageChops.difference(body, bg).getbbox() or (0, 0, body.width, body.height)
+              body = body.crop((max(box[0] - 20, 0), max(box[1] - 20, 0), min(box[2] + 20, body.width), min(box[3] + 20, body.height)))
+              body.thumbnail((900, 1400))
+              buf = io.BytesIO(); body.save(buf, "JPEG", quality=82)
+              data = base64.b64encode(buf.getvalue()).decode()
+              print(f"SHOT-BEGIN {name}")
+              for i in range(0, len(data), 2000): print("SHOT " + data[i:i + 2000])
+              print(f"SHOT-END {name}")
+          '
+
       - uses: actions/upload-artifact@v4
         with:
           name: widget-preview
