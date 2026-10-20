@@ -274,7 +274,8 @@ def load_campus():
         if ov and _has_dishes(ov["value"]):
             hostel.update(ov["value"])
             hostel.update(edited_by=ov["updated_by"], edited_at=ov["updated_at"])
-        hostel["years"] = {}
+        # data/hostel.json can hold a year's own menu too (first year's mess menus live there)
+        hostel["years"] = hostel.get("years") or {}
         for y in ("1", "2", "3", "4"):
             ov = accounts.get_setting(f"menu:{h}:{y}")
             if ov and _has_dishes(ov["value"]):

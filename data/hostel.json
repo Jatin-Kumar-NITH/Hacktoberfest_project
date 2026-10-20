@@ -1,66 +1,120 @@
 {
- "note": "Mess menus are maintained by admins.",
+ "note": "Mess menus are maintained by admins. The menus here are first year's (years.1); the All years menu is empty until an admin adds one.",
  "hostels": {
   "boys": {
    "name": "Boys' Hostel",
    "mess_menu": {
     "Monday": {
-     "Breakfast": "2 boiled eggs + pav bhaji + fruits + cornflakes + milk + coffee + tea + Bournvita",
-     "Lunch": "Dry chana / kaddu sabji + mix dal + puri + raita + salad + rice",
-     "Snacks": "Kachori + green chutney + tea",
-     "Dinner": "Egg curry + veg manchurian/kofta + roti + jeera rice + kheer"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Tuesday": {
-     "Breakfast": "Bread sandwich + cornflakes + milk + fruits + sprouts + coffee + tea + Bournvita",
-     "Lunch": "Dala chana and mah dal + seasonal vegetable + curd + rice + roti + salad",
-     "Snacks": "Cold sandwich + coffee",
-     "Dinner": "Aloo matar + yellow dal + roti + rice + salad + brownie"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Wednesday": {
-     "Breakfast": "Egg bhurji / paneer bhurji + plain paratha + fruits + cornflakes + milk + coffee + tea + Bournvita",
-     "Lunch": "Rajma + chawal + raita + papad + jeera rice + salad",
-     "Snacks": "Pastry + coffee",
-     "Dinner": "Rara chicken + chilli paneer + mix dal + roti + rice + salad + ice cream"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Thursday": {
-     "Breakfast": "Aloo chana sabzi + puri + halwa (suji/atta) + fruits + cornflakes + milk + coffee + tea + Bournvita",
-     "Lunch": "Kala chana + seasonal veg with paneer + roti + rice + curd + salad",
-     "Snacks": "Cheese patty + cold drink (coca cola/mountain dew)",
-     "Dinner": "Dal makhani + seasonal mix vegetables + roti + rice + salad + sewayia kheer"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Friday": {
-     "Breakfast": "2 boiled eggs + aloo paratha + fruits + cornflakes + milk + butter + coffee + tea + Bournvita",
-     "Lunch": "Pakora kadhi + dal makhani + rice + salad",
-     "Snacks": "Cream roll + coffee",
-     "Dinner": "Kadai chicken + kadai paneer + roti + rice + salad + pudding cup"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Saturday": {
-     "Breakfast": "Poha + dalia + fruits",
-     "Lunch": "Chole bhature + lassi + green chutney with pickled onion",
-     "Snacks": "Samosa + green chutney + tea",
-     "Dinner": "Mix vegetables (aloo + cabbage + matar + carrot) + rongi dal + roti + rice + gulab jamun"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Sunday": {
-     "Breakfast": "2 boiled eggs + idli sambar + vada + butter + sprouts + milk + cornflakes + coffee + tea + Bournvita",
-     "Lunch": "Chicken biryani + vegetable biryani + raita + papad + salad",
-     "Snacks": "Mattery + tea",
-     "Dinner": "Chilli mushroom + ar har dal + roti + rice + salad + custard"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     }
    },
    "mess_timings": {
-    "Breakfast": "7:30–9:00 AM",
-    "Lunch": "12:30–2:00 PM",
-    "Snacks": "5:45–6:15 PM",
-    "Dinner": "7:30–9:00 PM"
+    "Breakfast": "",
+    "Lunch": "",
+    "Snacks": "",
+    "Dinner": ""
    },
-   "day_timings": {
-    "Saturday": {
-     "Breakfast": "8:00–9:30 AM",
-     "Snacks": "5:00–5:30 PM"
-    },
-    "Sunday": {
-     "Breakfast": "8:00–9:30 AM",
-     "Snacks": "5:00–5:30 PM"
+   "years": {
+    "1": {
+     "mess_menu": {
+      "Monday": {
+       "Breakfast": "2 boiled eggs + pav bhaji + fruits + cornflakes + milk + coffee + tea + Bournvita",
+       "Lunch": "Dry chana / kaddu sabji + mix dal + puri + raita + salad + rice",
+       "Snacks": "Kachori + green chutney + tea",
+       "Dinner": "Egg curry + veg manchurian/kofta + roti + jeera rice + kheer"
+      },
+      "Tuesday": {
+       "Breakfast": "Bread sandwich + cornflakes + milk + fruits + sprouts + coffee + tea + Bournvita",
+       "Lunch": "Dala chana and mah dal + seasonal vegetable + curd + rice + roti + salad",
+       "Snacks": "Cold sandwich + coffee",
+       "Dinner": "Aloo matar + yellow dal + roti + rice + salad + brownie"
+      },
+      "Wednesday": {
+       "Breakfast": "Egg bhurji / paneer bhurji + plain paratha + fruits + cornflakes + milk + coffee + tea + Bournvita",
+       "Lunch": "Rajma + chawal + raita + papad + jeera rice + salad",
+       "Snacks": "Pastry + coffee",
+       "Dinner": "Rara chicken + chilli paneer + mix dal + roti + rice + salad + ice cream"
+      },
+      "Thursday": {
+       "Breakfast": "Aloo chana sabzi + puri + halwa (suji/atta) + fruits + cornflakes + milk + coffee + tea + Bournvita",
+       "Lunch": "Kala chana + seasonal veg with paneer + roti + rice + curd + salad",
+       "Snacks": "Cheese patty + cold drink (coca cola/mountain dew)",
+       "Dinner": "Dal makhani + seasonal mix vegetables + roti + rice + salad + sewayia kheer"
+      },
+      "Friday": {
+       "Breakfast": "2 boiled eggs + aloo paratha + fruits + cornflakes + milk + butter + coffee + tea + Bournvita",
+       "Lunch": "Pakora kadhi + dal makhani + rice + salad",
+       "Snacks": "Cream roll + coffee",
+       "Dinner": "Kadai chicken + kadai paneer + roti + rice + salad + pudding cup"
+      },
+      "Saturday": {
+       "Breakfast": "Poha + dalia + fruits",
+       "Lunch": "Chole bhature + lassi + green chutney with pickled onion",
+       "Snacks": "Samosa + green chutney + tea",
+       "Dinner": "Mix vegetables (aloo + cabbage + matar + carrot) + rongi dal + roti + rice + gulab jamun"
+      },
+      "Sunday": {
+       "Breakfast": "2 boiled eggs + idli sambar + vada + butter + sprouts + milk + cornflakes + coffee + tea + Bournvita",
+       "Lunch": "Chicken biryani + vegetable biryani + raita + papad + salad",
+       "Snacks": "Mattery + tea",
+       "Dinner": "Chilli mushroom + ar har dal + roti + rice + salad + custard"
+      }
+     },
+     "mess_timings": {
+      "Breakfast": "7:30–9:00 AM",
+      "Lunch": "12:30–2:00 PM",
+      "Snacks": "5:45–6:15 PM",
+      "Dinner": "7:30–9:00 PM"
+     },
+     "day_timings": {
+      "Saturday": {
+       "Breakfast": "8:00–9:30 AM",
+       "Snacks": "5:00–5:30 PM"
+      },
+      "Sunday": {
+       "Breakfast": "8:00–9:30 AM",
+       "Snacks": "5:00–5:30 PM"
+      }
+     }
     }
    }
   },
@@ -68,53 +122,107 @@
    "name": "Girls' Hostel",
    "mess_menu": {
     "Monday": {
-     "Breakfast": "Aloo Paratha + Dahi + Butter + Chutney + Milk + Tea + Seb",
-     "Lunch": "Pakode ki Kadhi + Chawal + Aloo Sabzi + Roti + Salad + Dahi",
-     "Snacks": "Snac Lite + Chai",
-     "Dinner": "Rajma Chawal + Shahi Paneer + Matar Pulao + Roti + Kheer + Aloo Curry + Chas"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Tuesday": {
-     "Breakfast": "Macaroni (veggies) + Bread Jam Butter + Tea + Fruit Juice",
-     "Lunch": "Besan + Arhar Dal + Chawal + Roti + Salad + Dahi",
-     "Snacks": "Hide & Seek + Coffee",
-     "Dinner": "Masala Bhindi + Kale Chane + Roti + Ghee + Chawal + Fruit Custard"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Wednesday": {
-     "Breakfast": "Chole Bhature + Kadi + Bread + Jam + Tea + Bhujia + Achar",
-     "Lunch": "Rajma + Chawal + Bhindi + Papad + Salad + Dahi",
-     "Snacks": "Kachori + Chai",
-     "Dinner": "Veg Biryani + Matar Paneer + Roti + Ice Cream"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Thursday": {
-     "Breakfast": "Poha + Dalia + Ketchup + Tea",
-     "Lunch": "Aloo Sabzi + Puri + Matar + Dal + Salad + Raita",
-     "Snacks": "Lays + Coffee (Rs.20)",
-     "Dinner": "French Beans + Kaali Dal + Chawal + Roti + Brownie + Chocolate Syrup"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Friday": {
-     "Breakfast": "Pav Bhaji + Ketchup + Milk + Chai + Bread",
-     "Lunch": "Mix Veg + Puri + Aloo + Roti + Chawal + Dahi",
-     "Snacks": "Vada Pav + Chai",
-     "Dinner": "Soya Chilli + Chawal + Roti + Dal + Gulab Jamun"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Saturday": {
-     "Breakfast": "Poha Upma + Dahi + Butter + Chutney + Milk + Tea",
-     "Lunch": "Lauki Dal + Arbi + Roti + Chawal + Veg Raita + Salad",
-     "Snacks": "Popcorn + Coffee (Rs.20)",
-     "Dinner": "Chole Bhatura + Matar Dal + Roti + Chawal + Kulfi"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     },
     "Sunday": {
-     "Breakfast": "Paneer Paratha + Aloo + Chutney + Milk + Tea + Achar",
-     "Lunch": "Chole Bhature + Dal + Puri + Sambar",
-     "Snacks": "Samosa + Chai",
-     "Dinner": "Kadai Paneer/Chicken + Chawal + Roti + Gulab Jamun + Coconut Barfi"
+     "Breakfast": "",
+     "Lunch": "",
+     "Snacks": "",
+     "Dinner": ""
     }
    },
    "mess_timings": {
-    "Breakfast": "7:30–9:00 AM",
-    "Lunch": "12:00–2:00 PM",
-    "Snacks": "5:00–6:00 PM",
-    "Dinner": "7:30–8:30 PM"
+    "Breakfast": "",
+    "Lunch": "",
+    "Snacks": "",
+    "Dinner": ""
+   },
+   "years": {
+    "1": {
+     "mess_menu": {
+      "Monday": {
+       "Breakfast": "Aloo Paratha + Dahi + Butter + Chutney + Milk + Tea + Seb",
+       "Lunch": "Pakode ki Kadhi + Chawal + Aloo Sabzi + Roti + Salad + Dahi",
+       "Snacks": "Snac Lite + Chai",
+       "Dinner": "Rajma Chawal + Shahi Paneer + Matar Pulao + Roti + Kheer + Aloo Curry + Chas"
+      },
+      "Tuesday": {
+       "Breakfast": "Macaroni (veggies) + Bread Jam Butter + Tea + Fruit Juice",
+       "Lunch": "Besan + Arhar Dal + Chawal + Roti + Salad + Dahi",
+       "Snacks": "Hide & Seek + Coffee",
+       "Dinner": "Masala Bhindi + Kale Chane + Roti + Ghee + Chawal + Fruit Custard"
+      },
+      "Wednesday": {
+       "Breakfast": "Chole Bhature + Kadi + Bread + Jam + Tea + Bhujia + Achar",
+       "Lunch": "Rajma + Chawal + Bhindi + Papad + Salad + Dahi",
+       "Snacks": "Kachori + Chai",
+       "Dinner": "Veg Biryani + Matar Paneer + Roti + Ice Cream"
+      },
+      "Thursday": {
+       "Breakfast": "Poha + Dalia + Ketchup + Tea",
+       "Lunch": "Aloo Sabzi + Puri + Matar + Dal + Salad + Raita",
+       "Snacks": "Lays + Coffee (Rs.20)",
+       "Dinner": "French Beans + Kaali Dal + Chawal + Roti + Brownie + Chocolate Syrup"
+      },
+      "Friday": {
+       "Breakfast": "Pav Bhaji + Ketchup + Milk + Chai + Bread",
+       "Lunch": "Mix Veg + Puri + Aloo + Roti + Chawal + Dahi",
+       "Snacks": "Vada Pav + Chai",
+       "Dinner": "Soya Chilli + Chawal + Roti + Dal + Gulab Jamun"
+      },
+      "Saturday": {
+       "Breakfast": "Poha Upma + Dahi + Butter + Chutney + Milk + Tea",
+       "Lunch": "Lauki Dal + Arbi + Roti + Chawal + Veg Raita + Salad",
+       "Snacks": "Popcorn + Coffee (Rs.20)",
+       "Dinner": "Chole Bhatura + Matar Dal + Roti + Chawal + Kulfi"
+      },
+      "Sunday": {
+       "Breakfast": "Paneer Paratha + Aloo + Chutney + Milk + Tea + Achar",
+       "Lunch": "Chole Bhature + Dal + Puri + Sambar",
+       "Snacks": "Samosa + Chai",
+       "Dinner": "Kadai Paneer/Chicken + Chawal + Roti + Gulab Jamun + Coconut Barfi"
+      }
+     },
+     "mess_timings": {
+      "Breakfast": "7:30–9:00 AM",
+      "Lunch": "12:00–2:00 PM",
+      "Snacks": "5:00–6:00 PM",
+      "Dinner": "7:30–8:30 PM"
+     }
+    }
    }
   }
  }
