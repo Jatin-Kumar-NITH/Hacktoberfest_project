@@ -206,7 +206,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun myExamBranch(ex: ExamYear? = campus.exams.years[year.toString()]) =
         examBranch.takeIf { ex != null && it in ex.branchOptions() }.orEmpty()
 
-    fun setExamBranch(b: String) {
+    fun chooseExamBranch(b: String) {
         examBranch = b; store.examBranch = b
         store.seenIds = null   // different papers now: start counting "new" from here
     }

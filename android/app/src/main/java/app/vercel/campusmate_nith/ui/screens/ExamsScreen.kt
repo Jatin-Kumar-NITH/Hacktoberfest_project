@@ -73,7 +73,7 @@ fun ExamsScreen(vm: AppViewModel, nav: Nav) {
         }
         if (branches.isNotEmpty()) item {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Dropdown("Your branch", listOf("" to "All branches") + branches.map { it to it }, branch, { vm.setExamBranch(it) })
+                Dropdown("Your branch", listOf("" to "All branches") + branches.map { it to it }, branch, { vm.chooseExamBranch(it) })
                 if (branch.isEmpty()) Muted("Papers differ by branch. Pick yours to see only your exams.", size = 13)
             }
         }
