@@ -141,6 +141,7 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
                 Muted("CampusMate ${BuildConfig.VERSION_NAME}. Built for NIT Hamirpur.", size = 13)
                 Actions {
                     SmallButton(if (vm.checkingUpdate) "Checking…" else "Check for updates", { vm.checkUpdate(manual = true) }, enabled = !vm.checkingUpdate)
+                    SmallButton("Show the tour again", { vm.changeTutorialSeen(false) })
                     SmallButton("Open the website", {
                         runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.BASE_URL))) }
                     })

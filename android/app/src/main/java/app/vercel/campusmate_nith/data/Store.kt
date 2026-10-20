@@ -37,6 +37,10 @@ class Store(context: Context) {
     var profileChosen: Boolean
         get() = prefs.getBoolean("profile_chosen", false)
         set(v) = prefs.edit().putBoolean("profile_chosen", v).apply()
+    /** The first-run tour. Students who set up before it existed count as having seen it. */
+    var tutorialSeen: Boolean
+        get() = prefs.getBoolean("tutorial_seen", profileChosen)
+        set(v) = prefs.edit().putBoolean("tutorial_seen", v).apply()
 
     var noticeHistory: List<NoticeEntry>
         get() = read("notice_history", ListSerializer(NoticeEntry.serializer()), emptyList())

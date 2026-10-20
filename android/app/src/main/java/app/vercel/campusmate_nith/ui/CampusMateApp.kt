@@ -58,6 +58,8 @@ import app.vercel.campusmate_nith.ui.screens.PlannerScreen
 import app.vercel.campusmate_nith.ui.screens.ProfileScreen
 import app.vercel.campusmate_nith.ui.screens.PublishScreen
 import app.vercel.campusmate_nith.ui.screens.SettingsScreen
+import app.vercel.campusmate_nith.ui.screens.SetupScreen
+import app.vercel.campusmate_nith.ui.screens.TutorialScreen
 import app.vercel.campusmate_nith.ui.screens.SyllabusScreen
 import app.vercel.campusmate_nith.ui.screens.TimetableScreen
 
@@ -87,7 +89,11 @@ fun CampusMateApp(vm: AppViewModel = viewModel()) {
     when (vm.auth) {
         AuthState.Checking -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         AuthState.SignedOut -> LoginScreen(vm)
-        AuthState.SignedIn -> if (!vm.profileChosen) ProfileScreen(vm, firstRun = true, onDone = {}) else Main(vm)
+        AuthState.SignedIn -> when {
+            !vm.profileChosen -> SetupScreen(vm, onDone = {})
+            !vm.tutorialSeen -> TutorialScreen(onDone = { vm.changeTutorialSeen(true) })
+            else -> Main(vm)
+        }
     }
 }
 
