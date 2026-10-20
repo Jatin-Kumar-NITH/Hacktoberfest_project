@@ -480,6 +480,9 @@ const menuIsEmpty = (h) => !WEEK7.some((d) => MEALS.some((m) => (h.mess_menu[d] 
 const editedLine = (o) => (o && o.edited_by ? `Last edited by ${o.edited_by} · ${fmtTime(o.edited_at)}` : "");
 const ownMenu = (hostel, y) => (y === "all" ? hostel : (hostel.years || {})[String(y)]);
 const menuFor = (hostel, y) => ownMenu(hostel, y) || hostel;
+// a day's own time for a meal (e.g. weekend breakfast), else the usual one
+const timingFor = (h, day, meal) => ((h.day_timings || {})[day] || {})[meal] || h.mess_timings[meal] || "";
+const timingVaries = (h, meal) => WEEK7.some((d) => ((h.day_timings || {})[d] || {})[meal]);
 
 function renderHostel() {
   const y = menuYear || myYear, hostel = HOSTEL.hostels[myHostel];
@@ -509,7 +512,7 @@ function renderHostel() {
     if (menuEditing) {
       const t = el("input"); t.type = "text"; t.placeholder = "Time, e.g. 7:30–9:30 AM"; t.value = h.mess_timings[m] || ""; t.dataset.timing = m; t.maxLength = 60;
       th.appendChild(t);
-    } else if (h.mess_timings[m]) th.appendChild(el("small", "", h.mess_timings[m]));
+    } else if (h.mess_timings[m] && !timingVaries(h, m)) th.appendChild(el("small", "", h.mess_timings[m]));
     head.appendChild(th);
   });
   const thead = el("thead"); thead.appendChild(head); table.appendChild(thead);
@@ -519,12 +522,17 @@ function renderHostel() {
     tr.appendChild(el("th", "", d === TODAY_NAME ? `${d} · today` : d));
     MEALS.forEach((m) => {
       const td = el("td");
-      td.dataset.label = !menuEditing && h.mess_timings[m] ? `${m} · ${h.mess_timings[m]}` : m; // shown on phones
+      const time = timingFor(h, d, m);
+      td.dataset.label = !menuEditing && time ? `${m} · ${time}` : m; // shown on phones
       const val = (h.mess_menu[d] || {})[m] || "";
       if (menuEditing) {
         const t = el("textarea"); t.rows = 2; t.maxLength = 200; t.value = val; t.dataset.day = d; t.dataset.meal = m;
         td.appendChild(t);
-      } else td.textContent = val || "—";
+      } else {
+        td.textContent = val || "—";
+        // the header can't hold a time that changes by day, so it goes in the cell (wide screens)
+        if (val && time && timingVaries(h, m)) td.appendChild(el("small", "cell-time", time));
+      }
       tr.appendChild(td);
     });
     body.appendChild(tr);
@@ -570,7 +578,8 @@ function renderMenuMini(target, h, dayName) {
     if (!items) return;
     const row = el("div", "meal");
     const name = el("div", "meal-name", meal);
-    if (h.mess_timings[meal]) name.appendChild(el("small", "", h.mess_timings[meal]));
+    const time = timingFor(h, dayName, meal);
+    if (time) name.appendChild(el("small", "", time));
     row.append(name, el("div", "", items));
     box.appendChild(row);
   });

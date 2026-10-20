@@ -771,6 +771,7 @@ html[data-theme="dark"] .ghost { color: var(--ink-2); }
 .menu-table th, .menu-table td { border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: left; vertical-align: top; }
 .menu-table thead th { font-size: 12px; color: var(--muted); }
 .menu-table thead th small { display: block; font-weight: 500; }
+.menu-table .cell-time { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
 .menu-table tbody th { width: 130px; font-size: 14px; }
 .menu-table tr.today { background: var(--accent-soft); }
 .menu-table textarea, .menu-table input { width: 100%; font-size: 13px; padding: 7px 8px; min-width: 140px; }
@@ -1070,6 +1071,7 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
   .menu-table th, .menu-table td { display: block; padding: 0; border: 0; min-width: 0; }
   .menu-table tbody th { grid-column: 1 / -1; width: auto; font-size: 15px; }
   .menu-table td::before { content: attr(data-label); display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .menu-table .cell-time { display: none; } /* the label above already has the time */
   .menu-table:not(:has(textarea)) thead { display: none; }
   .menu-table thead th:first-child { display: none; }
   .menu-table textarea, .menu-table input { min-width: 0; font-size: 16px; }
