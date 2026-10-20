@@ -549,3 +549,17 @@ data class ResultsResponse(
     val cached: Boolean = false,
     val stale: Boolean = false,
 )
+
+// ---------------------------------------------------------------- push notifications (Firebase)
+
+/** Public Firebase values for the Android app, from /api/config. Null there when push isn't set up. */
+@Serializable
+data class FirebaseConfig(
+    val project_id: String = "",
+    val sender_id: String = "",
+    val app_id: String = "",
+    val api_key: String = "",
+)
+
+@Serializable
+data class AppConfig(val google_client_id: String = "", val firebase: FirebaseConfig? = null)

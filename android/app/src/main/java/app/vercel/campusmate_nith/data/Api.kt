@@ -113,8 +113,9 @@ class Api(context: Context) {
 
     private fun postJson(path: String, body: String) = post(path, body.toRequestBody(jsonType))
 
-    suspend fun config(): String =
-        json.decodeFromString<JsonObject>(call(get("/api/config")))["google_client_id"]?.stringOrNull().orEmpty()
+    suspend fun config(): String = appConfig().google_client_id
+
+    suspend fun appConfig(): AppConfig = json.decodeFromString(call(get("/api/config")))
 
     suspend fun login(idToken: String) {
         call(postJson("/api/login", buildJsonObject { put("credential", idToken) }.toString()))
