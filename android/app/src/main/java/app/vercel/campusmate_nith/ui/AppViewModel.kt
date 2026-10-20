@@ -272,6 +272,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun chooseHostel(h: String) {
         hostel = h; store.hostel = h
+        TodayWidget.refresh(cm)   // its meal follows your hostel
     }
 
     // ------------------------------------------------------------ notice history (on the phone)

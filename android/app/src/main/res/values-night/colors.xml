@@ -6,4 +6,6 @@
     <color name="widget_bg">#1C1C1E</color>
     <color name="widget_ink">#F5F5F7</color>
     <color name="widget_muted">#98989D</color>
+    <color name="widget_fill">#2C2C2E</color>
+    <color name="widget_ink2">#D1D1D6</color>
 </resources>
