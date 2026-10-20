@@ -150,7 +150,7 @@ private fun MenuEditor(vm: AppViewModel, id: String, h: Hostel, year: String, ye
                 }
             }, loading = saving)
         }
-        if (hasOwn) item {
+        if (hasOwn && h.edited_by != null) item { // built-in year menus from data/hostel.json can't be removed
             SmallButton("Remove the $yearName menu", {
                 scope.launch { save { put("clear", JsonPrimitive(true)) } }
             }, danger = true)

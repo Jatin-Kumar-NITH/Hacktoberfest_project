@@ -497,7 +497,7 @@ function renderHostel() {
   $("mnEditBtn").textContent = y === "all" ? "✎ Edit the All years menu" : own ? `✎ Edit ${YEAR_NAMES[y]} menu` : `✎ Make a ${YEAR_NAMES[y]} menu`;
   $("mnEdited").textContent = editedLine(h);
   $("mnActions").hidden = !menuEditing;
-  $("mnClear").hidden = !menuEditing || y === "all" || !own;
+  $("mnClear").hidden = !menuEditing || y === "all" || !own || !own.edited_by; // built-in year menus can't be removed
   $("mnErr").hidden = true;
   const empty = menuIsEmpty(h);
   $("mnEmpty").hidden = !empty || menuEditing;
