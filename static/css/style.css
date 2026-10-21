@@ -470,7 +470,7 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
   .section-pick select { padding: 6px 10px; }
 }
 
-/* ---------- ask campusmate ---------- */
+/* ---------- ask zenkai ---------- */
 .ask-card {
   border-radius: var(--radius); padding: 24px; margin-bottom: 20px; color: var(--ink);
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);

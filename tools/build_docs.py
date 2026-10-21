@@ -176,7 +176,7 @@ def make_pdf(path, title, subtitle, sections):
             story.append(Paragraph(f"{i}. {item}", styles["BodyText"]))
         story.append(Spacer(1, 8))
     story.append(Spacer(1, 16))
-    story.append(Paragraph("SAMPLE document generated for the CampusMate AI demo. Not an official document.", styles["Italic"]))
+    story.append(Paragraph("SAMPLE document generated for the Zenkai demo. Not an official document.", styles["Italic"]))
     SimpleDocTemplate(str(path), pagesize=A4, title=title).build(story)
 
 

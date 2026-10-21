@@ -1,6 +1,6 @@
 {
-  "name": "CampusMate AI",
-  "short_name": "CampusMate",
+  "name": "Zenkai",
+  "short_name": "Zenkai",
   "description": "Timetable, notices, assignments, mess menu and campus chat for NIT Hamirpur students.",
   "id": "/",
   "start_url": "/?source=pwa",

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CampusMate</string>
+    <string name="app_name">Zenkai</string>
     <string name="widget_description">Today\'s classes and what\'s on at the mess</string>
     <string name="shortcut_timetable">Timetable</string>
     <string name="shortcut_mess">Mess menu</string>
     <string name="shortcut_attendance">Attendance</string>
-    <string name="shortcut_ask">Ask CampusMate</string>
+    <string name="shortcut_ask">Ask Zenkai</string>
 </resources>

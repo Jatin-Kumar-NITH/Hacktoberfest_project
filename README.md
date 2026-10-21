@@ -1,6 +1,6 @@
-# CampusMate AI 🎓✦
+# Zenkai 🎓✦
 
-**Your campus life, organized by AI.** CampusMate AI is an open-source student portal that puts a college student's timetable, notices, assignments, exam schedule and syllabus in one place, and lets them **ask an AI (Google Gemma 4) about any of it in plain language**.
+**Your campus life, organized by AI.** Zenkai is an open-source student portal that puts a college student's timetable, notices, assignments, exam schedule and syllabus in one place, and lets them **ask an AI (Google Gemma 4) about any of it in plain language**.
 
 Built at a Hacktoberfest 2026 hackathon (theme: *best open-source AI project / best use of Gemma 4*) using the real first-year timetable, curriculum and assignments of NIT Hamirpur.
 
@@ -9,7 +9,7 @@ Built at a Hacktoberfest 2026 hackathon (theme: *best open-source AI project / b
 ## Table of contents
 
 1. [The problem](#the-problem)
-2. [What CampusMate does](#what-campusmate-does)
+2. [What Zenkai does](#what-zenkai-does)
 3. [Features in detail](#features-in-detail)
 4. [How the AI works](#how-the-ai-works)
 5. [Architecture](#architecture)
@@ -32,7 +32,7 @@ Built at a Hacktoberfest 2026 hackathon (theme: *best open-source AI project / b
 
 Students get information from too many places: a timetable PDF, notice-board photos, WhatsApp forwards, assignment PDFs and a long curriculum document. Notices are long, formal and easy to misread. Missing one line can mean a late fine, a cancelled hostel room or a blocked admit card. Different sections, groups and years see different information, which makes it even harder to know *what applies to me*.
 
-## What CampusMate does
+## What Zenkai does
 
 - Shows **only what applies to you**: pick your **year → section → lab group** once, and every page filters itself.
 - Turns any notice into a **plain-language summary, deadlines, documents and a checklist** with Gemma 4, in English and Hindi.
@@ -44,7 +44,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ## Features in detail
 
 ### 🏠 Dashboard
-- **Ask CampusMate**: a chat box powered by Gemma 4 that answers from your timetable, notices, assignments, exam schedule, syllabus, hostel information, your saved deadlines and your study plan. Each answer shows **source tags** (for example *Timetable*, *Notice: …*). If the answer isn't in the data, it says so instead of guessing. It remembers the last 4 exchanges for follow-up questions and replies in Hindi if you ask in Hindi.
+- **Ask Zenkai**: a chat box powered by Gemma 4 that answers from your timetable, notices, assignments, exam schedule, syllabus, hostel information, your saved deadlines and your study plan. Each answer shows **source tags** (for example *Timetable*, *Notice: …*). If the answer isn't in the data, it says so instead of guessing. It remembers the last 4 exchanges for follow-up questions and replies in Hindi if you ask in Hindi.
 - Today's classes for your section and group (on holidays it shows the next working day's classes).
 - **Due soon**: upcoming assignments and your next exam.
 - New notices for you, upcoming deadlines from explained notices, recent AI results, today's study plan, hostel announcements and today's mess menu.
@@ -79,14 +79,14 @@ Students get information from too many places: a timetable PDF, notice-board pho
 - **Year-wise:** each entry is for all years or only for the years ticked (e.g. a holiday just for 1st year). Students see the entries for the year picked in the sidebar plus the all-years ones.
 - Entry types: **Holiday**, **Exam**, **Event** and **Semester** (e.g. classes start / end). Entries can span several days (e.g. a Diwali break) and carry a short note.
 - **Only admins and the owner can add, edit or remove dates** from the site. The page shows *Last edited by (name) · time*. It starts empty until confirmed holidays are added.
-- Holidays flow through the app: the dashboard skips holidays when showing "today's classes", My Attendance shows no regular classes on a holiday for your year (and classes marked on it before the holiday was added stop counting), and Ask CampusMate can answer *"When is the next holiday?"*.
+- Holidays flow through the app: the dashboard skips holidays when showing "today's classes", My Attendance shows no regular classes on a holiday for your year (and classes marked on it before the holiday was added stop counting), and Ask Zenkai can answer *"When is the next holiday?"*.
 
 ### ✓ My Attendance
 - Every student tracks their **own** attendance for each subject in their timetable. It's private and **saved to their account**, so it follows them across devices.
 - Pick a date (today by default): your classes for that day appear with **Present / Absent / Cancelled** buttons. Cancelled classes don't count. Add **extra or rescheduled classes**, or subjects not in the timetable (e.g. NCC).
 - **Starting count** lets you enter classes held before you began tracking.
 - Each subject card shows the percentage, a progress bar with your target marked, and plain advice: *"You can miss 2 more classes and stay at 75%"* or *"Attend the next 4 classes in a row to reach 75%"*. The target is adjustable (60–90%).
-- The dashboard shows your overall attendance and your weakest subjects; Ask CampusMate can answer *"In which subjects is my attendance low?"*.
+- The dashboard shows your overall attendance and your weakest subjects; Ask Zenkai can answer *"In which subjects is my attendance low?"*.
 - This is a personal tracker, not the official record kept by teachers.
 
 ### ❒ Syllabus
@@ -114,7 +114,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 ### ⌂ Mess Menu (Boys' and Girls' hostels)
 - **Separate weekly menus** for the Boys' Hostel and the Girls' Hostel. Students pick their hostel once (remembered), and today's row is highlighted.
 - **Admins edit the menu and meal timings from the site.** The menu shows *Last edited by (name) · time*.
-- The Dashboard shows today's menu for your hostel. Ask CampusMate can answer "What's for dinner today?"
+- The Dashboard shows today's menu for your hostel. Ask Zenkai can answer "What's for dinner today?"
 
 ### 📰 College Updates and 🛏 Hostel Updates
 - Short text news posts that everyone signed in can read. **Journalists**, admins, co-owners and the owner can post.
@@ -150,7 +150,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 | **Access** | Google's hosted **Gemini API** (free tier via a Google AI Studio key) using the `google-genai` Python SDK |
 | **Where it runs** | Server side only. The API key never reaches the browser. |
 
-**Grounded answers, not guesses.** For *Ask CampusMate*, the server builds a context containing only the data relevant to the student: their section's timetable (filtered to their lab group), the notices for their year and section, their assignments and exams, syllabus text for their subjects, admin uploads, hostel data, and their own saved deadlines and study plan. Gemma is instructed to answer **only from that context**, list its sources, and set `found: false` when the answer isn't there.
+**Grounded answers, not guesses.** For *Ask Zenkai*, the server builds a context containing only the data relevant to the student: their section's timetable (filtered to their lab group), the notices for their year and section, their assignments and exams, syllabus text for their subjects, admin uploads, hostel data, and their own saved deadlines and study plan. Gemma is instructed to answer **only from that context**, list its sources, and set `found: false` when the answer isn't there.
 
 **Structured output.** Every AI feature asks Gemma for a strict JSON object, for example `summary`, `deadlines[]`, `checklist[]` and `missing_or_unclear[]`. The server parses it robustly, even if it's wrapped in Markdown fences, and validates every field before the page shows it.
 
@@ -170,7 +170,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
  Landing + Google button ─── /api/login (ID token) ─▶ accounts.py ── SQLite (instance/) 
  Dashboard, Timetable, Notice Board,                  │  users, posts, chat           
  Assignments, Exams, Syllabus, Hostel ◀── page + JSON ┤
- Ask CampusMate ───────────── /api/ask ─────────────▶ app.py ── builds grounded context ──▶ Gemini API
+ Ask Zenkai ───────────── /api/ask ─────────────▶ app.py ── builds grounded context ──▶ Gemini API
  Notice Explainer ─────────── /api/notice ──────────▶        ── strict JSON prompts     ──▶ (Gemma 4)
  Study Planner ────────────── /api/plan ───────────▶         
  Campus Chat ─────────────── /api/chat (poll 3s) ──▶ accounts.py
@@ -188,7 +188,7 @@ Students get information from too many places: a timetable PDF, notice-board pho
 
 ```
 campusmate/
-├── app.py                  # Flask app: pages, Notice Explainer, Study Planner, Ask CampusMate, Gemma calls
+├── app.py                  # Flask app: pages, Notice Explainer, Study Planner, Ask Zenkai, Gemma calls
 ├── accounts.py             # Google login, roles, admin publishing, uploads, campus chat, bans
 ├── db.py                   # Database layer: SQLite locally, Postgres when DATABASE_URL is set
 ├── requirements.txt
@@ -340,7 +340,7 @@ During development, every feature was tested end to end with a stand-in for the 
 
 - **Notice Explainer:** clear deadline, multiple dates, a vague notice with missing information, a long notice, empty input, too-long input, missing API key, quota exhausted (saved fallback), model fallback from 26B to 31B.
 - **Study Planner:** missing names or dates, past exam dates, hours out of range, plans longer than 14 days (trimmed with a note).
-- **Ask CampusMate:** context contains only the student's year, section and group data, with no other section's notices or another group's labs.
+- **Ask Zenkai:** context contains only the student's year, section and group data, with no other section's notices or another group's labs.
 - **Accounts:** Google token checks (missing, invalid, unverified email, missing client ID), owner promotion from `.env`, owner can't be demoted, students and admins blocked from owner actions, admin access revoked instantly.
 - **Publishing:** fake PDF rejected, targeting by year and section, delete permissions, PDFs blocked for logged-out users.
 - **Chat:** HTML or script in messages shown as plain text, rate limit, admin removal.
@@ -371,7 +371,7 @@ During development, every feature was tested end to end with a stand-in for the 
 **Source code:** [MIT License](LICENSE) © 2026 Jatin Kumar. You may use, modify and distribute the code.
 
 **Not covered by the MIT license:**
-- **Gemma 4:** the model weights are released by Google under the **Apache 2.0** license. This app calls Gemma through Google's hosted **Gemini API**, whose use is governed by Google's API terms of service. CampusMate does not include or redistribute model weights.
+- **Gemma 4:** the model weights are released by Google under the **Apache 2.0** license. This app calls Gemma through Google's hosted **Gemini API**, whose use is governed by Google's API terms of service. Zenkai does not include or redistribute model weights.
 - **Institute documents:** the timetable, curriculum and assignment PDFs in `static/docs/` (and the data transcribed from them) belong to **NIT Hamirpur** and their authors. They're included for demonstration by a student of the institute. They are not open-source and are not covered by the MIT license.
 - **Python dependencies** (Flask, google-genai, python-dotenv, Pillow) are under their own open-source licenses.
 

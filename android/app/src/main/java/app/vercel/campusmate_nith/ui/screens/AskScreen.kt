@@ -96,7 +96,7 @@ fun AskScreen(vm: AppViewModel, nav: Nav) {
         vm.pendingQuestion?.let { vm.pendingQuestion = null; ask(it) }
     }
 
-    Screen("Ask CampusMate", vm, onBack = { nav.back() }, state = list, bottomBar = {
+    Screen("Ask Zenkai", vm, onBack = { nav.back() }, state = list, bottomBar = {
         Row(
             Modifier.fillMaxWidth().background(P.card).navigationBarsPadding().imePadding().padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -115,7 +115,7 @@ fun AskScreen(vm: AppViewModel, nav: Nav) {
             }
         }
         itemsIndexed(vm.askLog) { _, m -> Bubble(m) }
-        if (busy) item { Loading("CampusMate is checking your timetable, notices and hostel info…") }
+        if (busy) item { Loading("Zenkai is checking your timetable, notices and hostel info…") }
     }
 }
 

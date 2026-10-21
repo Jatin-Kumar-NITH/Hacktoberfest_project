@@ -42,7 +42,7 @@ fun ProfileScreen(vm: AppViewModel, firstRun: Boolean, onDone: () -> Unit) {
     ) {
         Text(if (firstRun) "Welcome${vm.user?.name?.let { ", ${it.substringBefore(' ')}" } ?: ""} 👋" else "Your class",
             fontSize = 28.sp, fontWeight = FontWeight.Bold)
-        Muted("Pick your year, section and lab group so CampusMate shows your own timetable, notices and assignments. You can change this any time under More.")
+        Muted("Pick your year, section and lab group so Zenkai shows your own timetable, notices and assignments. You can change this any time under More.")
         CmCard {
             SectionTitle("Year")
             ChipRow((1..4).map { it to (YEAR_NAMES[it] ?: "$it") }, year) {

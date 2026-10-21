@@ -55,7 +55,7 @@ import java.time.format.FormatStyle
 private fun gpa(v: Double?) = if (v == null) "–" else "%.2f".format(v)
 private fun num(v: Double) = if (v % 1.0 == 0.0) v.toInt().toString() else v.toString()
 
-/** Semester results by roll number, from nithresults.xyz through the CampusMate server. */
+/** Semester results by roll number, from nithresults.xyz through the Zenkai server. */
 @Composable
 fun ResultsScreen(vm: AppViewModel, nav: Nav) {
     var query by remember { mutableStateOf("") }

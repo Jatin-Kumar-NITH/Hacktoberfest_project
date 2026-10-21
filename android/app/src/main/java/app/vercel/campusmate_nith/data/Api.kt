@@ -88,7 +88,7 @@ class Api(context: Context) {
         val res = try {
             client.newCall(req).execute()
         } catch (e: IOException) {
-            throw ApiException("Can't reach CampusMate. Check your internet connection and try again.")
+            throw ApiException("Can't reach Zenkai. Check your internet connection and try again.")
         }
         res.use {
             val text = it.body?.string().orEmpty()
@@ -261,7 +261,7 @@ class Api(context: Context) {
         val out = File(dir, name)
         withContext(Dispatchers.IO) {
             val res = try { client.newCall(Request.Builder().url(url).build()).execute() } catch (e: IOException) {
-                throw ApiException("Can't reach CampusMate. Check your internet connection and try again.")
+                throw ApiException("Can't reach Zenkai. Check your internet connection and try again.")
             }
             res.use {
                 if (!it.isSuccessful) throw ApiException("Couldn't download the PDF (error ${it.code}).", it.code)
@@ -274,7 +274,7 @@ class Api(context: Context) {
     /** The newest published build (version.json next to the APK on the android-latest release), or null if unknown. */
     suspend fun latestVersion(): AppVersion? = withContext(Dispatchers.IO) {
         runCatching {
-            // a separate client with no cookies: this goes to GitHub, not to CampusMate
+            // a separate client with no cookies: this goes to GitHub, not to Zenkai
             val plain = client.newBuilder().cookieJar(CookieJar.NO_COOKIES).build()
             plain.newCall(Request.Builder().url(BuildConfig.UPDATE_URL).build()).execute().use {
                 if (it.isSuccessful) json.decodeFromString<AppVersion>(it.body!!.string()) else null

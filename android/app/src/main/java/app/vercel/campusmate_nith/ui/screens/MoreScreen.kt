@@ -65,7 +65,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         Entry("hostel-updates", "Hostel updates", "News for your hostel and year", Icons.Outlined.Apartment),
     )
     val ai = listOf(
-        Entry("ask", "Ask CampusMate", "Questions about your campus data", Icons.Outlined.AutoAwesome),
+        Entry("ask", "Ask Zenkai", "Questions about your campus data", Icons.Outlined.AutoAwesome),
         Entry("explain", "Notice explainer", "Deadlines and a checklist from any notice", Icons.Outlined.Description),
         Entry("planner", "Study planner", "A day-by-day plan for your exams", Icons.Outlined.School),
     )
@@ -102,7 +102,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(4.dp)) {
                 Icon(Icons.Outlined.Info, null, tint = P.muted, modifier = Modifier.size(16.dp))
-                Muted("CampusMate ${BuildConfig.VERSION_NAME} · Built for NIT Hamirpur", size = 12)
+                Muted("Zenkai ${BuildConfig.VERSION_NAME} · Built for NIT Hamirpur", size = 12)
             }
         }
     }

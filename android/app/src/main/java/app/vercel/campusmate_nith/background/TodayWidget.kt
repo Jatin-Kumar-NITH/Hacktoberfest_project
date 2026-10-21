@@ -81,9 +81,9 @@ class TodayWidget : AppWidgetProvider() {
 
             val sec = campus?.timetables?.get(year.toString())?.sections.orEmpty().let { secs -> secs.firstOrNull { it.id == section } ?: secs.firstOrNull() }
             if (campus == null || sec == null) {
-                v.setTextViewText(R.id.w_title, "CampusMate")
+                v.setTextViewText(R.id.w_title, "Zenkai")
                 v.setTextViewText(R.id.w_sub, "")
-                v.setTextViewText(R.id.w_empty, "Open CampusMate and sign in to see your classes here.")
+                v.setTextViewText(R.id.w_empty, "Open Zenkai and sign in to see your classes here.")
                 v.setViewVisibility(R.id.w_empty, View.VISIBLE)
                 return v to null
             }

@@ -1,4 +1,4 @@
-// CampusMate AI front end. AI text is always inserted with textContent, never innerHTML.
+// Zenkai front end. AI text is always inserted with textContent, never innerHTML.
 
 const $ = (id) => document.getElementById(id);
 const ME = JSON.parse(document.getElementById("me-data").textContent);
@@ -682,7 +682,7 @@ function pubLine(item, fallbackFrom) {
     line.appendChild(el("span", `role-tag role-${item.author_role}`, ROLE_LABEL[item.author_role] || "Admin"));
     line.appendChild(el("span", "", ` · ${fmtTime(item.published_at)}`));
   } else {
-    line.appendChild(el("span", "", `Published by ${fallbackFrom || "CampusMate"} · from the data files (demo content)`));
+    line.appendChild(el("span", "", `Published by ${fallbackFrom || "Zenkai"} · from the data files (demo content)`));
   }
   return line;
 }
@@ -965,7 +965,7 @@ function renderAssignments() {
       const t = el("div", "topic-chips"); a.topics.forEach((x) => t.appendChild(el("span", "", x))); card.appendChild(t);
     }
     card.appendChild(el("p", "as-submit", `📤 ${a.submit}`));
-    card.appendChild(pubLine(a, a.official ? "Course instructor (PDF provided by the student)" : "CampusMate (sample)"));
+    card.appendChild(pubLine(a, a.official ? "Course instructor (PDF provided by the student)" : "Zenkai (sample)"));
     const actions = el("div", "notice-actions");
     if (a.pdf) {
       const pdf = el("a", "ghost small pdf-btn", "📄 Open assignment PDF");
@@ -1127,7 +1127,7 @@ function subjectCard(code, sec, syl) {
     return card;
   }
   if (sub.note) card.appendChild(el("p", "sy-fac", sub.note));
-  if (sub.added_by) card.appendChild(el("p", "sy-fac", `Added on CampusMate by ${sub.added_by}`));
+  if (sub.added_by) card.appendChild(el("p", "sy-fac", `Added on Zenkai by ${sub.added_by}`));
   const actions = el("div", "sy-actions");
   if (sub.pdf) actions.appendChild(pdfLink(sub.pdf, `📄 ${sub.added_by ? "Syllabus PDF" : "Original PDF"}${syl.official && sub.pages && sub.pages.length ? ` (p. ${sub.pages.join(", ")})` : ""}`));
   const toggle = el("button", "ghost small", "📝 Read as text");
@@ -1330,7 +1330,7 @@ function whenLabel(e) {
 
 function renderCalendar() {
   $("calSub").textContent = `${CAL.name || "Academic Calendar"} · confirmed holidays and important dates for ${YEAR_NAMES[myYear]}`;
-  $("calNote").textContent = `📅 ${CAL.note || "Holidays and important dates are confirmed by CampusMate admins."}`;
+  $("calNote").textContent = `📅 ${CAL.note || "Holidays and important dates are confirmed by Zenkai admins."}`;
   $("calEditBar").hidden = !IS_ADMIN || calEditing;
   $("calEdited").textContent = editedLine(CAL);
   const today = todayISO();
@@ -1788,7 +1788,7 @@ function renderDashAttendance() {
 
 loadAttendance();
 
-// ========================================================== ASK CAMPUSMATE
+// ========================================================== ASK ZENKAI
 let askHistory = [];
 
 function clientContext() {
@@ -1814,7 +1814,7 @@ async function askQuestion(q) {
   $("askInput").value = "";
   $("askSuggest").hidden = true;
   addMsg("user", q);
-  const typing = el("div", "typing", "CampusMate is checking your timetable, notices and hostel info…");
+  const typing = el("div", "typing", "Zenkai is checking your timetable, notices and hostel info…");
   $("askLog").appendChild(typing);
   $("askLog").scrollTop = $("askLog").scrollHeight;
   $("askBtn").disabled = true;
@@ -2265,7 +2265,7 @@ function renderHandoverBanner() {
     const btns = el("div", "handover-actions");
     const yes = el("button", "ai-btn", "Accept");
     yes.addEventListener("click", async () => {
-      if (!confirm("Become co-owner of CampusMate?")) return;
+      if (!confirm("Become co-owner of Zenkai?")) return;
       if (await handoverPost(`/api/handover/${h.from.id}/accept`, {}, "Could not accept.")) location.reload();
     });
     const no = el("button", "ghost small", "Decline");

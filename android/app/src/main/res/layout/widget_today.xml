@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="Open CampusMate to load your timetable."
+                android:text="Open Zenkai to load your timetable."
                 android:textColor="@color/widget_muted"
                 android:textSize="13sp" />
 

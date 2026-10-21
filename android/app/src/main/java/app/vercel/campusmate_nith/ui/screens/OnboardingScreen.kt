@@ -177,7 +177,7 @@ fun SetupScreen(vm: AppViewModel, onDone: () -> Unit) {
                         Badge(Icons.Outlined.School, P.accent, P.accentSoft, big = true)
                         Spacer(Modifier.height(8.dp))
                         Question("Welcome${vm.user?.name?.let { ", ${it.substringBefore(' ')}" } ?: ""} 👋")
-                        Muted("A few quick questions so CampusMate shows your own timetable, notices, exams and mess menu. It takes under a minute.", size = 16)
+                        Muted("A few quick questions so Zenkai shows your own timetable, notices, exams and mess menu. It takes under a minute.", size = 16)
                         Spacer(Modifier.height(8.dp))
                         Muted("You can change any answer later in More.", size = 14)
                     }
@@ -223,7 +223,7 @@ fun SetupScreen(vm: AppViewModel, onDone: () -> Unit) {
                     }
                     Step.Alerts -> {
                         Question("Stay in the loop?")
-                        Muted("CampusMate can let you know when something new is posted for your class.")
+                        Muted("Zenkai can let you know when something new is posted for your class.")
                         ToggleOption(Icons.Outlined.Campaign, "New notices, assignments and exams", "Checked about once an hour", vm.notifyNew) { vm.changeNotifyNew(it) }
                         ToggleOption(Icons.Outlined.Notifications, "Class reminders", "A heads-up before each class", vm.notifyClasses) { vm.changeNotifyClasses(it) }
                         if (vm.notifyClasses) {
@@ -358,7 +358,7 @@ private val PAGES = listOf(
             Tip(Icons.Outlined.EventNote, "Exams, assignments, academic calendar and syllabus"),
             Tip(Icons.Outlined.CheckCircle, "Track your attendance and plan for 75%"),
             Tip(Icons.Outlined.Grade, "Results, mess menu, college and hostel updates"),
-            Tip(Icons.Outlined.AutoAwesome, "Ask CampusMate anything about your campus"),
+            Tip(Icons.Outlined.AutoAwesome, "Ask Zenkai anything about your campus"),
         ),
     ) { P.accent to P.accentSoft },
     Page(
@@ -406,7 +406,7 @@ fun TutorialScreen(onDone: () -> Unit) {
                             manager.requestPinAppWidget(ComponentName(ctx, TodayWidget::class.java), null, null)
                         })
                     } else {
-                        Muted("Long-press your home screen, choose Widgets, then CampusMate.", size = 13)
+                        Muted("Long-press your home screen, choose Widgets, then Zenkai.", size = 13)
                     }
                 }
             }
@@ -420,7 +420,7 @@ fun TutorialScreen(onDone: () -> Unit) {
                 )
             }
         }
-        PrimaryButton(if (last) "Start using CampusMate" else "Next", {
+        PrimaryButton(if (last) "Start using Zenkai" else "Next", {
             if (last) onDone() else scope.launch { pager.animateScrollToPage(pager.currentPage + 1) }
         })
     }

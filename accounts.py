@@ -134,7 +134,7 @@ def init_app(app):
         # every serverless instance must share one key, or users get logged out between requests
         seed = os.getenv("GEMINI_API_KEY", "") + os.getenv("GOOGLE_CLIENT_ID", "") + os.getenv("OWNER_EMAIL", "")
         key = hashlib.sha256(("campusmate:" + seed).encode()).hexdigest()
-        print("[CampusMate] SECRET_KEY not set; derived one from other secrets. Set SECRET_KEY in Vercel for best security.")
+        print("[Zenkai] SECRET_KEY not set; derived one from other secrets. Set SECRET_KEY in Vercel for best security.")
     if not key:
         if not key_file.exists():
             key_file.write_text(secrets.token_hex(32))
@@ -153,14 +153,14 @@ def init_app(app):
     sync_owner(conn)
     users = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
     conn.close()
-    print("[CampusMate] ----------------------------------------------")
+    print("[Zenkai] ----------------------------------------------")
     where = "Postgres (DATABASE_URL) - permanent" if database.using_postgres() else str(DB_PATH)
-    print(f"[CampusMate] Database: {where} ({users} account(s))")
+    print(f"[Zenkai] Database: {where} ({users} account(s))")
     if os.getenv("VERCEL") and not database.using_postgres():
-        print("[CampusMate] WARNING: on Vercel without DATABASE_URL, accounts and data are temporary. Connect a Postgres database (see README).")
-    print(f"[CampusMate] Owner email: {email or 'NOT SET - add OWNER_EMAIL to .env'}")
-    print(f"[CampusMate] Google login: {'on' if google_client_id() else 'OFF - add GOOGLE_CLIENT_ID to .env'}")
-    print("[CampusMate] ----------------------------------------------")
+        print("[Zenkai] WARNING: on Vercel without DATABASE_URL, accounts and data are temporary. Connect a Postgres database (see README).")
+    print(f"[Zenkai] Owner email: {email or 'NOT SET - add OWNER_EMAIL to .env'}")
+    print(f"[Zenkai] Google login: {'on' if google_client_id() else 'OFF - add GOOGLE_CLIENT_ID to .env'}")
+    print("[Zenkai] ----------------------------------------------")
     app.register_blueprint(bp)
     app.register_error_handler(UploadBlocked, lambda e: (jsonify(error=e.message, blocked=True, warning=e.warning), e.status))
 
@@ -232,7 +232,7 @@ def api_login():
     client_id = google_client_id()
     if not client_id:
         # without an audience check, a token issued to any other Google app would be accepted
-        print("[CampusMate] GOOGLE_CLIENT_ID is not set; Google login is disabled.", flush=True)
+        print("[Zenkai] GOOGLE_CLIENT_ID is not set; Google login is disabled.", flush=True)
         return jsonify(error="Google login is not configured on the server (GOOGLE_CLIENT_ID is missing)."), 503
 
     from google.auth.transport import requests as google_requests
@@ -242,7 +242,7 @@ def api_login():
     except ValueError:
         return jsonify(error="Invalid Google token. Please try again."), 401
     except Exception as e:
-        print(f"[CampusMate] Could not verify Google token: {e!r}", flush=True)
+        print(f"[Zenkai] Could not verify Google token: {e!r}", flush=True)
         return jsonify(error="Could not reach Google to verify the login. Please try again."), 502
 
     email = (info.get("email") or "").strip().lower()
@@ -399,7 +399,7 @@ def api_handover_create():
         return jsonify(error="You can't hand over to yourself."), 400
     row = db().execute("SELECT role FROM users WHERE id = ?", (to_id,)).fetchone()
     if not row:
-        return jsonify(error="User not found. They need to sign in to CampusMate once first."), 404
+        return jsonify(error="User not found. They need to sign in to Zenkai once first."), 404
     if row["role"] in ("owner", "coowner"):
         return jsonify(error="That person is already the owner or a co-owner."), 400
     set_setting(HANDOVER_PREFIX + str(u["id"]), {"to": to_id, "created_at": now_iso()})

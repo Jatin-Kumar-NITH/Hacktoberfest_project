@@ -112,7 +112,7 @@ fun CalendarScreen(vm: AppViewModel, nav: Nav) {
                 cal.edited_by?.let { Muted("Last edited by $it · ${fmtTime(cal.edited_at)}", size = 12) }
             }
         }
-        item { Alert("📅 ${cal.note ?: "Holidays and important dates are confirmed by CampusMate admins."}", AlertKind.Ok) }
+        item { Alert("📅 ${cal.note ?: "Holidays and important dates are confirmed by Zenkai admins."}", AlertKind.Ok) }
         if (vm.isAdmin) item { SmallButton("Edit academic calendar", { editing = true }) }
         item {
             val left = cal.events.filter { it.type == "holiday" && it.end.ifEmpty { it.date } >= today }
