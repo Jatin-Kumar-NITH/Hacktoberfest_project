@@ -1107,3 +1107,8 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .handover-actions { display: flex; gap: 8px; }
 .handover-card { margin-bottom: 18px; }
 .handover-card p { margin: 8px 0; }
+
+/* admins+: someone kept trying to upload 18+ / vulgar files after 3 warnings */
+.upload-alert-banner { flex-direction: column; align-items: stretch; background: var(--red-soft); color: var(--ink); border: 0; }
+.upload-alert-banner strong { color: var(--red); }
+.upload-alert-banner button { align-self: flex-start; }
