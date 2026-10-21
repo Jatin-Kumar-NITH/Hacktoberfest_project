@@ -275,7 +275,9 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 | `GOOGLE_CLIENT_ID` | ✅ | OAuth client ID for Google Sign-In (see [Google Sign-In](#google-sign-in)). Login is disabled without it. |
 | `OWNER_EMAIL` | ✅ | Google account email of the site owner. Whoever signs in with it is always the **owner**. |
 | `OWNER_NAME` | – | Display name for the owner. |
-| `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. If empty, a random one is generated in `instance/secret_key`. |
+| `SECRET_KEY` | – (✅ on Vercel) | Signs login cookies. Anyone who knows it can sign in as anyone, so use a long random value and never share it. If empty, a random one is kept in the database (Postgres) or in `instance/secret_key` (SQLite). |
+| `ALLOWED_EMAIL_DOMAINS` | – | Only let these email domains sign in, comma separated (e.g. `nith.ac.in`). Empty = any Google account. The owner can always sign in. |
+| `ALLOWED_EMAILS` | – | Extra addresses allowed to sign in when `ALLOWED_EMAIL_DOMAINS` is set (e.g. an admin's Gmail). |
 | `DATABASE_URL` | ✅ on Vercel | Postgres connection string (e.g. from Neon). If set, all data (accounts, posts, PDFs, chat, edits) is stored there permanently. If empty, a local SQLite file is used. `POSTGRES_URL` also works. |
 | `CAMPUSMATE_DATA_DIR` | – | Where the SQLite file and cache are written. Default `instance/`; on Vercel `/tmp/campusmate`. |
 
