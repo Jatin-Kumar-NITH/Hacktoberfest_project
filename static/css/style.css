@@ -637,7 +637,6 @@ details p { margin: 6px 0 0; font-size: 14px; color: var(--ink); }
 .notice.from-admin { border-left: 3px solid var(--gold); }
 .ghost.danger { color: var(--high); border-color: var(--red-soft); }
 .block-title { font-size: 16px; margin: 6px 0 10px; }
-#syMaterialsWrap { margin-bottom: 20px; }
 
 /* ---------- campus chat ---------- */
 .chat-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
