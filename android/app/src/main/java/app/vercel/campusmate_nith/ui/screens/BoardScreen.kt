@@ -105,7 +105,7 @@ private fun NoticeCard(vm: AppViewModel, nav: Nav, n: BoardItem) {
             n.pdf?.let { PdfButton(vm, it) }
             if (flat.length > 170) SmallButton(if (open) "Show less" else "Read full notice", { open = !open })
             AiButton("Explain with AI", { vm.pendingExplain = n.id to n.text; nav.go("explain") })
-            SmallButton("Share", { shareText(ctx, n.title, "${n.title}\n${n.from} · ${dmy(n.date)}\n\n${n.text.trim()}\n\nShared from CampusMate") })
+            SmallButton("Share", { shareText(ctx, n.title, "${n.title}\n${n.from} · ${dmy(n.date)}\n\n${n.text.trim()}\n\nShared from Zenkai") })
             if (canDelete(vm, n.dbId, n.authorRole, n.authorId)) DeletePostButton(vm, n.dbId!!)
         }
     }

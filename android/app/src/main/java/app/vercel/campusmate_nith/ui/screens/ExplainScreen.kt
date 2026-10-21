@@ -102,7 +102,7 @@ fun ExplainScreen(vm: AppViewModel, nav: Nav) {
 
     val entry = vm.history.firstOrNull { it.id == shownId }
     Screen("Notice explainer", vm, onBack = { nav.back() }) {
-        item { Muted("Paste a notice or upload a photo. CampusMate pulls out deadlines, documents and a step-by-step checklist, using only what the notice says.") }
+        item { Muted("Paste a notice or upload a photo. Zenkai pulls out deadlines, documents and a step-by-step checklist, using only what the notice says.") }
         if (vm.samples.isNotEmpty()) item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Muted("Try a sample notice", size = 13)

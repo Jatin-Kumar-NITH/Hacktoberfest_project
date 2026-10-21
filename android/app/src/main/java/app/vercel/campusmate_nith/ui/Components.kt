@@ -371,7 +371,7 @@ fun UpdateBanner(vm: AppViewModel) {
             ctx.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(vm.updateUrl())))
         }
     }) {
-        Text("A new version of CampusMate is ready", fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
+        Text("A new version of Zenkai is ready", fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
         Muted("Version ${v.versionName}. Tap to download it, then open the file to install.", size = 13)
     }
 }

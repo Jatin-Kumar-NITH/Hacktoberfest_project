@@ -60,7 +60,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
     val c = vm.campus
     val sec = vm.mySection
     val tIso = todayIso()
-    Screen("CampusMate", vm, actions = {
+    Screen("Zenkai", vm, actions = {
         IconButton(onClick = { nav.go("settings") }) { Icon(Icons.Outlined.Settings, "Settings") }
         IconButton(onClick = { nav.go("profile") }) { Icon(Icons.Outlined.AccountCircle, "Your class") }
     }) {
@@ -75,7 +75,7 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
         // ---- ask bar
         item {
             CmCard(onClick = { nav.go("ask") }) {
-                Text("✦ Ask CampusMate", fontWeight = FontWeight.SemiBold, color = P.accent)
+                Text("✦ Ask Zenkai", fontWeight = FontWeight.SemiBold, color = P.accent)
                 Muted("“What classes do I have tomorrow?” “When is my next exam?”")
             }
         }

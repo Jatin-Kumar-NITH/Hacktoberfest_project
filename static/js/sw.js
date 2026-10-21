@@ -1,7 +1,7 @@
-// CampusMate AI service worker: makes the site installable and shows a friendly
+// Zenkai service worker: makes the site installable and shows a friendly
 // page when there is no connection. Pages and /api calls always go to the network
 // so students never see stale notices or someone else's data.
-const CACHE = "campusmate-v1";
+const CACHE = "zenkai-v1";
 const PRECACHE = [
   "/offline",
   "/static/css/style.css",

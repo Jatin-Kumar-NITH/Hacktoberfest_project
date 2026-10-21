@@ -87,11 +87,11 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private var attDirty = false
     private var attJob: Job? = null
 
-    /** Ask CampusMate conversation (kept while the app is open, like the website). */
+    /** Ask Zenkai conversation (kept while the app is open, like the website). */
     val askLog = mutableStateListOf<AskEntry>()
     var askHistory = listOf<AskTurn>()
 
-    /** A question another screen wants Ask CampusMate to answer next. */
+    /** A question another screen wants Ask Zenkai to answer next. */
     var pendingQuestion by mutableStateOf<String?>(null)
     /** Notice text the board sends to the explainer. */
     var pendingExplain by mutableStateOf<Pair<String, String>?>(null)
@@ -146,7 +146,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                     signOutLocal()
                 } else {
                     // a parsing problem must not crash the app; show it like any other load error
-                    loadError = if (e is ApiException) e.message else "Couldn't read the data from CampusMate (${e.javaClass.simpleName}: ${e.message})."
+                    loadError = if (e is ApiException) e.message else "Couldn't read the data from Zenkai (${e.javaClass.simpleName}: ${e.message})."
                     if (user == null) auth = AuthState.SignedOut
                 }
             } finally {
@@ -161,10 +161,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             signingIn = true
             signInError = null
             try {
-                val clientId = step("Couldn't load the sign-in settings from CampusMate") { api.config() }
+                val clientId = step("Couldn't load the sign-in settings from Zenkai") { api.config() }
                 if (clientId.isEmpty()) throw ApiException("Google login is not set up on the server yet (GOOGLE_CLIENT_ID is missing).")
                 val token = googleIdToken(activity, clientId)
-                step("Google signed you in, but CampusMate didn't accept it") { api.login(token) }
+                step("Google signed you in, but Zenkai didn't accept it") { api.login(token) }
                 user = step("Signed in, but couldn't load your account") { api.me() }
                 auth = AuthState.SignedIn
                 refresh(initial = true)
@@ -417,7 +417,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     }
 }
 
-/** One line in the Ask CampusMate conversation. */
+/** One line in the Ask Zenkai conversation. */
 data class AskEntry(
     val kind: String,           // "user", "bot", "err"
     val text: String,

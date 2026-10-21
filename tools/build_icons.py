@@ -1,4 +1,4 @@
-"""Draws the app icons (the black "C" tile) used by the web manifest and the Android app.
+"""Draws the app icons (the black "Z" tile) used by the web manifest and the Android app.
 
 Run once after changing the design:  python tools/build_icons.py
 """
@@ -26,7 +26,7 @@ def tile(size, rounded, glyph_scale, circle=False):
     else:
         d.rectangle([0, 0, s, s], fill=INK)
     font = ImageFont.truetype(FONT, int(s * glyph_scale))
-    d.text((s / 2, s / 2), "C", font=font, fill=CARD, anchor="mm")
+    d.text((s / 2, s / 2), "Z", font=font, fill=CARD, anchor="mm")
     return img.resize((size, size), Image.LANCZOS)
 
 

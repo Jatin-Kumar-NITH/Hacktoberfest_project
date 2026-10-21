@@ -105,7 +105,7 @@ fun AssignmentsScreen(vm: AppViewModel, nav: Nav) {
                     a.topics.forEach { Tag(it) }
                 }
                 Text("📤 ${a.submit}", fontSize = 13.sp, color = P.ink2)
-                PubLine(a.publishedBy, a.authorRole, a.publishedAt, if (a.official) "Course instructor (PDF provided by the student)" else "CampusMate (sample)")
+                PubLine(a.publishedBy, a.authorRole, a.publishedAt, if (a.official) "Course instructor (PDF provided by the student)" else "Zenkai (sample)")
                 Actions {
                     a.pdf?.let { PdfButton(vm, it, "Open assignment PDF") }
                     SmallButton(if (done) "Mark as not submitted" else "✓ Mark as submitted", { vm.toggleAssignment(a.id) })

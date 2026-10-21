@@ -41,7 +41,7 @@ fun LoginScreen(vm: AppViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
         ) {
             Box(Modifier.size(64.dp).background(P.ink, RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-                Text("C", color = P.bg, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
+                Text("Z", color = P.bg, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
             }
             Spacer(Modifier.height(24.dp))
             Muted("For students of NIT Hamirpur", size = 14)
@@ -75,7 +75,7 @@ fun LoginScreen(vm: AppViewModel) {
                 }
             }
             Spacer(Modifier.height(16.dp))
-            Muted("CampusMate AI · Built for NIT Hamirpur", size = 12)
+            Muted("Zenkai · Built for NIT Hamirpur", size = 12)
         }
     }
 }

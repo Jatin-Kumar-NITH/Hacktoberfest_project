@@ -80,7 +80,7 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
             CmCard {
                 SectionTitle("Notifications")
                 if (!allowed && (vm.notifyNew || vm.notifyClasses)) {
-                    Alert("Notifications are turned off for CampusMate on this phone.", AlertKind.Warn)
+                    Alert("Notifications are turned off for Zenkai on this phone.", AlertKind.Warn)
                     SmallButton("Allow notifications", { allowNotifications() })
                 }
                 ToggleRow("New notices, assignments and exams", "Checked about once an hour for your year and section", vm.notifyNew) {
@@ -107,7 +107,7 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
                         manager.requestPinAppWidget(ComponentName(ctx, TodayWidget::class.java), null, null)
                     })
                 } else {
-                    Muted("Long-press your home screen, choose Widgets, then CampusMate.", size = 13)
+                    Muted("Long-press your home screen, choose Widgets, then Zenkai.", size = 13)
                 }
             }
         }
@@ -138,7 +138,7 @@ fun SettingsScreen(vm: AppViewModel, nav: Nav) {
         item {
             CmCard {
                 SectionTitle("About")
-                Muted("CampusMate ${BuildConfig.VERSION_NAME}. Built for NIT Hamirpur.", size = 13)
+                Muted("Zenkai ${BuildConfig.VERSION_NAME}. Built for NIT Hamirpur.", size = 13)
                 Actions {
                     SmallButton(if (vm.checkingUpdate) "Checking…" else "Check for updates", { vm.checkUpdate(manual = true) }, enabled = !vm.checkingUpdate)
                     SmallButton("Show the tour again", { vm.changeTutorialSeen(false) })
