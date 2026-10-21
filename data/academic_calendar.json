@@ -1,7 +1,7 @@
 {
  "name": "Academic Calendar 2026-27",
- "note": "Gazetted holidays are from NIT Hamirpur's official list for calendar year 2026 (holidays marked * depend on moon sighting). Odd semester dates are from the official 2026-27 academic calendar for all years except 1st year, whose calendar is notified separately. Always follow the official notice if anything differs.",
- "updated": "2026-10-21T07:45:00Z",
+ "note": "Gazetted holidays are from NIT Hamirpur's official list for calendar year 2026 (holidays marked * depend on moon sighting). Odd semester dates are from the official 2026-27 academic calendar; 1st year follows it from 20 August, without the mid semester break. Always follow the official notice if anything differs.",
+ "updated": "2026-10-21T07:50:00Z",
  "events": [
   {
    "date": "2026-01-26",
@@ -152,15 +152,23 @@
    ]
   },
   {
+   "date": "2026-08-20",
+   "end": "2026-08-20",
+   "title": "1st year odd semester calendar begins",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar. 1st year follows it from 20 August.",
+   "years": [
+    1
+   ]
+  },
+  {
    "date": "2026-08-21",
    "end": "2026-08-21",
    "title": "Notification of list of registered students",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -178,11 +186,9 @@
    "end": "2026-09-03",
    "title": "Notification of shortage of attendance by departments",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -200,11 +206,9 @@
    "end": "2026-09-26",
    "title": "Mid semester theory examinations",
    "type": "exam",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -212,11 +216,9 @@
    "end": "2026-10-05",
    "title": "Mid semester evaluation of UG projects",
    "type": "exam",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -224,11 +226,9 @@
    "end": "2026-09-30",
    "title": "Abhyudaya",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -246,11 +246,9 @@
    "end": "2026-10-18",
    "title": "Hill'Fair 2026 (annual cultural festival)",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -280,11 +278,9 @@
    "end": "2026-10-27",
    "title": "Last date for showing mid sem answer sheets",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -302,11 +298,9 @@
    "end": "2026-11-12",
    "title": "End of classes",
    "type": "semester",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -314,11 +308,9 @@
    "end": "2026-11-13",
    "title": "Final notification of shortage of attendance by departments",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -326,11 +318,9 @@
    "end": "2026-11-21",
    "title": "End semester practical examinations",
    "type": "exam",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -338,11 +328,9 @@
    "end": "2026-12-07",
    "title": "End semester theory examinations",
    "type": "exam",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -360,11 +348,9 @@
    "end": "2026-12-10",
    "title": "End semester evaluation of UG projects",
    "type": "exam",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -372,11 +358,9 @@
    "end": "2026-12-11",
    "title": "Last date for evaluation of end semester answer sheets",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -384,11 +368,9 @@
    "end": "2026-12-14",
    "title": "Last date for grade submission",
    "type": "event",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   },
   {
@@ -406,11 +388,9 @@
    "end": "2026-12-31",
    "title": "Declaration of results",
    "type": "semester",
-   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "note": "Odd semester 2026-27 academic calendar.",
    "years": [
-    2,
-    3,
-    4
+    "all"
    ]
   }
  ]
