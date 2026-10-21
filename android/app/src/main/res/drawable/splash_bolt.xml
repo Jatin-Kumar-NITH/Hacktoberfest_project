@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Zenkai bolt for the launch screen. Same outline as BOLT in tools/build_icons.py,
+     scaled into the middle 72dp circle of a 108dp box, the area the system splash keeps. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.673"
+        android:scaleY="0.673"
+        android:translateX="20.35"
+        android:translateY="20.35">
+        <path
+            android:fillColor="@color/splash_bolt"
+            android:pathData="M22,16 L91.26,16 L58.26,45 L73.57,45 L39.57,74 L78,74 L78,84 L12.43,84 L46.43,55 L31.74,55 L64.74,26 L22,26 Z" />
+    </group>
+</vector>
