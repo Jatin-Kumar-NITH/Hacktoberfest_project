@@ -1,7 +1,7 @@
 {
  "name": "Academic Calendar 2026-27",
  "note": "Gazetted holidays are from NIT Hamirpur's official list for calendar year 2026 (holidays marked * depend on moon sighting). Odd semester dates are from the official 2026-27 academic calendar; 1st year follows it from 20 August, without the mid semester break. Always follow the official notice if anything differs.",
- "updated": "2026-10-21T07:50:00Z",
+ "updated": "2026-10-21T07:55:00Z",
  "events": [
   {
    "date": "2026-01-26",
@@ -242,16 +242,6 @@
    ]
   },
   {
-   "date": "2026-10-16",
-   "end": "2026-10-18",
-   "title": "Hill'Fair 2026 (annual cultural festival)",
-   "type": "event",
-   "note": "Odd semester 2026-27 academic calendar.",
-   "years": [
-    "all"
-   ]
-  },
-  {
    "date": "2026-10-19",
    "end": "2026-10-25",
    "title": "Mid semester break",
@@ -279,6 +269,16 @@
    "title": "Last date for showing mid sem answer sheets",
    "type": "event",
    "note": "Odd semester 2026-27 academic calendar.",
+   "years": [
+    "all"
+   ]
+  },
+  {
+   "date": "2026-10-30",
+   "end": "2026-11-01",
+   "title": "Hill'Fair 2026 (annual cultural festival)",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar. Postponed from 16–18 Oct.",
    "years": [
     "all"
    ]
