@@ -1203,7 +1203,7 @@ function renderSyllabus() {
   const codes = [...new Set(sec.classes.map((c) => c.code))].sort();
   $("syGrid").replaceChildren(...(codes.length ? codes.map((c) => subjectCard(c, sec, syl))
     : [el("p", "empty-line card", Object.keys(syl.subjects).length ? "Add this section's timetable to see its subjects here."
-        : `The syllabus for this year hasn't been added yet.${IS_ADMIN ? " Use Add subject to add it." : ""}`)]));
+        : "The syllabus for this year hasn't been added yet. Admins can publish syllabus PDFs as Study material.")]));
   const others = Object.keys(syl.subjects).filter((c) => !codes.includes(c)).sort();
   $("syOtherWrap").hidden = !others.length;
   $("syOtherCount").textContent = others.length;
