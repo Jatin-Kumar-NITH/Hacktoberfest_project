@@ -47,6 +47,7 @@
       <a href="#attendance" data-page="attendance"><span class="ico">✓</span><span>My Attendance</span></a>
       <a href="#results" data-page="results"><span class="ico">🎓</span><span>Results</span></a>
       <a href="#syllabus" data-page="syllabus"><span class="ico">❒</span><span>Syllabus</span></a>
+      <a href="#materials" data-page="materials"><span class="ico">📄</span><span>Study Material</span></a>
       <a href="#notice" data-page="notice"><span class="ico">✦</span><span>Notice Explainer</span></a>
       <a href="#planner" data-page="planner"><span class="ico">◷</span><span>Study Planner</span></a>
       <a href="#hostel" data-page="hostel"><span class="ico">⌂</span><span>Mess Menu</span></a>
@@ -373,6 +374,16 @@
       <p class="fine">Results come from <a href="https://www.nithresults.xyz" target="_blank" rel="noopener">nithresults.xyz</a>, an unofficial site, and are refreshed every few hours. SGPA and CGPA are worked out from the grades (A=10, AB=9, B=8, BC=7, C=6, CD=5, D=4, F=0). For anything official, check the college's result portal.</p>
     </section>
 
+    <!-- ============ STUDY MATERIAL ============ -->
+    <section class="page" id="page-materials" hidden>
+      <header class="page-head row-between">
+        <div><h1>Study Material</h1><p class="sub" id="matSub">Notes and PDFs published for your year and section.</p></div>
+        {% if me.role in ['admin', 'coowner', 'owner'] %}<button class="primary inline" id="matPublish">↑ Publish study material</button>{% endif %}
+      </header>
+      <div class="as-filters" id="matFilters"></div>
+      <div class="as-list" id="matList"></div>
+    </section>
+
     <!-- ============ SYLLABUS ============ -->
     <section class="page" id="page-syllabus" hidden>
       <header class="page-head row-between">
@@ -381,10 +392,6 @@
       </header>
       <div class="alert" id="syBadge"></div>
       <div class="sy-docs" id="syDocs"></div>
-      <div id="syMaterialsWrap" hidden>
-        <h2 class="block-title">📄 Study material published by admins</h2>
-        <div class="as-list" id="syMaterials"></div>
-      </div>
       <div class="sy-grid" id="syGrid"></div>
       <details class="sy-other" id="syOtherWrap">
         <summary>Other courses this year (<span id="syOtherCount"></span>), e.g. the other semester's list</summary>
