@@ -43,7 +43,141 @@
      ],
      "units": 6,
      "text": "Course Name:\nLinear Algebra & Calculus\nCourse Code:\nMA-111\nCourse Type:\nInstitute Core\nContact Hours/Week: 3L\nCourse Credits: 03\nCourse Objectives\n• To understand concepts of matrix algebra and its applicability in different engineering fields.\n• To understand the meaning of the derivative in terms of a rate of change and should be able to use derivatives to solve a variety of\nproblems.\n• To able to model a written description of a physical situation with a function, a differential equation, or an integral.\n• To have the idea of vector calculus, fundamental theorems & its physical interpretation and applications.\n• To develop an appreciation of calculus as a coherent body of knowledge and as a human accomplishment.\n• To able to communicate mathematics both orally and in well- written sentences and should be able to explain solutions to problems.\nUnit Number\nCourse Content\nContact Hours\nUnit-01\nIntroduction to Linear Algebra: Matrices, Equivalent Matrix, Elementary Matrix, Normal form of a matrix,\nGauss-Jordan reduction and inverse of matrices, Row-reduced matrix, Linear dependence and\n05L\nindependence of vectors, Rank of a matrix, Consistency and Solution of linear system of equations,\nEigenvalues and Eigenvectors: Characteristic equation, Eigen-values, Eigen vectors, Properties of Eigen\nUnit-02\n03L\nvalues, Orthogonal vectors and its properties, Cayley-Hamilton theorem and its applications.\nDifferential Calculus: Function of two variables, Limit, Continuity and Differentiability, Partial Differentiation\nand its geometrical interpretation, Homogeneous functions, Euler's theorem and its extension, Total\nUnit-03\n08L\ndifferentials, Composite function, Jacobian, Taylor's and Maclaurin's series (for one and two variables),\nMaxima and minima of functions of two variables, Method of undetermined multipliers, Curve tracing.\nIntegral Calculus: Double Integrals (Cartesian and Polar), Change of Order of Integration, Change of\nUnit-04\nVariables, Applications of Double Integrals, Triple integrals, Change of variables, Applications of Triple\n08L\nIntegrals.\nVector Calculus (Differential): Point functions, Differentiation of vectors, General rule of differentiation,\nSpace curves (curves in space), Tangent, Principal normal, Binormal, Osculating plane, Normal plane,\nRectifying plane, Curvature and Torsion, Radius of curvature, Frenet's formulae, Tangential and Normal\nUnit-05\n08L\nAcceleration, Relative Velocity and Acceleration. Gradient, Divergence and Curl and their Physical\nInterpretation, Directional derivative, Del applied twice to point function, Del applied to products of point\nfunctions.\nVector Calculus (Integral): Line Integral, Surface Integral, Volume integrals, Theorems of Green, Stokes\nUnit-06\n04L\nand Gauss (without proofs) and their verifications and applications, Irrotational fields, Solenoidal fields\nCourse Outcomes\nUpon successful completion of the course, the student will be able to\nCO1: Understand and analyze the theoretical & practical aspects of matrices and calculus.\nCO2: Solve systems of linear equations using multiple methods, demonstrate understanding of linear independence,and determine\neigenvalues and eigenvectors and solve eigenvalue problems.\nCO3: Understand the various solution techniques and practical aspects of differential and Integral calculus.\nCO4: Familiar understanding with the basic concepts of differential geometry and the application of vector differentiation and integration to\nsolve the real time surface, area and volume problems.\nCO5: Apply the concepts of matrices and calculus in various engineering problems.\nText Books:\n1. E. Kreyszig, Advanced Engineering Mathematics, John Wiley and Sons, NC, New York.\n2. R.K. Jain and S.R.K. Iyenger, Advanced Engineering Mathematics, Narosa Pub. House.\n3. B.V. Ramana, Higher Engineering Mathematics, Mc Graw Hill, India.\nReference Books:\n1. G.B. Thomas, M.D. Weir, J. Hass, Thomas' Calculus, Pearson Education India.\n2. Gilbert Strang, Calculus, Wellesley-Cambridge Press.\n3. B.S. Grewal, Higher Engineering Mathematics, Khanna Publishers.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction to Linear Algebra",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Introduction to Linear Algebra",
+         "topics": [
+          "Matrices",
+          "Equivalent Matrix",
+          "Elementary Matrix",
+          "Normal form of a matrix",
+          "Gauss-Jordan reduction and inverse of matrices",
+          "Row-reduced matrix",
+          "Linear dependence and independence of vectors",
+          "Rank of a matrix",
+          "Consistency and Solution of linear system of equations"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Eigenvalues and Eigenvectors",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Eigenvalues and Eigenvectors",
+         "topics": [
+          "Characteristic equation",
+          "Eigen-values",
+          "Eigen vectors",
+          "Properties of Eigen- values",
+          "Orthogonal vectors and its properties",
+          "Cayley-Hamilton theorem and its applications"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Differential Calculus",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Differential Calculus",
+         "topics": [
+          "Function of two variables",
+          "Limit",
+          "Continuity and Differentiability",
+          "Partial Differentiation and its geometrical interpretation",
+          "Homogeneous functions",
+          "Euler's theorem and its extension",
+          "Total differentials",
+          "Composite function",
+          "Jacobian",
+          "Taylor's and Maclaurin's series (for one and two variables)",
+          "Maxima and minima of functions of two variables",
+          "Method of undetermined multipliers",
+          "Curve tracing"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Integral Calculus",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Integral Calculus",
+         "topics": [
+          "Double Integrals (Cartesian and Polar)",
+          "Change of Order of Integration",
+          "Change of Variables",
+          "Applications of Double Integrals",
+          "Triple integrals",
+          "Change of variables",
+          "Applications of Triple Integrals"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Vector Calculus (Differential)",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Vector Calculus (Differential)",
+         "topics": [
+          "Point functions",
+          "Differentiation of vectors",
+          "General rule of differentiation",
+          "Space curves (curves in space)",
+          "Tangent",
+          "Principal normal",
+          "Binormal",
+          "Osculating plane",
+          "Normal plane",
+          "Rectifying plane",
+          "Curvature and Torsion",
+          "Radius of curvature",
+          "Frenet's formulae",
+          "Tangential and Normal Acceleration",
+          "Relative Velocity and Acceleration",
+          "Gradient, Divergence and Curl and their Physical Interpretation",
+          "Directional derivative",
+          "Del applied twice to point function",
+          "Del applied to products of point functions"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Vector Calculus (Integral)",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Vector Calculus (Integral)",
+         "topics": [
+          "Line Integral",
+          "Surface Integral",
+          "Volume integrals",
+          "Theorems of Green, Stokes and Gauss (without proofs) and their verifications and applications",
+          "Irrotational fields",
+          "Solenoidal fields"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "PH-101": {
      "name": "Engineering Physics",
@@ -57,9 +191,130 @@
      "pages": [
       8
      ],
-     "units": 0,
+     "units": 6,
      "text": "Course Name:\nEngineering Physics\nCourse Code:\nPH-101\nCourse Type:\nInstitute Core\nContact Hours/Week: 3\nCourse Credits: 3\nCourse Objectives\n• To create an ability to understand laser system, optical fibre in industries, laboratories and in communication\n• To understand concepts of communication through electrodymanics.\n• The broad education necessary to understand behavior of semiconductor devices.\n• Acknowledge of concepts / technologies like superconductivity.\nUnit Number\nCourse Content\nContact Hours\nElectrostatics and Electrodynamics: Gauss's Law in dielectric medium, Equation of continuity,\nUNIT-01\ndisplacement current, Maxwell's equations, wave equation for electromagnetic radiation, electromagnetic\n06L\nwave propagation in free space and isotropic dielectric medium, Poynting theorem & Poynting vector.\nLaser Physics: Concepts of laser, spontaneous and stimulated emission, elementary idea about Lasers,\nUNIT-02\nbasic principles involves in laser, three and four level laser system, coherence, characteristics of laser light;\n06L\nruby, He-Ne, CO2 and semiconductor lasers, application of lasers.\nFibers Optics and Photonics: Optical Fiber, physical structure and basic theory, modes in optical fibers,\nstep index and graded index fibers, losses in optical fibers, sources and sensors for optical fibers,\nUNIT-03\n06L\napplications of optical fibers in communication.\nQuantum Mechanics: Need of quantum mechanics, Compton effect, Born's concept of wave function,\nEigen function and Eigen values, operators in quantum mechanics, expectation values, time independent,\nUNIT-04\ntime dependent Schrodinger's wave equations and its applications viz., particle in one dimensional\npotential well.\nIntroduction to Solids: Free electron theory (Classical & Quantum): Assumptions, Merits and drawbacks,\nFermi level, Density of states, Periodic potential, Bloch's theorem, Kronig–Penny modal, E–K diagram,\nUNIT-05\nEffective mass, Origin of energy bands in solids, Classification of materials : Metals, semiconductors and\ninsulators.\nSuperconductivity: Introduction and discovery of superconductivity, superconducting materials, Meissner\nUNIT-06\neffect, critical magnetic field and critical current, type-1 and type-2 superconductors, isotope effect, theory\nof superconductivity.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1:\nDescribe the optical devices and their applications.\nCO2:\nIdentify the applications of electrodynamics using Maxwell equations.\nCO3:\nApply concept of semiconductor physics to understand electronic systems.\nCO4:\nApply concepts of Quantum mechanics in solving physics problems at nanoscale.\nCO5:\nLearn the working of equipment based on physical phenomenon.\nText Books:\n1. M. N. Avadhanulu and P. G. Kshirsagar, A Textbook of Engineering Physics by S. Chand.\n2. P. S. Aithal and H. J. Ravindra,Textbook of Engineering Physics by Acme Learning Pvt. Ltd., New Delhi.\n3. Kittle C,State Physics by John Wiley & Sons, 2005.\nReferences Books:\nA. K. Ghatak and K. Thyagarajan, Lasers Fundamentals and Applications by Springer, 2010.\nB. G. Streetman, Solid State Electronic Devices by Prentice Hall of India, New Delhi 2006.\nA.S. Vasudeva, Modern Engineering Physics by S. Chand & Co. Ltd.\nD.J. Griffiths,Introduction to Electrodynamics by Pearson Education Pvt. Ltd., New Delhi, 2002\nA. Ghatak and S. Lokanathan,Quantum Mechanics by Mc Millan India Ltd.\n\n06L\n\n06L\n\n06L",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Electrostatics and Electrodynamics",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Electrostatics and Electrodynamics",
+         "topics": [
+          "Gauss's Law in dielectric medium",
+          "Equation of continuity",
+          "Displacement current",
+          "Maxwell's equations",
+          "Wave equation for electromagnetic radiation",
+          "Electromagnetic wave propagation in free space and isotropic dielectric medium",
+          "Poynting theorem & Poynting vector"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Laser Physics",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Laser Physics",
+         "topics": [
+          "Concepts of laser",
+          "Spontaneous and stimulated emission",
+          "Elementary idea about Lasers",
+          "Basic principles involves in laser",
+          "Three and four level laser system",
+          "Coherence",
+          "Characteristics of laser light",
+          "Ruby, He-Ne, CO2 and semiconductor lasers",
+          "Application of lasers"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Fibers Optics and Photonics",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Fibers Optics and Photonics",
+         "topics": [
+          "Optical Fiber",
+          "Physical structure and basic theory",
+          "Modes in optical fibers",
+          "Step index and graded index fibers",
+          "Losses in optical fibers",
+          "Sources and sensors for optical fibers",
+          "Applications of optical fibers in communication"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Quantum Mechanics",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Quantum Mechanics",
+         "topics": [
+          "Need of quantum mechanics",
+          "Compton effect",
+          "Born's concept of wave function",
+          "Eigen function and Eigen values",
+          "Operators in quantum mechanics",
+          "Expectation values",
+          "Time independent and time dependent Schrodinger's wave equations and its applications viz. particle in one dimensional potential well"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Introduction to Solids",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Introduction to Solids",
+         "topics": [
+          "Free electron theory (Classical & Quantum): Assumptions, Merits and drawbacks",
+          "Fermi level",
+          "Density of states",
+          "Periodic potential",
+          "Bloch's theorem",
+          "Kronig–Penny modal",
+          "E–K diagram",
+          "Effective mass",
+          "Origin of energy bands in solids",
+          "Classification of materials: Metals, semiconductors and insulators"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Superconductivity",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Superconductivity",
+         "topics": [
+          "Introduction and discovery of superconductivity",
+          "Superconducting materials",
+          "Meissner effect",
+          "Critical magnetic field and critical current",
+          "Type-1 and type-2 superconductors",
+          "Isotope effect",
+          "Theory of superconductivity"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "CS-111": {
      "name": "Introduction to Computer and C Programming",
@@ -73,9 +328,131 @@
      "pages": [
       9
      ],
-     "units": 0,
+     "units": 6,
      "text": "Course Name:\nIntroduction to Computer and C Programming\nCourse Code:\nCS-111\nCourse Type:\nInstitute Core\nContact Hours/Week: 2L/2P\nCourse Objectives\n• To introduce the concept of computer fundamentals and computer programming.\n• To enable the student to design algorithms.\n• The enable the students to understand the “C” language and its application in problem-solving.\nUnit Number\n\nCourse Credits: 03\n\nCourse Content\n\nProgramming Fundamentals: Introduction to computer, block diagram and organization of computer,\nUNIT-01\nnumber system and binary arithmetic, processing data, hardware, software, firmware,\nTypes of programming language: Machine language, Assembly level language, higher level language,\nUNIT-02\nsource file, object file, translators-assembler, compiler, interpreter. Evolution and classification of\nprogramming languages.\nUNIT-03\nProgramming Techniques: Steps in program development, algorithm, flowchart, pseudo-code.\nC Language: ‗C' character set, literals, keywords, identifiers, data types and size, variable declaration,\nUNIT-04\nexpression, labels, statements, formatted input output statements, types of operators, data type\nconversion, mixed mode arithmetic, control structures.\nControl Statement and Derived Datatypes:Control Statement and Expressions, Looping, Arrays and\nUNIT-05\nString, Pointers, Structures, Union.\nFunctions and File Handling: ‗C' functions, library functions, parameter passing, recursion, ‗C' files,\nUNIT-06\nfunction for file handling, ‗C' pre-processors and command line arguments, macros and conditional\ncompiler directives.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Know the basic components of the computer and the working of each device.\nCO2: Design algorithms and flowcharts\nCO3: Understand the fundamentals of C programming.\nCO4: Use suitable data structure for problem-solving\nText Books:\n1. Briain W. Kenigham and Dennis Ritchie,C Programming Language, Prentice Hall of India.\n2. Byron Gottfried,Programming with C, Tata McGraw Hill.\n3. Herbert Schildt,The Complete Reference C, Tata McGraw Hill.\nReference Books:\n1. Yashwant Kanetkar, Let us C, BPB Publication.\n2. A. Forouzan and R.F. Gilberg, A Structured Programming Approach in C, Cengage Learning.\n3. S.K.Srivastava and Deepali Srivastava,C In Depth, BPB Publications.\n\nContact Hours\n\n05L\n05L\n06L\n08L\n05L\n08L",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Programming Fundamentals",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Programming Fundamentals",
+         "topics": [
+          "Introduction to computer",
+          "Block diagram and organization of computer",
+          "Number system and binary arithmetic",
+          "Processing data",
+          "Hardware",
+          "Software",
+          "Firmware"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Types of programming language",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Types of programming language",
+         "topics": [
+          "Machine language",
+          "Assembly level language",
+          "Higher level language",
+          "Source file",
+          "Object file",
+          "Translators-assembler",
+          "Compiler",
+          "Interpreter",
+          "Evolution and classification of programming languages"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Programming Techniques",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Programming Techniques",
+         "topics": [
+          "Steps in program development",
+          "Algorithm",
+          "Flowchart",
+          "Pseudo-code"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "C Language",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "C Language",
+         "topics": [
+          "'C' character set",
+          "Literals",
+          "Keywords",
+          "Identifiers",
+          "Data types and size",
+          "Variable declaration",
+          "Expression",
+          "Labels",
+          "Statements",
+          "Formatted input output statements",
+          "Types of operators",
+          "Data type conversion",
+          "Mixed mode arithmetic",
+          "Control structures"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Control Statement and Derived Datatypes",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Control Statement and Derived Datatypes",
+         "topics": [
+          "Control Statement and Expressions",
+          "Looping",
+          "Arrays and String",
+          "Pointers",
+          "Structures",
+          "Union"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Functions and File Handling",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Functions and File Handling",
+         "topics": [
+          "'C' functions",
+          "Library functions",
+          "Parameter passing",
+          "Recursion",
+          "'C' files",
+          "Function for file handling",
+          "'C' pre-processors and command line arguments",
+          "Macros and conditional compiler directives"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "ME-101": {
      "name": "Basics of Mechanical Engineering",
@@ -89,9 +466,135 @@
      "pages": [
       10
      ],
-     "units": 0,
+     "units": 6,
      "text": "Course Name:\nBasics of Mechanical Engineering\nCourse Code:\nME-101\nCourse Type:\nInstitute Core\nContact Hours/Week: 3L\nCourse Credits: 3\nCourse Objectives\n● Gain fundamental knowledge of Thermodynamics, and I.C. Engines.\n● Gain knowledge of steam formation and properties of steam.\n● Develop skills for material selection for different devices/ components.\n● Develop know how about SFD and BMD.\n● Develop knowledge to solve simple problems on stress strain.\nUnit Number\nCourse Content\nContact Hours\nThermodynamics: Heat, Temperature, Specific heat capacity, Change of state, Path, Process, Cycle,\nInternal energy, Enthalpy, Zeroth law and First law, Second Law, Heat engine, Classification of heat\nUNIT-01\n07L\nengines, Steam formation, Enthalpy, Specific volume, Internal energy and dryness fraction of steam, use of\nsteam tables, steam calorimeters.\nAnalysis of thermodynamic cycles: Efficiency of Carnot, Otto, Diesel cycle, Concept of heat addition, heat\nUNIT-02\nrejection, work and efficiency. Classification of IC Engines, Efficiencies of IC Engines, CRDI, MPFI, Concept\n07L\nof hybrid engines.\nEngineering Materials: Types, properties of engineering materials, Use of materials under different\nUNIT-03\n06L\nenvironmental conditions, applications of Ferrous & Nonferrous metals, Ceramics, Polymers and alloys.\nManufacturing Process: Basic description of the manufacturing processes – Sand Casting, Forging,\nRolling, Extrusion and their applications. Types of Metal Joining Processes, Arc Welding, Soldering, Brazing\nUNIT-04\n07L\nand their applications, Machine tools and basic machining operations such as Turning, Drilling, Milling and\nGrinding. Basics of CAD/CAM, Rapid and Additive manufacturing.\nForce and Structure Analysis: Force and Equilibrium, Centre of Gravity-simple cases, Beams, SFD & BMD\nUNIT-05\n07L\nof cantilever and simply supported beams, Trusses-simple cases.\nStress and Strain: Fundamentals of Stress and strain, Thermal Strain and Stress, Poisson Ratio, Elastic\nUNIT-06\n08L\nConstants, Bending of Beams, Bending equation, Torsion equation, Torsion of Springs & shafts.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1:\nTo understand the basic concepts of thermodynamics and heat transfer system\nCO2:\nTo understand the principles of IC- engines\nCO3:\nTo understand the use of materials for various applications\nCO4:\nTo understand the function of machine tools and machining processes\nCO5:\nTo Understand the basic concepts force, SFD and BMD\nCO6:\nTo understand the stress and strain, concept of bending and torsion\nBooks and References\n1. J. Benjamin,Basic Mechanical Engineering,Pentex Books,9th Edition,2018.\n2. R. K.Singal, M. Singal, and R. Singal, Basics of Mechanical Engineering, 2007.\n3. G. S.Sawhney, Fundamentals of Mechanical Engineering, PHI.\n4. P. K.Nag, Engineering Thermodynamics, 2018.\n5. B.K.Agrawal, Introduction to Engineering Materials, McGraw Hill Publication, 2008.\n6. S. Kalpakjian and S.R.Schmid, Manufacturing Processes & Engg Materials, 2022.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Thermodynamics",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Thermodynamics",
+         "topics": [
+          "Heat",
+          "Temperature",
+          "Specific heat capacity",
+          "Change of state",
+          "Path",
+          "Process",
+          "Cycle",
+          "Internal energy",
+          "Enthalpy",
+          "Zeroth law and First law",
+          "Second Law",
+          "Heat engine",
+          "Classification of heat engines",
+          "Steam formation",
+          "Specific volume",
+          "Internal energy and dryness fraction of steam",
+          "Use of steam tables",
+          "Steam calorimeters"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Analysis of thermodynamic cycles",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Analysis of thermodynamic cycles",
+         "topics": [
+          "Efficiency of Carnot, Otto, Diesel cycle",
+          "Concept of heat addition",
+          "Heat rejection",
+          "Work and efficiency",
+          "Classification of IC Engines",
+          "Efficiencies of IC Engines",
+          "CRDI",
+          "MPFI",
+          "Concept of hybrid engines"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Engineering Materials",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Engineering Materials",
+         "topics": [
+          "Types",
+          "Properties of engineering materials",
+          "Use of materials under different environmental conditions",
+          "Applications of Ferrous & Nonferrous metals",
+          "Ceramics",
+          "Polymers and alloys"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Manufacturing Process",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Manufacturing Process",
+         "topics": [
+          "Basic description of the manufacturing processes – Sand Casting, Forging, Rolling, Extrusion and their applications",
+          "Types of Metal Joining Processes",
+          "Arc Welding, Soldering, Brazing and their applications",
+          "Machine tools and basic machining operations such as Turning, Drilling, Milling and Grinding",
+          "Basics of CAD/CAM",
+          "Rapid and Additive manufacturing"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Force and Structure Analysis",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Force and Structure Analysis",
+         "topics": [
+          "Force and Equilibrium",
+          "Centre of Gravity-simple cases",
+          "Beams",
+          "SFD & BMD of cantilever and simply supported beams",
+          "Trusses-simple cases"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Stress and Strain",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Stress and Strain",
+         "topics": [
+          "Fundamentals of Stress and strain",
+          "Thermal Strain and Stress",
+          "Poisson Ratio",
+          "Elastic Constants",
+          "Bending of Beams",
+          "Bending equation",
+          "Torsion equation",
+          "Torsion of Springs & shafts"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "HS-101": {
      "name": "Communication Skills",
@@ -105,9 +608,159 @@
      "pages": [
       11
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name\n: Communication Skills\nCourse Code\n: HS-101\nCourse Type\n: Institute Core\nContact Hours/Week: 2L\nCourse Credits:02\nCourse Objectives\n•\nTo introduce the basic skills crucial for successful English language communication.\n•\nTo enable learners to develop a strong theoretical base for participating in and handling communicative tasks in English.\n•\nTo enable the students to communicate their perspectives in clear and correctly articulated language through LSRW skills.\n•\nTo provide ample opportunities to acquire, practice, and produce the language skills required in real-life academic and professional communication.\n•\nTo instill a lifelong habit of language learning among students to make them self-sufficient and independent learners.\nUnit Number\nCourse Content\nContact Hours\nIntroduction: Role of Effective Communication Skills for an Engineer, Challenges in Learning Language and Means to\novercome them.\nCommunication Process: What is communication? Process of Communication, Types of Communication (formal, semiUNIT-01\n06L\nformal, and informal), Modes of Communication (verbal and non-verbal), Non-verbal Communication Types (Kinesics,\nProxemics, Chronemics), Channels and Levels of Communication (Extrapersonal, Interpersonal, Intrapersonal, Organizational,\nand Mass), Barriers to Effective Communication\nEffective Listening Skills: What does listening mean? Listening versus Hearing, Listening Process (hearing, understanding,\nremembering, evaluating, and responding), Types of Listening (appreciative, empathetic, comprehensive, critical, and\nsuperficial), Note-taking, Barriers to Listening, Strategies for Effective Listening\nEffective Speaking Skills: Interviews: Video conferencing (Google Meet, Zoom or Microsoft Teams) and Personal Interviews,\nPre-interview Planning, preparing for GD in Current Topics, Strategies for Answering Interview Questions (most frequent\nUNIT-02\n08L\nquestions and behavioral questions using STAR method)\nPublic Speaking: Presenting a Variety of Speeches (informative, persuasive, demonstrative and special occasion), Extempore\nversus Impromptu Speech, Speech Preparation and Presentation Techniques Improving Non-verbal Cues (voice, diction, and\nother mechanics of speech)\nSWOT Analysis: Personal and organizational\nReading Skills: Referencing Skills: Use of traditional versus Digital Dictionaries, Note-making, Methods of Note-making\n(sentence, outline, mind-map, tabular/charting and Cornell)\nUNIT-03\nComprehension Skills: Reading for Local and Global Understanding, Reading between the Lines, Summarizing the Ideas\n06L\nfrom the Reading Comprehension Passages, Reading for Evaluation, Vocabulary in Context\nReading for literary appreciation: Reading fiction/poetry/plays and learning language through literature\nWriting Skills: Paragraph Writing: Format (introduction, topic sentence, supporting details and conclusion), Genres of Writing\n(descriptive, narrative, expository and persuasive), Stages of Writing (brainstorming, drafting, revision, editing, proofreading and\nformatting)\nLetter and Email Writing: Formal versus Informal letters/emails, Letters Formats (full block, semi-block, modified block and\nUNIT-04\nmodified semi-block), Request and permission letters and emails\n06L\nStatement of Purpose (SoP): Importance of SoP, Format, and Guidelines for Writing SoP\nCover letter and resume: Types of Resume (chronological and functional), Latest Professional Resume Templates\nReport Writing: Importance of technical report writing, types of technical reports, Language of report writing, collection of data\nfor report writing, interpreting results (Charts and Figures), Outline of a technical report, writing abstracts/reports.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Identify the importance of communication skills and develop their understanding of the basic concepts related to English language skills.\nCO2: Understand and analyze critically what they listen/read and respond appropriately and constructively.\nCO3: Apply principles of effective LSRW skills in professional and social communication.\nCO4: Understand, analyze and evaluate the verbal and non-verbal messages effectively\nCO5: Acquire learning strategies to improve their communication skills after the course completion.\nTextbooks\n1. Technical Communication: Principles and Practice by Meenakshi Raman & Sangeeta Sharma, Oxford University Press: New Delhi.\n2. English for Jobseekers: Language and soft skills for the aspiring by Lina Mukhopadhyay, Cambridge University Press: India.\n3. Practical English Usage by Michael Swan. Oxford University Press: Oxford.\nReference Books\n1. Strengthen your Communication Skills by Salivendra Jayaraju. Maruthu Publications: India.\n2. The Definitive Book of Body Language by Allan Pease and Barbara Pease. Manjul Publishing House: New Delhi.\n3. Language Through Literature: An Introduction. Paul Simpson. United Kingdom, Routledge.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction · Communication Process",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Introduction",
+         "topics": [
+          "Role of Effective Communication Skills for an Engineer",
+          "Challenges in Learning Language and Means to overcome them"
+         ]
+        },
+        {
+         "title": "Communication Process",
+         "topics": [
+          "What is communication? Process of Communication",
+          "Types of Communication (formal, semi- formal, and informal)",
+          "Modes of Communication (verbal and non-verbal)",
+          "Non-verbal Communication Types (Kinesics, Proxemics, Chronemics)",
+          "Channels and Levels of Communication (Extrapersonal, Interpersonal, Intrapersonal, Organizational, and Mass)",
+          "Barriers to Effective Communication"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Effective Listening Skills · Effective Speaking Skills · Public Speaking · SWOT Analysis",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Effective Listening Skills",
+         "topics": [
+          "What does listening mean? Listening versus Hearing",
+          "Listening Process (hearing, understanding, remembering, evaluating, and responding)",
+          "Types of Listening (appreciative, empathetic, comprehensive, critical, and superficial)",
+          "Note-taking",
+          "Barriers to Listening",
+          "Strategies for Effective Listening"
+         ]
+        },
+        {
+         "title": "Effective Speaking Skills",
+         "topics": [
+          "Interviews: Video conferencing (Google Meet, Zoom or Microsoft Teams) and Personal Interviews",
+          "Pre-interview Planning",
+          "Preparing for GD in Current Topics",
+          "Strategies for Answering Interview Questions (most frequent questions and behavioral questions using STAR method)"
+         ]
+        },
+        {
+         "title": "Public Speaking",
+         "topics": [
+          "Presenting a Variety of Speeches (informative, persuasive, demonstrative and special occasion)",
+          "Extempore versus Impromptu Speech",
+          "Speech Preparation and Presentation Techniques",
+          "Improving Non-verbal Cues (voice, diction, and other mechanics of speech)"
+         ]
+        },
+        {
+         "title": "SWOT Analysis",
+         "topics": [
+          "Personal and organizational"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Referencing Skills · Comprehension Skills · Reading for literary appreciation",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Referencing Skills",
+         "topics": [
+          "Use of traditional versus Digital Dictionaries",
+          "Note-making",
+          "Methods of Note-making (sentence, outline, mind-map, tabular/charting and Cornell)"
+         ]
+        },
+        {
+         "title": "Comprehension Skills",
+         "topics": [
+          "Reading for Local and Global Understanding",
+          "Reading between the Lines",
+          "Summarizing the Ideas from the Reading Comprehension Passages",
+          "Reading for Evaluation",
+          "Vocabulary in Context"
+         ]
+        },
+        {
+         "title": "Reading for literary appreciation",
+         "topics": [
+          "Reading fiction/poetry/plays and learning language through literature"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Paragraph Writing · Letter and Email Writing · Statement of Purpose (SoP) · Cover letter and resume · Report Writing",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Paragraph Writing",
+         "topics": [
+          "Format (introduction, topic sentence, supporting details and conclusion)",
+          "Genres of Writing (descriptive, narrative, expository and persuasive)",
+          "Stages of Writing (brainstorming, drafting, revision, editing, proofreading and formatting)"
+         ]
+        },
+        {
+         "title": "Letter and Email Writing",
+         "topics": [
+          "Formal versus Informal letters/emails",
+          "Letters Formats (full block, semi-block, modified block and modified semi-block)",
+          "Request and permission letters and emails"
+         ]
+        },
+        {
+         "title": "Statement of Purpose (SoP)",
+         "topics": [
+          "Importance of SoP",
+          "Format",
+          "Guidelines for Writing SoP"
+         ]
+        },
+        {
+         "title": "Cover letter and resume",
+         "topics": [
+          "Types of Resume (chronological and functional)",
+          "Latest Professional Resume Templates"
+         ]
+        },
+        {
+         "title": "Report Writing",
+         "topics": [
+          "Importance of technical report writing",
+          "Types of technical reports",
+          "Language of report writing",
+          "Collection of data for report writing",
+          "Interpreting results (Charts and Figures)",
+          "Outline of a technical report",
+          "Writing abstracts/reports"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "HS-103": {
      "name": "Human Values and Ethical Mindfulness",
@@ -123,9 +776,138 @@
       13,
       14
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nHuman Values and Ethical Mindfulness\nCourse Code:\nHS-103\nCourse Type:\nInstitute Core\nContact Hours/Week:2L\nCourse Credits: 02\nCourse Objectives\n• To impart knowledge about fundamental aspects related to Ethics.\n• To develop an understanding of the major Ethical theories that guide Human Values Principles.\n• To understand and be able to articulate the role of Ethics in Community Well-being.\n• To practice and apply the practical information gained in the course to Personal Ethical Lifestyle Choices.\nUnit Number\nCourse Content\nContact Hours\nIntroduction to Ethics: Definition of Ethics, Personal Ethics, Professional Ethics, Difference between\nEthics, Values, and Morals.Ethics and Human Interface: Essence, Determinants and Consequences of\n05L\nUNIT-01\nEthics in - Human Actions; Dimensions of Ethics; Types of Ethics; Ethics - in Private and Public\nRelationships. Human Values- Lessons from the Lives and Teachings of Great\nReformers and Behaviourists;Role of Family Society and Educational Institutions in Inculcating Values.\nTheories of Ethics: Normative theories, Psychological Egoism, Utilitarianism, Kant's Social Contract theory,\nStakeholder theory, Stockholder theory, Gandhi's Trusteeship theory; Forsyth's Taxonomy of Ethical\n08L\nUNIT-02\nIdeologies; Kohlberg's Model of Cognitive Moral Development; Piaget theory of moral development, Need for\ndeveloping an Industry-wide Code of Ethics: Inclusive and Accountable Industry, Transparent Standards,\nFair competition, Equal Opportunity Employer, Health Safety and Environment, Conflict of Interest.\nEthics & Emotional Intelligence: Emotional Intelligence: Concepts, and their Utilities and Application in\nAdministration and Industry. Ethics, Metacognition & Mindfulness. Ethics, Corporate social responsibility &\nConsumer protection; Environmental ethics: Role of Industry in Environmental Management, India's\n05L\nUNIT-03\nEnvironmental Policies, ISO 14000family; Behavioural ethical issues in areas like Discrimination, Privacy,\nRecruitment & Selection, Electronic surveillance, Health & Safety, Performance appraisals. Role of Human\nrelation approach in Ethical Industry and Life Skills.\nEthical Decision Making & Mindfulness: Attitude: Content, Structure, Function; its Influence and Relation\nwith Thought and Behaviour; Attribution theory; Ethics and Attitudes; Social Influence and Persuasion.\nEthical Decision-making Virtue and common Good approach; Influence of Ethical Decision Making: Personal\n08L\nUNIT-04\nValues and Ethical Decision making, Trustworthiness, Respect, Responsibility, Fairness, Integrity, Caring,\nCitizenship and Fundamental Duties and Directive Principles in India.\nAssignment & Case Studies\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Students will be able to understand the importance of ethics in behaviour.\nCO2: Students will be able to expand their understanding of ethics, and articulate key philosophical arguments with Mindfulness in the field of\nethics.\nCO3: Students will be able to construct a multi-perspective analysis of human values and ethics.\nText Books\n1. Professional Ethics by R. Subramanian Oxford University Press.\n2. Introduction to Psychology, 7th Edition by Morgan, King, Weisz, and Schopler, McGraw Hill Education.\n3. Positive Psychology: The Science of Happiness and Human Strength by Carr. UK: Routledge.\nReference Books\n1. Engineering Ethics, Concepts Cases by Charles E Harris Jr., Michael S Pritchard, Michael J Rabins, 4e, Cengage learning.\n2. Business Ethics Concepts& Cases by Manuael G Velasquez, 6e, PHI.\n3. Ethics in Engineering Practices & Research by Caroline Whitbeck. Cambridge University Press.",
-     "note": "Pages 13-14 of the PDF contain the Hindi version (text not extracted)."
+     "note": "Pages 13-14 of the PDF contain the Hindi version (text not extracted).",
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction to Ethics · Ethics and Human Interface · Human Values",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Introduction to Ethics",
+         "topics": [
+          "Definition of Ethics",
+          "Personal Ethics",
+          "Professional Ethics",
+          "Difference between Ethics, Values, and Morals"
+         ]
+        },
+        {
+         "title": "Ethics and Human Interface",
+         "topics": [
+          "Essence, Determinants and Consequences of Ethics in - Human Actions",
+          "Dimensions of Ethics",
+          "Types of Ethics",
+          "Ethics - in Private and Public Relationships"
+         ]
+        },
+        {
+         "title": "Human Values",
+         "topics": [
+          "Lessons from the Lives and Teachings of Great Reformers and Behaviourists",
+          "Role of Family Society and Educational Institutions in Inculcating Values"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Theories of Ethics · Need for developing an Industry-wide Code of Ethics",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Theories of Ethics",
+         "topics": [
+          "Normative theories",
+          "Psychological Egoism",
+          "Utilitarianism",
+          "Kant's Social Contract theory",
+          "Stakeholder theory",
+          "Stockholder theory",
+          "Gandhi's Trusteeship theory",
+          "Forsyth's Taxonomy of Ethical Ideologies",
+          "Kohlberg's Model of Cognitive Moral Development",
+          "Piaget theory of moral development"
+         ]
+        },
+        {
+         "title": "Need for developing an Industry-wide Code of Ethics",
+         "topics": [
+          "Inclusive and Accountable Industry",
+          "Transparent Standards",
+          "Fair competition",
+          "Equal Opportunity Employer",
+          "Health Safety and Environment",
+          "Conflict of Interest"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Ethics & Emotional Intelligence · Environmental ethics",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Ethics & Emotional Intelligence",
+         "topics": [
+          "Emotional Intelligence: Concepts, and their Utilities and Application in Administration and Industry",
+          "Ethics, Metacognition & Mindfulness",
+          "Ethics, Corporate social responsibility & Consumer protection"
+         ]
+        },
+        {
+         "title": "Environmental ethics",
+         "topics": [
+          "Role of Industry in Environmental Management",
+          "India's Environmental Policies",
+          "ISO 14000family",
+          "Behavioural ethical issues in areas like Discrimination",
+          "Privacy",
+          "Recruitment & Selection",
+          "Electronic surveillance",
+          "Health & Safety",
+          "Performance appraisals",
+          "Role of Human relation approach in Ethical Industry and Life Skills"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Ethical Decision Making & Mindfulness · Ethical Decision-making",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Ethical Decision Making & Mindfulness",
+         "topics": [
+          "Attitude: Content, Structure, Function",
+          "Its Influence and Relation with Thought and Behaviour",
+          "Attribution theory",
+          "Ethics and Attitudes",
+          "Social Influence and Persuasion"
+         ]
+        },
+        {
+         "title": "Ethical Decision-making",
+         "topics": [
+          "Virtue and common Good approach",
+          "Influence of Ethical Decision Making: Personal Values and Ethical Decision making",
+          "Trustworthiness",
+          "Respect",
+          "Responsibility",
+          "Fairness",
+          "Integrity",
+          "Caring",
+          "Citizenship and Fundamental Duties and Directive Principles in India",
+          "Assignment & Case Studies"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "PH-102": {
      "name": "Physics Lab",
@@ -141,7 +923,35 @@
      ],
      "units": 0,
      "text": "Course Name:\nPhysics Lab\nCourse Code:\nPH-102\nContact Hours/Week: 02P\nCourse Credits: 01\nCourse Objectives:\n•\nTo gain practical knowledge by applying the experimental methods to correlate with the theory.\n•\nTo learn the usage of electrical and optical systems for various measurements.\n•\nApply the analytical techniques and graphical analysis to the experimental data.\n•\nTo develop intellectual communication skills and discuss the basic principles of scientific concepts in a group.\nList of Experiments\n1. To determine the specific resistance of a material wire using a post office box.\n2. To find the area of a rectangle (or height of an inaccessible object) using a sextant.\n3. Conversion of a galvanometer into Ammeter and Voltmeter of given range.\n4. To verify the inverse square law of magnetism.\n5. Study the variation of magnetic field with distance along the axis of a circular coil carrying current and to find the radius of the\ncoil.\n6. To determine the refractive index of a glass/ liquid (water) using Spectrometer.\n7. To determine the wavelength of light using Newton's ring apparatus.\n8. To verify the inverse square law for the intensity of radiation from a source of light.\n9. To determine the wavelength of the Laser light using diffraction method.\n10. To find magnifying power of a telescope by linear method.\n11. To measure Young's modulus by bending of beam method.\n12. Study of the attenuation and propagation characteristics of an optical fiber cable.\n13. Other experiments as and when made available time to time.\nCourse Outcomes:\nUpon successful completion of the course, the students will be able to\nCO1: Handle equipments and take measurements and record data techniques for the experiments.\nCO2: Experimentally realize the physical phenomenon/ effects.\nCO3: Use different systems and instruments to measuring parameters with precision.\nCO4: Develop basic communication skills through working in groups in performing the laboratory experiments and by interpreting the\nresults.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Lab experiments",
+       "hours": "",
+       "lab": true,
+       "parts": [
+        {
+         "title": "List of experiments",
+         "topics": [
+          "To determine the specific resistance of a material wire using a post office box",
+          "To find the area of a rectangle (or height of an inaccessible object) using a sextant",
+          "Conversion of a galvanometer into Ammeter and Voltmeter of given range",
+          "To verify the inverse square law of magnetism",
+          "Study the variation of magnetic field with distance along the axis of a circular coil carrying current and to find the radius of the coil",
+          "To determine the refractive index of a glass/ liquid (water) using Spectrometer",
+          "To determine the wavelength of light using Newton's ring apparatus",
+          "To verify the inverse square law for the intensity of radiation from a source of light",
+          "To determine the wavelength of the Laser light using diffraction method",
+          "To find magnifying power of a telescope by linear method",
+          "To measure Young's modulus by bending of beam method",
+          "Study of the attenuation and propagation characteristics of an optical fiber cable",
+          "Other experiments as and when made available time to time"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "HS-102": {
      "name": "Communication Skills Lab",
@@ -157,7 +967,34 @@
      ],
      "units": 0,
      "text": "Course Name: Communication Skills Lab\nCourse Code: HS-102\nCourse Type: Institute Core\nContact Hours/Week: 2P\nCourse Objectives\n• To develop skills for listening with understanding and speaking\n• To develop skills of “correct” pronunciation of the English language\n• To enable the students to make oral and technically aided presentations\nList of Experiments\nActivities based on language software Orell iTell, 2022/others\n1. Introduction to the Speech Sounds of English, Organs of the Speech\n2. Place and Manner of Articulation—Consonant sounds\n3. Vowel Sounds—Monophthongs and Diphthongs\n4. Syllabification\n5. Word stress, strong and weak forms\n6. Listening to everyday and workplace conversations\n7. Listening to Talks, documentaries, and BBC News\n8. Describing People, Places, Objects, etc.\n9. Just a Minute (JAM) Sessions\n10. Group Discussion Sessions\n11. Presentation using technology—PowerPoint Presentation (MS PPT), Google Slides, etc.\n12. Interview Skills for face-to-face and online modes\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Differentiate between different varieties of English\nCO2: Speak coherently with improved pronunciation\nCO2: Make effective presentations\nCO3: Listen and comprehend the English language\nTextbooks\n1. English Phonetics and Phonology: A Practical Course by Peter Roach. Cambridge University Press: Cambridge.\n2. A Textbook of English Phonetics for Indian Students by T. Balasubramanian. Macmillan India Limited: India.\n3. Better English Pronunciation. By J.D. O'Connor. Germany: Cambridge University Press.\nReference books\n1. Ship or Sheep: An intermediate pronunciation course by Ann Baker. Cambridge University Press: Cambridge.\n2. Cambridge English Pronouncing Dictionary by Daniel Jones. Cambridge University Press: Cambridge.\n\nCourse Credits:01",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Lab experiments",
+       "hours": "",
+       "lab": true,
+       "parts": [
+        {
+         "title": "List of experiments",
+         "topics": [
+          "Introduction to the Speech Sounds of English, Organs of the Speech",
+          "Place and Manner of Articulation—Consonant sounds",
+          "Vowel Sounds—Monophthongs and Diphthongs",
+          "Syllabification",
+          "Word stress, strong and weak forms",
+          "Listening to everyday and workplace conversations",
+          "Listening to Talks, documentaries, and BBC News",
+          "Describing People, Places, Objects, etc",
+          "Just a Minute (JAM) Sessions",
+          "Group Discussion Sessions",
+          "Presentation using technology—PowerPoint Presentation (MS PPT), Google Slides, etc",
+          "Interview Skills for face-to-face and online modes"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "ME-102": {
      "name": "Engineering Workshop Practice",
@@ -171,9 +1008,98 @@
      "pages": [
       17
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nCourse Code:\n\nEngineering Workshop Practice\nME-102\n\nContact Hours/Week: 1L,2P\nCourse Credits: 2\nCourse Objectives\n● To study the fundamentals and have practical exposure of basic manufacturing processes.\n● To familiarize the students with basics of machining, welding, fitting, smithy, carpentry, foundry and sheet metal related\noperations and handling/working of equipments &amp; processes.\n● To familiarize students with various handling/working of Soldering and Brazing processes.\nUnit Number\nCourse Content\nContact Hours\nImportance of Engineering Workshop and description about each shop. Basic brief\n3L\nUNIT-01\nintroduction of Engineering Materials and their classification. Introduction to Smithy\nshop, brief introduction of tools used in Smithy.\nBrief description of machining operations. Lathe type and specifications. Study about\n3L\nconstruction and working of Lathe machine and operations.Brief description of various\nUNIT-02\njoining processes. Brief description about Arc Welding and Gas Welding processes.\nIntroduction of Soldering & Brazing processes\nBrief description about tools used in Foundry shop and methods of preparation of green\n3L\nsand mould, sand type and properties. Brief description of various fitting operations\nUNIT-03\nsuch as chipping, fitting. Scraping. Drilling, reaming & thread cutting. Function and\nclassification of various hand tools used in fitting.\nClassification of wood, importance of seasoning. Brief introduction of Carpentry tools.\n3L\nUNIT-04\nDifferent Carpentry joints & their application. Introduction to Sheet metal shop.\nAcquaintance with Sheet metal tools and their uses.\nList of Experiments\n1. Preparation of job as per given drawing using Lathe Machine covering various operations using Lathe and attachment.\n2. Preparation of job as per given drawing T Joint using Arc welding Setup, Soldering & Brazing Job Practice\n3. Preparation of Green Sand Mould using tools of Foundry Shop by various method.\n4. Preparation of job as per drawing for cutting practice and Dovetail Joint in Carpentry Shop using Carpentry Tool.\n5. Preparation of job as per given drawing related to Fitting shop, and Preparation of job in sheet metal shop for Riveting\noperation.\n6. Preparation of job as per given drawing (Chisel) using tools of Smithy Shop.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1:\nLearn the basics of metal machining, fitting, forging, foundry and sheet metal related operations.\nCO2:\nDevelop the skill for soldering and brazing operations\nCO3:\nAble to learn basic repair and maintenance techniques using welding processes.\nCO4:\nAble to learn basic carpentry processes.\nText Books\n1. A Course in Workshop Technology by B.S. Raghuwanshi, DhanpatRai &Company(P) Limited.\n2. Elements of Workshop Technology by Hajra Choudhary &amp; Nirjhar Roy, Media Promoters and PublishersPvt. Ltd.\n3. Workshop Technology by R.S. Khurmi & J.K. Gupta, S.Chand\nReference Books\n1. Mechanical Workshop Practice, by K. C. JOHN, PHI Learning Pvt. Ltd., 27-Aug-2010\n2. Workshop Practice, by H.S. Bawa, McGraw Hill Education; 2nd edition\n3. Manufacturing Practices (Workshop Practice), by Dr. R.K. Singal, S.K. Kataria & Sons",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Workshop and Smithy Shop",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Workshop and Smithy Shop",
+         "topics": [
+          "Importance of Engineering Workshop and description about each shop",
+          "Basic brief introduction of Engineering Materials and their classification",
+          "Introduction to Smithy shop",
+          "Brief introduction of tools used in Smithy"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Machining and Joining Processes",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Machining and Joining Processes",
+         "topics": [
+          "Brief description of machining operations",
+          "Lathe type and specifications",
+          "Study about construction and working of Lathe machine and operations",
+          "Brief description of various joining processes",
+          "Brief description about Arc Welding and Gas Welding processes",
+          "Introduction of Soldering & Brazing processes"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Foundry and Fitting Shop",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Foundry and Fitting Shop",
+         "topics": [
+          "Brief description about tools used in Foundry shop and methods of preparation of green sand mould",
+          "Sand type and properties",
+          "Brief description of various fitting operations such as chipping, fitting, scraping, drilling, reaming & thread cutting",
+          "Function and classification of various hand tools used in fitting"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Carpentry and Sheet Metal Shop",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Carpentry and Sheet Metal Shop",
+         "topics": [
+          "Classification of wood",
+          "Importance of seasoning",
+          "Brief introduction of Carpentry tools",
+          "Different Carpentry joints & their application",
+          "Introduction to Sheet metal shop",
+          "Acquaintance with Sheet metal tools and their uses"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Lab experiments",
+       "hours": "",
+       "lab": true,
+       "parts": [
+        {
+         "title": "List of experiments",
+         "topics": [
+          "Preparation of job as per given drawing using Lathe Machine covering various operations using Lathe and attachment",
+          "Preparation of job as per given drawing T Joint using Arc welding Setup, Soldering & Brazing Job Practice",
+          "Preparation of Green Sand Mould using tools of Foundry Shop by various method",
+          "Preparation of job as per drawing for cutting practice and Dovetail Joint in Carpentry Shop using Carpentry Tool",
+          "Preparation of job as per given drawing related to Fitting shop, and Preparation of job in sheet metal shop for Riveting operation",
+          "Preparation of job as per given drawing (Chisel) using tools of Smithy Shop"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "MA-121": {
      "name": "Differential Equations",
@@ -189,7 +1115,104 @@
      ],
      "units": 6,
      "text": "Course Name: Differential Equations\nCourse Code: MA-121\nCourse Type: Institute Core\nContact Hours/Week: 3L\nCourse Credits: 03\nCourse Objectives:\n• To introduce the fundamental concepts relevant to Ordinary & Partial Differential Equations, Transform Theory.\n• To able to form and solve the ordinary & partial differential equation using different analytical techniques.\n• To have the idea of Laplace transform and its uses in engineering problems.\nUnit Number\nCourse Content\nContact Hours\nFirst Order Ordinary Differential Equations: Exact Differential Equations, Equations reducible to exact equations,\nUnit-01\n05L\nNon-linear Equation of First Order, Clairaut's equation.\nHigher Order Ordinary Differential Equations: Higher order linear differential equations with constant co-efficient,\nComplimentary functions and particular integral, Method of variation of parameters, Equations reducible to linear\nUnit-02\n07L\ndifferential equations with constant co-efficient (Cauchy-Euler and Legendre's linear differential equations),\nSimultaneous linear equations with constant co-efficient.\nOrdinary Differential Equations with Laplace Transform: Laplace transform, inverse Laplace transform, and their\nUnit-03\n06L\nproperties, Solution of ODE and linear simultaneous differential equations using Laplace transform.\nFirst Order Partial Differential Equations: Introduction and formulation of Partial Differential Equations (PDE),\nUnit-04\nSolution of PDE, Linear PDE of First Order (Lagrange's Linear Equation), Non-linear Equation of First Order\n06L\n(Standard Forms), Charpit's Method.\nHigher Order Partial Differential Equations: Homogeneous Linear Equations with Constant Coefficients, Non\nUnit-05\nhomogeneous Linear Partial Differential Equations, Non-linear partial differential equation of second order (Monge's\n06L\nMethod).\nApplications of Partial Differential Equations: Classification of second order PDEs, Method of separation of\nUnit-06\n06L\nvariables, Solution of one dimensional wave and heat equation, Solution of two dimensional Laplace's equation.\nCourse Outcomes:\nUpon successful completion of the course, the student will be able to\nCO1: Understand and analysis the theoretical & practical aspects of ODE, PDE, and Laplace Transform theory.\nCO2: Identify an appropriate technique to solve the ODE, PDE.\nCO3: Learning the limitations and advantages of ODE, PDE, and Laplace transform.\nCO4: Apply the concepts of ODE, PDE, and Laplace transform in various engineering problems.\nCO5: Demonstrate the concepts through examples and applications.\nText Books:\n1. E. Kreyszig, Advanced Engineering Mathematics, John Wiley and Sons, NC, New York.\n2. Paras Ram, Engineering Mathematics: Through Applications, CBS Publisher & Distributors Pvt. Ltd.\n3. Henner Victor, Belozerova Tatyana, Khenner Mikhail, Ordinary and Partial Differential Equations, CRC Press.\nReference Books:\n1. S.L. Ross, Differential Equations, John Wiley & Sons, New York.\n2. Lawrence C.Evans, Partial Differential Equations, American Mathematical Society.\n3. M. D Raisinghania, Ordinary and Partial Differential Equations, S. Chand & Company Ltd.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "First Order Ordinary Differential Equations",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "First Order Ordinary Differential Equations",
+         "topics": [
+          "Exact Differential Equations",
+          "Equations reducible to exact equations",
+          "Non-linear Equation of First Order",
+          "Clairaut's equation"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Higher Order Ordinary Differential Equations",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Higher Order Ordinary Differential Equations",
+         "topics": [
+          "Higher order linear differential equations with constant co-efficient",
+          "Complimentary functions and particular integral",
+          "Method of variation of parameters",
+          "Equations reducible to linear differential equations with constant co-efficient (Cauchy-Euler and Legendre's linear differential equations)",
+          "Simultaneous linear equations with constant co-efficient"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Ordinary Differential Equations with Laplace Transform",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Ordinary Differential Equations with Laplace Transform",
+         "topics": [
+          "Laplace transform, inverse Laplace transform, and their properties",
+          "Solution of ODE and linear simultaneous differential equations using Laplace transform"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "First Order Partial Differential Equations",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "First Order Partial Differential Equations",
+         "topics": [
+          "Introduction and formulation of Partial Differential Equations (PDE)",
+          "Solution of PDE",
+          "Linear PDE of First Order (Lagrange's Linear Equation)",
+          "Non-linear Equation of First Order (Standard Forms)",
+          "Charpit's Method"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Higher Order Partial Differential Equations",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Higher Order Partial Differential Equations",
+         "topics": [
+          "Homogeneous Linear Equations with Constant Coefficients",
+          "Non- homogeneous Linear Partial Differential Equations",
+          "Non-linear partial differential equation of second order (Monge's Method)"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Applications of Partial Differential Equations",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Applications of Partial Differential Equations",
+         "topics": [
+          "Classification of second order PDEs",
+          "Method of separation of variables",
+          "Solution of one dimensional wave and heat equation",
+          "Solution of two dimensional Laplace's equation"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "CY-101": {
      "name": "Engineering Chemistry",
@@ -203,9 +1226,150 @@
      "pages": [
       19
      ],
-     "units": 0,
+     "units": 6,
      "text": "Course Name: Engineering Chemistry\nCourse Code: CY-101\nCourse Type: Core\nContact Hours/Week: 3L\n\nCourse Credits: 03\n\nCourse Objectives\n•\nTo familiarize the students about the chemistry of engineering materials and applications.\n•\nTo enable the students to understand about the fundamentals of characterization techniques for different materials.\n•\nTo introduce equilibrium states of various systems with help of phases, components etc.\n•\nTo develop an understanding of electrochemistry and its applications in fuel cell/batteries and controlling corrosion.\n•\nTo familiarize the students about green chemistry and applications.\nUnit Number\nCourse Content\nContact Hours\nEngineering Materials: Introduction to Engineering materials-Semiconductors- conducting polymers, Cement,\nUNIT-01\n05L\nLiquid crystals, Composite materials, Nanomaterials\nCharacterization Techniques-I: Introduction to spectroscopy, UV-Visible spectroscopy-Absorption laws,\nInstrumentation, formation of absorption bands, Chromophore and auxochrome concept, application of UVUNIT-02\nVisible spectroscopy; IR spectroscopy - Principle, selection rules, spectral features of some classes of\n08L\ncompounds, important features of IR spectroscopy NMR spectroscopy-Principle, relaxation processes,\ninstrumentation, shielding-deshielding effects, spin-spin coupling, coupling constant, applications of NMR\nCharacterization Techniques-II: Introduction to Thermal methods, instrumentation and applications (TGA,\nUNIT-03\n04L\nDTA, DSC). Introduction to microscopy techniques- instrumentation and applications (AFM and SEM).\nPhase rule: Introduction to phase rule, one component system, two component systems, advantages and\nUNIT-04\n05L\nlimitations.\nElectrochemistry: General concepts of electrochemistry, concentrations cell, galvanic cell, Fuel cellshydrogen-oxygen fuel cell, solid oxide fuel cells, Batteries-dry cell, lead storage, Nickel-cadmium, Li-ion\nbatteries, functioning and their applications.\nUNIT-05\n10L\nApplications of electrochemistry in corrosion and its control: Introduction, Types of corrosion-chemical and\nelectrochemical, Mechanisms of corrosion, factors affecting corrosion and different protection methods for\ncorrosion control.\nGreen Chemistry:Introduction to green chemistry, Twelve Principles of green chemistry, Synthesis of biofuel,\nUNIT-06\n04L\nAlternative sources of energy: Photo-catalysis, Solar cells.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to:\nCO1: Understand basic concepts of engineering materials and applications in various fields\nCO2: Identify instrumental techniques for analysis of different materials\nCO3: Understand the behavior of systems with changes in variables\nCO4: Understand the electrochemistry, batteries, fuel cells, engineering problems related to corrosion and to achieve a practical solution\nCO5: Understand basic concepts of green chemistry their applications in various fields\nText books\n1. Engineering Chemistry by Shashi Chawla, Dhanpat Rai & Co.\n2. Engineering Chemistry by S. Vairam and S. Ramesh, Wiley.\n3. Engineering Chemistry by Jain & Jain, Dhanpat Rai Publishing Co.\nReference books\n1. Materials Science and Engineering: An Introduction Hardcover by William D. Callister, 6th Edition, John Wiley & Sons.\n2. Physical Chemistry, by Peter Atkins, Julio de Paula, James Keeler, International Edition, 2018, Oxford University Press.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Engineering Materials",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Engineering Materials",
+         "topics": [
+          "Introduction to Engineering materials-Semiconductors- conducting polymers",
+          "Cement",
+          "Liquid crystals",
+          "Composite materials",
+          "Nanomaterials"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Characterization Techniques-I · UV-Visible spectroscopy · IR spectroscopy · NMR spectroscopy",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Characterization Techniques-I",
+         "topics": [
+          "Introduction to spectroscopy"
+         ]
+        },
+        {
+         "title": "UV-Visible spectroscopy",
+         "topics": [
+          "Absorption laws",
+          "Instrumentation",
+          "Formation of absorption bands",
+          "Chromophore and auxochrome concept",
+          "Application of UV- Visible spectroscopy"
+         ]
+        },
+        {
+         "title": "IR spectroscopy",
+         "topics": [
+          "Principle",
+          "Selection rules",
+          "Spectral features of some classes of compounds",
+          "Important features of IR spectroscopy"
+         ]
+        },
+        {
+         "title": "NMR spectroscopy",
+         "topics": [
+          "Principle",
+          "Relaxation processes",
+          "Instrumentation",
+          "Shielding-deshielding effects",
+          "Spin-spin coupling",
+          "Coupling constant",
+          "Applications of NMR"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Characterization Techniques-II",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Characterization Techniques-II",
+         "topics": [
+          "Introduction to Thermal methods",
+          "Instrumentation and applications (TGA, DTA, DSC)",
+          "Introduction to microscopy techniques- instrumentation and applications (AFM and SEM)"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Phase rule",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Phase rule",
+         "topics": [
+          "Introduction to phase rule",
+          "One component system",
+          "Two component systems",
+          "Advantages and limitations"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Electrochemistry · Applications of electrochemistry in corrosion and its control",
+       "hours": "10L",
+       "parts": [
+        {
+         "title": "Electrochemistry",
+         "topics": [
+          "General concepts of electrochemistry",
+          "Concentrations cell",
+          "Galvanic cell",
+          "Fuel cells- hydrogen-oxygen fuel cell",
+          "Solid oxide fuel cells",
+          "Batteries-dry cell",
+          "Lead storage",
+          "Nickel-cadmium",
+          "Li-ion batteries",
+          "Functioning and their applications"
+         ]
+        },
+        {
+         "title": "Applications of electrochemistry in corrosion and its control",
+         "topics": [
+          "Introduction",
+          "Types of corrosion-chemical and electrochemical",
+          "Mechanisms of corrosion",
+          "Factors affecting corrosion and different protection methods for corrosion control"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Green Chemistry",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Green Chemistry",
+         "topics": [
+          "Introduction to green chemistry",
+          "Twelve Principles of green chemistry",
+          "Synthesis of biofuel",
+          "Alternative sources of energy: Photo-catalysis, Solar cells"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "CS-121": {
      "name": "Introduction to Python and Data Structures",
@@ -219,9 +1383,178 @@
      "pages": [
       20
      ],
-     "units": 0,
+     "units": 6,
      "text": "Course Name:\nCourse Code:\nCourse Type:\n\nIntroduction to Python and Data Structures\nCS-121\nInstitute Core\n\nContact Hours/Week: 2L/2P\nCourse Credits:03\nCourse Objectives\n• It aims to provide students with an understanding of the role computation can play in solving problems.\n• To help students, regardless of their major, feel justifiably confident in their ability to write small programs that allow them to accomplish\nuseful goals.\nUnit Number\nCourse Content\nContact Hours\nUNIT-01The Context of Software Development - Software - Learning Programming with Python, Values and Variables\n08L\n- Integer and String Values - Identifiers - User Input - String Formatting, Expressions and Arithmetic Expressions - Arithmetic Examples.\nUNIT-02\nConditional Statements - Boolean expressions - If/Else statement - Other Conditional Expressions,\n06L\nIteration – Loops, Using Functions - Introduction to Using Functions - Functions and Modules,\nExceptions -try, except, else, pass, raise.\nUNIT-03Writing Functions -1 - Function Basics - Parameter Passing - Custom Functions vs Standard Functions –\n06L\nRefactoring, Writing Functions -2 - Global Variables - Making Functions Reusable - Functions as Data,\nObjects - Using Objects - String, File Objects.\nUNIT-04Lists - Using Lists - Building Lists - List Traversal, Tuples, Dictionaries, and Sets - Storing Aggregate Data 04L\nEnumerating the Elements of a Data Structure,\nUNIT-05Regular Expressions, Class Design - Composition and Inheritance, classes, objects/instances, methods,\n04L\ninheritance, multiple inheritances, properties, decorators.\nUNIT-06Introductions to Data Structures, algorithm complexity, arrays, Linked List, Stack, Queues, Trees and Graphs\n07L\n(Memory Representation and a few basic operations)\nCourse Outcomes\nCO1: Understand basic principles of computers and understand basics of binary computation.\nCO2: Understand the programming basics (operations, control structures, data types, etc.).\nCO3: Apply various data types and control structure and understand class inheritance and polymorphism.\nCO4: Understand the object-oriented program design and development and understand and begin to implement code.\nText Books\n1. Guttag, John. Introduction to Computation and Programming Using Python: With Application to Understanding Data Second Edition.\nMIT Press, 2016.\n2. Data Structures and Algorithms in Python by Roberto Tamassia.\n3. Python Crash Course: A Hands-On, Project-Based Introduction to Programming by Eric Matthes, No Starch Press.\nReference Books\n1. Automate the Boring Stuff With Python: Practical Programming for Total Beginners by Al Sweigart, No starch Press\n2. Fluent Python: Clear, Concise, and Effective Programming by Luciano Ramalho, O'Reilly Media.\n3. Python Cookbook by David Beazley, Brian K. Jones, O'Reilly Media, Inc.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "The Context of Software Development · Values and Variables · Expressions and Arithmetic",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "The Context of Software Development",
+         "topics": [
+          "Software",
+          "Learning Programming with Python"
+         ]
+        },
+        {
+         "title": "Values and Variables",
+         "topics": [
+          "Integer and String Values",
+          "Identifiers",
+          "User Input",
+          "String Formatting"
+         ]
+        },
+        {
+         "title": "Expressions and Arithmetic",
+         "topics": [
+          "Expressions",
+          "Arithmetic Examples"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Conditional Statements · Iteration · Using Functions · Exceptions",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Conditional Statements",
+         "topics": [
+          "Boolean expressions",
+          "If/Else statement",
+          "Other Conditional Expressions"
+         ]
+        },
+        {
+         "title": "Iteration",
+         "topics": [
+          "Loops"
+         ]
+        },
+        {
+         "title": "Using Functions",
+         "topics": [
+          "Introduction to Using Functions",
+          "Functions and Modules"
+         ]
+        },
+        {
+         "title": "Exceptions",
+         "topics": [
+          "Try",
+          "Except",
+          "Else",
+          "Pass",
+          "Raise"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Writing Functions -1 · Writing Functions -2 · Objects",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Writing Functions -1",
+         "topics": [
+          "Function Basics",
+          "Parameter Passing",
+          "Custom Functions vs Standard Functions",
+          "Refactoring"
+         ]
+        },
+        {
+         "title": "Writing Functions -2",
+         "topics": [
+          "Global Variables",
+          "Making Functions Reusable",
+          "Functions as Data"
+         ]
+        },
+        {
+         "title": "Objects",
+         "topics": [
+          "Using Objects",
+          "String",
+          "File Objects"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Lists · Tuples, Dictionaries, and Sets",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Lists",
+         "topics": [
+          "Using Lists",
+          "Building Lists",
+          "List Traversal"
+         ]
+        },
+        {
+         "title": "Tuples, Dictionaries, and Sets",
+         "topics": [
+          "Storing Aggregate Data",
+          "Enumerating the Elements of a Data Structure"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 5,
+       "title": "Regular Expressions · Class Design",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Regular Expressions",
+         "topics": [
+          "Regular Expressions"
+         ]
+        },
+        {
+         "title": "Class Design",
+         "topics": [
+          "Composition and Inheritance",
+          "Classes",
+          "Objects/instances",
+          "Methods",
+          "Inheritance",
+          "Multiple inheritances",
+          "Properties",
+          "Decorators"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 6,
+       "title": "Introductions to Data Structures",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Introductions to Data Structures",
+         "topics": [
+          "Introductions to Data Structures",
+          "Algorithm complexity",
+          "Arrays",
+          "Linked List",
+          "Stack",
+          "Queues",
+          "Trees and Graphs (Memory Representation and a few basic operations)"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "EE-101": {
      "name": "Basic Electrical Engineering",
@@ -235,9 +1568,93 @@
      "pages": [
       21
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nBasic Electrical Engineering\nCourse Code:\nEE-101\nCourse Type:\nCore\nContact Hours/Week: 2L\nCourse Credits: 02\nCourse Objectives\n• To impart knowledge about the electrical quantities and to understand the impact of electricity in a global and societal context.\n• To introduce the fundamental concepts relevant to DC and AC circuits and network theorems.\n• Highlight the importance of electromagnetism and transformers in transmission and distribution of electric power.\n• To explain the working principle, construction, applications of DC machines, AC machines & measuring instruments.\nUnit Number\nCourse Content\nContact Hours\nUNIT-01\nIntroduction: Circuit elements–RLC, voltage and current sources, Fundamental Laws of Electrical\n07L\nEngineering, Methods of Circuits analysis, Network theorems, Generation of A.C. sinusoidal voltage and\ncurrents, average and r.m.s. values, Form factor and peak factor, phasor representation.\nUNIT-02\nAC Circuits,Domestic Electric Wiring & Storage Batteries: Analysis of single phase series, parallel and\n06L\nseries-parallel circuits, Active and reactive power, p.f. and volt-amperes, frequency response and Q-factor,\nAnalysis of balanced and unbalanced three phase a.c. circuits – Concept of voltage, current and power in\nthree phase circuits, Basics of Domestic Electric Wiring and Storage Batteries.\nUNIT-03\nMagnetic Circuits and Electrical machines: Magnetic circuit concept, B-H curves characteristics of magnetic\n08L\nmaterials, practical magnetic circuits, magnetic circuits with D.C. and A.C. excitation, hysteresis and eddy current\nlosses, Magnetic force, self and mutual inductances, Principle of Transformer operation, construction and\nequivalent circuit of transformer, Phasor diagram and tests,\nFundamentals of D.C. and A.C.\nmachines.Principles of Power generation and Industrial Power Distribution.\nUNIT-04\nMeasuring Instruments: Classification of Instruments, Introduction to galvanometer (Moving coil and\n03L\nmoving iron), ammeter, voltmeter, wattmeter, use of shunt and multiplier.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Identify and predict the behavior of any electrical and magnetic circuit.\nCO2: Formulate and solve complex AC and DC circuits.\nCO3: Realize the requirement of transformers in transmission and distribution of electric power and other applications.\nCO4: Identify the type of electrical machines used for that particular application.\nTextbooks\n1. Fundamental of Electric Circuits by Charles K Alexander and Matthew N. O. Sadiku, TMH Publication.\n2. Electrical Engineering Fundamentals by Vincent Del Toro, PHI Publication.\n3. Basic Electrical Engineering by V N Mittal & Arvind Mittal, TMH Publication.\n4. Basic Electrical Engineering by T.K. Nagsarkar & M.S. Sukhija, Oxford University Press.\nReference Books\n1. Basic Electrical Technology by A.E. Fitzgerald, McGraw Hill Publication.\n2. Electrical Estimating and Costing by N Alagappan and B Ekambaram, TMH Publication.\n3. Electrical Technology by H. Cotton, CBS Publishers & Distributors.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Introduction",
+         "topics": [
+          "Circuit elements–RLC",
+          "Voltage and current sources",
+          "Fundamental Laws of Electrical Engineering",
+          "Methods of Circuits analysis",
+          "Network theorems",
+          "Generation of A.C. sinusoidal voltage and currents",
+          "Average and r.m.s. values",
+          "Form factor and peak factor",
+          "Phasor representation"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "AC Circuits, Domestic Electric Wiring & Storage Batteries",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "AC Circuits, Domestic Electric Wiring & Storage Batteries",
+         "topics": [
+          "Analysis of single phase series",
+          "Parallel and series-parallel circuits",
+          "Active and reactive power",
+          "P.f. and volt-amperes",
+          "Frequency response and Q-factor",
+          "Analysis of balanced and unbalanced three phase a.c. circuits – Concept of voltage, current and power in three phase circuits",
+          "Basics of Domestic Electric Wiring and Storage Batteries"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Magnetic Circuits and Electrical machines",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Magnetic Circuits and Electrical machines",
+         "topics": [
+          "Magnetic circuit concept",
+          "B-H curves characteristics of magnetic materials",
+          "Practical magnetic circuits",
+          "Magnetic circuits with D.C. and A.C. excitation",
+          "Hysteresis and eddy current losses",
+          "Magnetic force",
+          "Self and mutual inductances",
+          "Principle of Transformer operation",
+          "Construction and equivalent circuit of transformer",
+          "Phasor diagram and tests",
+          "Fundamentals of D.C. and A.C. machines",
+          "Principles of Power generation and Industrial Power Distribution"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Measuring Instruments",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Measuring Instruments",
+         "topics": [
+          "Classification of Instruments",
+          "Introduction to galvanometer (Moving coil and moving iron)",
+          "Ammeter",
+          "Voltmeter",
+          "Wattmeter",
+          "Use of shunt and multiplier"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "EC-101": {
      "name": "Basic Electronics Engineering",
@@ -251,9 +1668,95 @@
      "pages": [
       22
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nBasic Electronics Engineering\nCourse Code:\nEC-101\nCourse Type:\nInstitute Core\nContact Hours/Week: 2L\n\nCourse Credits: 02\n\nCourse Objectives\n•\nIntroduce students to the fundamental concepts of semiconductor devices and their practical applications.\n•\nEnable students to comprehend the operation and applications of transistors.\n•\nProvide students with a basic understanding of JFETs and MOSFETs.\nUnit Number\n\nCourse Content\n\nContact Hours\n\nDiode and Its Applications: PN Junction Diode- Characteristics and Analysis; Types of DiodesZener Diode, Photodiodes, LED, Varactor Diode, Rectifiers and Filter Circuit: Half Wave Rectifier,\n07L\nUNIT-01\nFull Wave Rectifier, Bridge Rectifier and their Analysis, L,C and Pi Filters; Series and Shunt Diode\nClippers, Clipping at Two Independent Levels, Clamping Operation, Clamping Circuit; Practical\nClamping Circuits, Basic Regulator Supply using Zener Diode.\nBipolar Junction Transistor: Bipolar Junction Transistors: Construction and Characteristics of BJT,\nTransistor Configuration: CB, CE, CC Configuration; Small Signal Low Frequency Transistor Model\n05L\nUNIT-02\n(h-Parameters), Analysis of Transistor Amplifier using h-parameters.\nTransistor Biasing: Transistor Biasing and Bias Stabilization: Operating Point, Stability Factor,\nAnalysis of Fixed Bias, Collector to Base Bias, Emitter Resistance Bias Circuit and Self Bias Circuit,\n05L\nUNIT-03\nBias Compensation Techniques Transistor Switch and Transistor amplifier.\nField Effect Transistor: Construction and Characteristics of JFET, JFET Biasing Circuit, JFET\n07L\nUNIT-04\nAmplifier, MOSFET Construction and Characteristics, MOSFET amplifiers.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1:\nDemonstrate a foundational understanding of the operation of various semiconductor devices.\nCO2:\nExplain the working principles of transistors, including different configurations used for designing analog and digital\napplications.\nCO3:\nUnderstand the biasing requirements and circuits used for bipolar junction transistors (BJTs) and field-effect transistors\n(FETs).\nCO4:\nDevelop analytical skills to design circuits based on BJT and FET components.\nText Books\n1. Integrated Electronics by J. Millman and C.C. Halkias, McGraw Hill Education, India.\n2. Electronics Devices and Circuit Theory by R. Boylestad and L. Nashelsky, Pearson India.\n3. Electronic principles by L. Malvino, Tata McGraw Hill Education.\nReference Books\n1. Microelectronic Circuits by Adel S. Sedra, Kenneth Carless Smith, Oxford University Press.\n2. Schaum's Outline of Electric Devices and Circuits by Jimmie J. Cathey, McGraw Hill.\n3. Electronic Devices and Circuits by Theodore F. Bogart, Pearson India.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Diode and Its Applications · Rectifiers and Filter Circuit",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Diode and Its Applications",
+         "topics": [
+          "PN Junction Diode- Characteristics and Analysis",
+          "Types of Diodes- Zener Diode",
+          "Photodiodes",
+          "LED",
+          "Varactor Diode"
+         ]
+        },
+        {
+         "title": "Rectifiers and Filter Circuit",
+         "topics": [
+          "Half Wave Rectifier",
+          "Full Wave Rectifier",
+          "Bridge Rectifier and their Analysis",
+          "L,C and Pi Filters",
+          "Series and Shunt Diode Clippers",
+          "Clipping at Two Independent Levels",
+          "Clamping Operation",
+          "Clamping Circuit",
+          "Practical Clamping Circuits",
+          "Basic Regulator Supply using Zener Diode"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Bipolar Junction Transistors",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Bipolar Junction Transistors",
+         "topics": [
+          "Construction and Characteristics of BJT",
+          "Transistor Configuration: CB, CE, CC Configuration",
+          "Small Signal Low Frequency Transistor Model (h-Parameters)",
+          "Analysis of Transistor Amplifier using h-parameters"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Transistor Biasing and Bias Stabilization",
+       "hours": "5L",
+       "parts": [
+        {
+         "title": "Transistor Biasing and Bias Stabilization",
+         "topics": [
+          "Operating Point",
+          "Stability Factor",
+          "Analysis of Fixed Bias",
+          "Collector to Base Bias",
+          "Emitter Resistance Bias Circuit and Self Bias Circuit",
+          "Bias Compensation Techniques",
+          "Transistor Switch and Transistor amplifier"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Field Effect Transistor",
+       "hours": "7L",
+       "parts": [
+        {
+         "title": "Field Effect Transistor",
+         "topics": [
+          "Construction and Characteristics of JFET",
+          "JFET Biasing Circuit",
+          "JFET Amplifier",
+          "MOSFET Construction and Characteristics",
+          "MOSFET amplifiers"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "EN-101": {
      "name": "Energy, Environment and Life Science",
@@ -267,9 +1770,89 @@
      "pages": [
       23
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nEnergy, Environment and Life Science\nCourse Code:\nEN-101\nContact Hours/Week: 2L\nCourse Credits: 02\nCourse Objectives\n• To acquire a basic understanding and knowledge about the environment and its allied problems.\n• To acquire a basic understanding and knowledge of environmental policies.\n• To understand the relationship between energy and environment.\n• Realize the importance of ecosystem and biodiversity for maintaining ecological balance.\n• Develop the ability to evaluate measures for the improvement and protection of environment.\n• To develop analytical skills, critical thinking, and demonstrate problem-solving skills using scientific techniques towards solutions\nof current problems and prevention of future problems.\nUnit Number\n\nCourse Content\nContact Hours\nLife and its Diversity: Classification and Evolution, Ecology: Organisms and Populations (Abiotic\nFactors, Responses to Abiotic Factors, Adaptations, Population Characteristics, Population\nInteractions like Mutualism Competition, Predation, Parasitism etc.); Ecosystem and its significance,\nUNIT-01\nBiodiversity and Conservation(Species on Earth and India, importance of Species Diversity, Loss of\n08L\nBiodiversity, In-situ and ex-situ conservation) ; Life processes (photosynthesis, Nutrition, Respiration,\nTransportation); Biology and Human Welfare (Human Health and Disease, Strategies for\nEnhancement in Food Production, Microbes like Algae, bacteria etc. in Human Welfare.\nEnvironment and its Resources: Environmental Concerns in Global Politics, The Protection of\nUNIT-02\nGlobal Commons, Common Property Resources, India's Stand on Environmental Issues,\n04L\nEnvironmental Movements, Resource Geopolitics.\nEnvironmental Issues: Air Pollution and Its Control, Water Pollution and Its Control, Solid Wastes,\nAgro-chemicals and their Effects, Radioactive Wastes, Greenhouse Effect and Global Warming,\nUNIT-03\nOzone Depletion in the Stratosphere, Degradation by Improper Resource Utilization and\n04L\nMaintenance, Deforestation), Carbon footprint, International/National legal Environmental protection\nagencies.\nEnergy and environment: Conventional Energy sources for Power, Transportation and Heat\ngeneration, Renewable Energy resources alternatives, Carbon trading, Climate change and\nUNIT-04\n08L\nSustainability concept, Technological Advances and Institutions in India for Renewable Energy\nprograms, Energy and Environment policies\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Understand environmental problems arising due to developmental activities.\nCO2: Identify the natural resources and suitable methods for conservation and sustainable development.\nCO3: Realize the importance of ecosystem and biodiversity for maintaining ecological balance.\nCO4: Identify the environmental pollutants and abatement devices.\nCO5: Understand the national and international environmental issues.\nText Books:\n1. Joseph B, Environmental Studies, 3rd Addition, McGraw Hill Education (India) Private Limited, 2018.\n2. De AK, Environmental Chemistry, 7th Addition, New Age International (P) Limited, 2010.\n3. NCERT, Environmental Science, New Delhi.\nReference Books:\n1. Kaushik A, Kaushik CP, Environmental Science, New Age International (P) Limited, 2011.\n2. Bharucha R, Environmental Studies, 2004.\n3. Dave D, Katewa SS, Environmental Studies, Cengage Learning India Pvt. Ltd., 2012.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Life and its Diversity",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Life and its Diversity",
+         "topics": [
+          "Classification and Evolution",
+          "Ecology: Organisms and Populations (Abiotic Factors, Responses to Abiotic Factors, Adaptations, Population Characteristics, Population Interactions like Mutualism Competition, Predation, Parasitism etc.)",
+          "Ecosystem and its significance",
+          "Biodiversity and Conservation(Species on Earth and India, importance of Species Diversity, Loss of Biodiversity, In-situ and ex-situ conservation)",
+          "Life processes (photosynthesis, Nutrition, Respiration, Transportation)",
+          "Biology and Human Welfare (Human Health and Disease, Strategies for Enhancement in Food Production, Microbes like Algae, bacteria etc. in Human Welfare"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Environment and its Resources",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Environment and its Resources",
+         "topics": [
+          "Environmental Concerns in Global Politics",
+          "The Protection of Global Commons",
+          "Common Property Resources",
+          "India's Stand on Environmental Issues",
+          "Environmental Movements",
+          "Resource Geopolitics"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Environmental Issues",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Environmental Issues",
+         "topics": [
+          "Air Pollution and Its Control",
+          "Water Pollution and Its Control",
+          "Solid Wastes",
+          "Agro-chemicals and their Effects",
+          "Radioactive Wastes",
+          "Greenhouse Effect and Global Warming",
+          "Ozone Depletion in the Stratosphere",
+          "Degradation by Improper Resource Utilization and Maintenance",
+          "Deforestation",
+          "Carbon footprint",
+          "International/National legal Environmental protection agencies"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Energy and environment",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Energy and environment",
+         "topics": [
+          "Conventional Energy sources for Power",
+          "Transportation and Heat generation",
+          "Renewable Energy resources alternatives",
+          "Carbon trading",
+          "Climate change and Sustainability concept",
+          "Technological Advances and Institutions in India for Renewable Energy programs",
+          "Energy and Environment policies"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "MB-101": {
      "name": "Entrepreneurship & Marketing Dynamics",
@@ -283,9 +1866,56 @@
      "pages": [
       24
      ],
-     "units": 0,
+     "units": 2,
      "text": "Course Name: Entrepreneurship & Marketing Dynamics\nCourse Code: MB-101\nContact Hours/Week: 1L\nCourse Credits: 01\nCourse Objectives:\n• To impart knowledge about the basics of marketing practices for entrepreneurs.\n• Enabling the students in understanding the various insights into entrepreneurship.\n• Help students with diverse academic backgrounds in choosing entrepreneurship as a career option.\nUnit Number\nCourse Content\nContact Hours\nEntrepreneurship: Introduction to Entrepreneurship: Meaning and objective., the evolving concept\nof entrepreneurship, entrepreneurship qualities and traits, Dos & Don'ts in entrepreneurship,\nUnit 1\n08L\nFunctions of an entrepreneur, creativity and entrepreneurship, types of entrepreneurs, market and\nits types, partnership, and company.\nMarketing Dynamics Definition of marketing, marketing vs. sales, marketing strategies (STP),\n06L\nUnit 2\nBCG matrix, Ansoff matrix, marketing mix, Product and its types, new product development\nprocess, product life cycle, product mix, pricing methods.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to:\nCO1: Understand the basic concepts related to entrepreneurship and the qualities of an entrepreneur.\nCO2: To acquire knowledge on entrepreneurship development and its Pro's and Con's.\nCO3: Understand the key concepts related to the types of market and how concepts of marketing are closely associated with\nentrepreneurship.\nText Books:\n1. Kotler P. “Principles of Marketing”, 17e, Pearson\n2. Vasant Desai, “Entrepreneurial Development: The Entrepreneur, Entrepreneurship and Development Principles, Programmes and\nPolicies”. Himalaya Publishing House.\n3. Arya Kumar, “Entrepreneurship: Creating and Leading an Entrepreneurial Organization” Pearson.\nReference Books:\n1. Howard H. Frederick, Donald F. Kuratko, Allan O'Connor “Entrepreneurship - Theory, Process Practice”, 4th edition, Cengage\nLearning\n2. Ian Chaston “Entrepreneurial Marketing: Sustaining Growth in All Organisations”, New Edition, Palgrave Macmillan.\n3. Ries, Eric “The Lean Startup: How Constant Innovation Creates Radically Successful Businesses”, Penguin UK.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction to Entrepreneurship",
+       "hours": "8L",
+       "parts": [
+        {
+         "title": "Introduction to Entrepreneurship",
+         "topics": [
+          "Meaning and objective",
+          "The evolving concept of entrepreneurship",
+          "Entrepreneurship qualities and traits",
+          "Dos & Don'ts in entrepreneurship",
+          "Functions of an entrepreneur",
+          "Creativity and entrepreneurship",
+          "Types of entrepreneurs",
+          "Market and its types",
+          "Partnership",
+          "Company"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Marketing Dynamics",
+       "hours": "6L",
+       "parts": [
+        {
+         "title": "Marketing Dynamics",
+         "topics": [
+          "Definition of marketing",
+          "Marketing vs. sales",
+          "Marketing strategies (STP)",
+          "BCG matrix",
+          "Ansoff matrix",
+          "Marketing mix",
+          "Product and its types",
+          "New product development process",
+          "Product life cycle",
+          "Product mix",
+          "Pricing methods"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "CY-102": {
      "name": "Engineering Chemistry Lab",
@@ -301,7 +1931,38 @@
      ],
      "units": 0,
      "text": "Course Name: Engineering Chemistry Lab\nCourse Code: CY-102\nContact Hours/Week: 2P\nCourse Credits: 01\nCourse Objectives:\n• To analyse water samples for different parameters like amount of residual chlorine, alkalinity and hardness\n• To measure physical properties of liquids and systems of different components\n• To estimate the percentage of a particular metal in its ore or alloy\n• To familiarize students about the characterization method like absorption spectroscopy and adsorption processes\n• To determine quantitative composition of a solution through conductometric and potentiometric titration\nList of Experiments\n1. Estimation of residual Chlorine in a given sample of water\n2. Estimation of concentration of hydroxyl, carbonate, bicarbonate and total alkalinity in a given sample of water\n3. Estimation of Hardness (Temporary and Permanent) in a given sample of water\n4. Determination of quantity of Ferrous ions in a sample of water by KMnO4 titration\n5. Estimation of Cu in a given sample of brass by (i) titration and/or (ii) Atomic absorption spectroscopy method\n6. Determination of Viscosity of unknown liquid by Ostwald's viscometer\n7. Determination of Viscosity using Redwood viscometer.\n8. Determination of surface tension of unknown liquid by drop number method.\n9. Verification of the Beer-Lambert law by using Colorimetric method and its application in determination concentration of\nunknown solution.\n10. Conductometric titration of a weak acid with strong base.\n11. Conductometric titration of a weak acid with weak base.\n12. Potentiometric titration of weak acid with strong base.\n13. Potentiometric titration of mixture of strong and weak acid with strong base.\n14. Determination of flash and fire point of a given bituminous material.\n15. Determination of phase diagram of two component system\n16. Adsorption study on charcoal.\nNote: The concerned Course Coordinator will prepare the actual list of experiments/problems at the start of semester based\non above generic list.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1:\nQuantify different pollutants in water samples\nCO2: Identify the unknown liquid from their surface tension and viscosity measurement.\nCO3: Analytically measure the composition\nCO4: Understand quantitative analysis of acids and bases\nCO5: Understand to describe systems of one/two component",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Lab experiments",
+       "hours": "",
+       "lab": true,
+       "parts": [
+        {
+         "title": "List of experiments",
+         "topics": [
+          "Estimation of residual Chlorine in a given sample of water",
+          "Estimation of concentration of hydroxyl, carbonate, bicarbonate and total alkalinity in a given sample of water",
+          "Estimation of Hardness (Temporary and Permanent) in a given sample of water",
+          "Determination of quantity of Ferrous ions in a sample of water by KMnO4 titration",
+          "Estimation of Cu in a given sample of brass by (i) titration and/or (ii) Atomic absorption spectroscopy method",
+          "Determination of Viscosity of unknown liquid by Ostwald's viscometer",
+          "Determination of Viscosity using Redwood viscometer",
+          "Determination of surface tension of unknown liquid by drop number method",
+          "Verification of the Beer-Lambert law by using Colorimetric method and its application in determination concentration of unknown solution",
+          "Conductometric titration of a weak acid with strong base",
+          "Conductometric titration of a weak acid with weak base",
+          "Potentiometric titration of weak acid with strong base",
+          "Potentiometric titration of mixture of strong and weak acid with strong base",
+          "Determination of flash and fire point of a given bituminous material",
+          "Determination of phase diagram of two component system",
+          "Adsorption study on charcoal"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "EE-102": {
      "name": "Electrical and Electronics Engineering Lab",
@@ -317,7 +1978,34 @@
      ],
      "units": 0,
      "text": "Course Name: Electrical and Electronics Engineering Lab\nCourse Code: EE-102\nContact Hours/Week: 2P\nCourse Credits:01\nCourse Objectives\n• To impart basic knowledge of electrical quantities such as current, voltage, power, energy etc.\n• To familiarize students with basic circuit components and their connections.\n• To explain working principle of electrical measuring instruments such as ammeter, voltmeter, wattmeter, energy meter etc.\n• Familiarization with electronic components and equipments.\n• To validate and verify the characteristics of various electronic devices.\n• To implement electronic circuits using different electronic components.\nList of Experiments\n1. To verify fundamental laws of Electrical Engineering\nI.\nOhm's law for Bilateral Passive Linear Lumped (BPLL) element.\nII.\nKVL and KCL\n2. To verify Network theorems\nI.\nNorton and Thevenin Theorem\nII.\nMaximum power theorem\nIII.\nSuperposition theorem\nIV.\nTellegen's Theorem\n3. To calibrate a measuring instrument\nI.\nVoltmeter with the help of standard ammeter and resistance.\nII.\nAmmeter with the help of standard voltmeter and resistance.\nIII.\nWattmeter by direct loading.\n4. To find minimum fusing current and fuse constant of a given fuse wire.\n5. To check polarity markings of a transformer and to determine self & mutual inductance of windings.\n6. To find voltage current relationship in R-L series circuit and to determine power factor of the circuit. Also determine the inductance of a coil\nusing voltmeter, ammeter methods\n7. Familiarization of electronic components and equipments like CRO, function generator and power supplies etc.\n8. To study the V-I characteristics of p-n junction diode and determine its static and dynamic resistance.\n9. To study the characteristics of Zener diode, calculate the dynamic resistance and working as Voltage regulator.\n10. To study and plot the waveform of half wave and full wave rectifier with and without capacitor filter.\n11. To study and plot the input and output characteristics of CE (Common Emitter) and CB (Common Base) transistor configurations and\ncalculate their input and output resistances.\n12. To study the characteristics of FET (Field Effect Transistor) and calculate its dynamic resistance (rd), mutual conductance (gm) and\namplification factor (μ).\n*NOTE: The experiments of EE-102 course shall be jointly conducted by Electrical Engineering and Electronics & Communication Engineering\nDepartments. However, the final grade submission of the Lab course EE-102 shall be done by Electrical Engineering Department.\nCourse Outcomes\nUpon successful completion of the course, the students will be able to\nCO1: Verify fundamental laws like Ohm's law, KCL, KVL and use different meters and instruments for the measurement of common electrical\nquantities.\nCO2: Understand the importance of fuse as a safety device and study the parameters related to the selection of fuse wire.\nCO3: The basic working principle & construction of a transformer.\nCO4: Understanding of different meters and instruments for measurement of electronic quantities.\nCO5: Develop skills for designing electronics circuits and its practical implementation on breadboard.\nCO6: Understand the characteristics of different electronic devices like diodes, BJT and FET.",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Lab experiments",
+       "hours": "",
+       "lab": true,
+       "parts": [
+        {
+         "title": "List of experiments",
+         "topics": [
+          "To verify fundamental laws of Electrical Engineering I. Ohm's law for Bilateral Passive Linear Lumped (BPLL) element. II. KVL and KCL",
+          "To verify Network theorems I. Norton and Thevenin Theorem II. Maximum power theorem III. Superposition theorem IV. Tellegen's Theorem",
+          "To calibrate a measuring instrument I. Voltmeter with the help of standard ammeter and resistance. II. Ammeter with the help of standard voltmeter and resistance. III. Wattmeter by direct loading",
+          "To find minimum fusing current and fuse constant of a given fuse wire",
+          "To check polarity markings of a transformer and to determine self & mutual inductance of windings",
+          "To find voltage current relationship in R-L series circuit and to determine power factor of the circuit. Also determine the inductance of a coil using voltmeter, ammeter methods",
+          "Familiarization of electronic components and equipments like CRO, function generator and power supplies etc",
+          "To study the V-I characteristics of p-n junction diode and determine its static and dynamic resistance",
+          "To study the characteristics of Zener diode, calculate the dynamic resistance and working as Voltage regulator",
+          "To study and plot the waveform of half wave and full wave rectifier with and without capacitor filter",
+          "To study and plot the input and output characteristics of CE (Common Emitter) and CB (Common Base) transistor configurations and calculate their input and output resistances",
+          "To study the characteristics of FET (Field Effect Transistor) and calculate its dynamic resistance (rd), mutual conductance (gm) and amplification factor (μ)"
+         ]
+        }
+       ]
+      }
+     ]
     },
     "CE-101": {
      "name": "Engineering Graphics",
@@ -331,9 +2019,99 @@
      "pages": [
       27
      ],
-     "units": 0,
+     "units": 4,
      "text": "Course Name:\nEngineering Graphics\nCourse Code:\nCE-101\nCourse Type:\nInstitute Core\nContact Hours/Week: 1L + 2P\n\n1.\n\nCourse Objectives:\n• To know and practice basic drafting skills\n• To be able to understand the designs of structures or machine parts.\n• To be able to visualize the projected drawings and present various projections on the sheet\nUnit Number\nCourse Content\nUNIT-01\nIntroduction: Drawing instruments and their uses, Types of lines, Lettering, General rules fordimensioning, Geometrical\nconstructions using instruments\nOrthographic Projection: Methods of projection, Principles of Orthographic projection, First angle versus third angle of\nprojection, Six views of an object\nIsometric Projections: Isometric views of simple solids\nUNIT-02\nProjection of Points: Projections of points when they are situated in different quadrants\nProjections of Lines: Projections of a line parallel to one of the reference planes and inclined to the other, line inclined\nto both the reference planes, Traces.\nUNIT-03\nProjections of Planes: Projections of a plane perpendicular to one of the reference planes\nand inclined to the other, Oblique planes\nProjections of Solids: Projections of solids whose axis is parallel to one of the reference\nplanes and inclined to the other, axis inclined to both the planes\nUNIT-04\nSection of Solids: Sectional planes, Sectional views of prism and pyramid\nCourse Outcomes:\nUpon successful completion of the course, the students will be able to\nCO1\nKnow the basic drafting tools\nCO2 Understand the designs of structures and machine parts\nCO3 Practice visualization.\nText and Reference Books:\nHatt\nBhatt N D. and Panchal, V.M, Engineering Drawing, Charotar Publishing House\n\nCourse Credits: 2\n\nContact Hours\n01L\n02L\n01L\n01L\n02L\n02L\n02L\n01L",
-     "note": null
+     "note": null,
+     "outline": [
+      {
+       "n": 1,
+       "title": "Introduction · Orthographic Projection · Isometric Projections",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Introduction",
+         "topics": [
+          "Drawing instruments and their uses",
+          "Types of lines",
+          "Lettering",
+          "General rules fordimensioning",
+          "Geometrical constructions using instruments"
+         ]
+        },
+        {
+         "title": "Orthographic Projection",
+         "topics": [
+          "Methods of projection",
+          "Principles of Orthographic projection",
+          "First angle versus third angle of projection",
+          "Six views of an object"
+         ]
+        },
+        {
+         "title": "Isometric Projections",
+         "topics": [
+          "Isometric views of simple solids"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 2,
+       "title": "Projection of Points · Projections of Lines",
+       "hours": "3L",
+       "parts": [
+        {
+         "title": "Projection of Points",
+         "topics": [
+          "Projections of points when they are situated in different quadrants"
+         ]
+        },
+        {
+         "title": "Projections of Lines",
+         "topics": [
+          "Projections of a line parallel to one of the reference planes and inclined to the other",
+          "Line inclined to both the reference planes",
+          "Traces"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 3,
+       "title": "Projections of Planes · Projections of Solids",
+       "hours": "4L",
+       "parts": [
+        {
+         "title": "Projections of Planes",
+         "topics": [
+          "Projections of a plane perpendicular to one of the reference planes and inclined to the other",
+          "Oblique planes"
+         ]
+        },
+        {
+         "title": "Projections of Solids",
+         "topics": [
+          "Projections of solids whose axis is parallel to one of the reference planes and inclined to the other",
+          "Axis inclined to both the planes"
+         ]
+        }
+       ]
+      },
+      {
+       "n": 4,
+       "title": "Section of Solids",
+       "hours": "1L",
+       "parts": [
+        {
+         "title": "Section of Solids",
+         "topics": [
+          "Sectional planes",
+          "Sectional views of prism and pyramid"
+         ]
+        }
+       ]
+      }
+     ]
     }
    }
   },

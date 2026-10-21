@@ -200,7 +200,25 @@ data class Subject(
     val pages: List<Int> = emptyList(),
     val text: String = "",
     val note: String? = null,
+    /** Units -> sub-units -> topics from the official syllabus, for the study planner's topic picker. */
+    val outline: List<SyllabusUnit> = emptyList(),
 )
+
+@Serializable
+data class SyllabusUnit(
+    val n: Int = 0,
+    val title: String = "",
+    /** Contact hours, e.g. "8L". */
+    val hours: String = "",
+    /** The lab course's list of experiments rather than a numbered unit. */
+    val lab: Boolean = false,
+    val parts: List<SyllabusPart> = emptyList(),
+) {
+    val label get() = if (lab) "Lab" else "Unit $n"
+}
+
+@Serializable
+data class SyllabusPart(val title: String = "", val topics: List<String> = emptyList())
 
 @Serializable
 data class HostelFile(val note: String = "", val hostels: Map<String, Hostel> = emptyMap())

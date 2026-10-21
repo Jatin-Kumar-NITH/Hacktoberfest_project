@@ -54,6 +54,7 @@ function route() {
   if (p === "attendance") renderAttendance();
   if (p === "results") renderResultsPage();
   if (p === "syllabus") renderSyllabus();
+  if (p === "planner") renderPlannerSyllabus();
   if (p === "materials") renderMaterials();
   if (p === "hostel") renderHostel();
   if (p === "chat") startChat(); else stopChat();
@@ -330,6 +331,7 @@ $("clearHistory").addEventListener("click", () => {
 // ========================================================== STUDY PLANNER
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let planSample = false;
+let plannerReady = false; // the syllabus (CAMPUS) is read further down the file, so topic buttons wait for the first visit
 
 function addDays(n) { const d = new Date(); d.setDate(d.getDate() + n); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); }
 function niceDate(iso) { const d = new Date(iso + "T00:00:00"); return `${DAY_NAMES[d.getDay()].slice(0, 3)}, ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
@@ -338,6 +340,7 @@ function subjectRow(s = {}) {
   const wrap = el("div", "subject");
   const top = el("div", "subject-top");
   const name = el("input"); name.type = "text"; name.placeholder = "Subject, e.g. Data Structures"; name.value = s.name || ""; name.className = "s-name";
+  name.setAttribute("list", "sylSubjects");
   const exam = el("input"); exam.type = "date"; exam.min = todayISO(); exam.value = s.exam_date || ""; exam.className = "s-date"; exam.title = "Exam date";
   const rm = el("button", "remove", "×"); rm.title = "Remove subject";
   rm.addEventListener("click", () => { wrap.remove(); planSample = false; });
@@ -348,20 +351,193 @@ function subjectRow(s = {}) {
   ["easy", "medium", "hard"].forEach((v) => { const o = el("option", "", v[0].toUpperCase() + v.slice(1)); o.value = v; diff.appendChild(o); });
   diff.value = s.difficulty || "medium";
   bottom.append(topics, diff);
-  wrap.append(top, bottom);
-  wrap.addEventListener("input", () => { planSample = false; });
+  // topics can be picked unit by unit from the official syllabus; typing them stays possible
+  const pick = el("div", "subject-pick");
+  const pickBtn = el("button", "ghost small s-pick", "📚 Choose topics from syllabus");
+  pickBtn.type = "button";
+  pickBtn.addEventListener("click", () => openTopicPicker(wrap));
+  pick.append(pickBtn, el("span", "hint s-picked"));
+  pick.hidden = true;
+  wrap.append(top, bottom, pick);
+  wrap.addEventListener("input", (e) => {
+    planSample = false;
+    if (e.target === name) syncPickButton(wrap);
+  });
   return wrap;
 }
+
+// ---------- topic picker: subject -> units -> sub-units and topics, from the syllabus outline
+const sylOutlined = () => Object.entries(SYL(myYear).subjects).filter(([, s]) => (s.outline || []).length);
+const unitLabel = (u) => (u.lab ? "Lab" : `Unit ${u.n}`);
+
+function sylMatch(text) {
+  const subs = SYL(myYear).subjects, t = (text || "").trim().toLowerCase();
+  if (!t) return null;
+  const m = t.match(/\b([a-z]{2,3})[\s-]?(\d{3})\b/);
+  if (m && subs[`${m[1].toUpperCase()}-${m[2]}`]) return `${m[1].toUpperCase()}-${m[2]}`;
+  const hit = sylOutlined().find(([, s]) => s.name.length > 4 && (t.includes(s.name.toLowerCase()) || s.name.toLowerCase() === t));
+  return hit ? hit[0] : null;
+}
+
+function syncPickButton(wrap) {
+  if (!plannerReady) return;
+  const any = sylOutlined().length > 0;
+  wrap.querySelector(".subject-pick").hidden = !any;
+  const code = sylMatch(wrap.querySelector(".s-name").value);
+  const p = wrap._pick;
+  wrap.querySelector(".s-pick").textContent = code ? `📚 Choose ${code} topics` : "📚 Choose topics from syllabus";
+  wrap.querySelector(".s-picked").textContent = p && p.code === code && p.topics.size
+    ? `${p.units.size} unit${p.units.size === 1 ? "" : "s"} · ${p.topics.size} topic${p.topics.size === 1 ? "" : "s"} picked` : "";
+}
+
+// called when the planner opens: the syllabus depends on the year picked in the header
+function renderPlannerSyllabus() {
+  plannerReady = true;
+  const list = $("sylSubjects");
+  list.replaceChildren(...sylOutlined().map(([code, s]) => { const o = el("option"); o.value = `${code} ${s.name}`; return o; }));
+  document.querySelectorAll("#subjects .subject").forEach(syncPickButton);
+}
+
+// "Unit 1 – Heading: topic, topic; Unit 3 – ..." shortened (whole sub-units, then whole units) to fit the planner's limit
+function pickedTopicsText(sub, pick) {
+  const units = sub.outline.filter((u) => pick.units.has(u.n));
+  const build = (level) => units.map((u) => {
+    const parts = u.parts.map((p, pi) => ({ p, sel: p.topics.filter((t, ti) => pick.topics.has(`${u.n}|${pi}|${ti}`)) })).filter((x) => x.sel.length);
+    const whole = parts.length === u.parts.length && parts.every((x) => x.sel.length === x.p.topics.length);
+    if (level >= 2 && whole) return `${unitLabel(u)} ${u.title} (whole unit)`;
+    return `${unitLabel(u)} – ` + parts.map(({ p, sel }) => (level >= 1 && sel.length === p.topics.length
+      ? `${p.title} (all)` : `${p.title}: ${sel.join(", ")}`)).join("; ");
+  }).filter((x) => !x.endsWith("– ")).join(" | ");
+  for (const level of [0, 1, 2]) { const t = build(level); if (t.length <= 1900 || level === 2) return t.slice(0, 2000); }
+}
+
+function openTopicPicker(wrap) {
+  const dlg = $("topicDialog");
+  const nameInput = wrap.querySelector(".s-name");
+  let code = sylMatch(nameInput.value);
+  const prev = wrap._pick && wrap._pick.code === code ? wrap._pick : null;
+  const units = new Set(prev ? prev.units : []), topics = new Set(prev ? prev.topics : []);
+  const head = $("tpHead"), body = $("tpBody"), foot = $("tpFoot");
+
+  const button = (cls, text, fn) => { const b = el("button", cls, text); b.type = "button"; b.addEventListener("click", fn); return b; };
+  const check = (checked, fn) => { const c = el("input"); c.type = "checkbox"; c.checked = checked; c.addEventListener("change", () => fn(c.checked)); return c; };
+  const title = (step, text) => {
+    const sub = SYL(myYear).subjects[code];
+    head.replaceChildren(el("span", "tp-step", step), el("h2", "", code ? `${code} · ${sub.name}` : "Choose a subject"), el("p", "hint", text));
+  };
+
+  function stepSubject() {
+    title("Step 1 of 3 · Subject", "Which subject is this exam for? Subjects in your timetable come first.");
+    const mine = new Set(secOf(myYear, mySection).classes.map((c) => c.code));
+    const list = sylOutlined().sort(([a], [b]) => (mine.has(b) - mine.has(a)) || a.localeCompare(b));
+    body.replaceChildren(...list.map(([c, s]) => {
+      const b = button("tp-row tp-subject", "", () => { code = c; units.clear(); topics.clear(); stepUnits(); });
+      const txt = el("span", "tp-text");
+      txt.append(el("span", "tp-code", c), el("span", "tp-name", s.name), el("span", "tp-meta", mine.has(c) ? "In your timetable" : `Semester ${s.semester || "?"}`));
+      b.appendChild(txt);
+      return b;
+    }));
+    foot.replaceChildren(button("ghost", "Cancel", () => dlg.close()));
+  }
+
+  function stepUnits() {
+    const sub = SYL(myYear).subjects[code];
+    title(withSubject ? "Step 2 of 3 · Units" : "Step 1 of 2 · Units", "Pick the units this exam covers. You can narrow down the topics next.");
+    const rows = sub.outline.map((u) => {
+      const n = u.parts.reduce((a, p) => a + p.topics.length, 0);
+      const row = el("label", "tp-row tp-unit");
+      row.append(check(units.has(u.n), (on) => {
+        if (on) { units.add(u.n); u.parts.forEach((p, pi) => p.topics.forEach((t, ti) => topics.add(`${u.n}|${pi}|${ti}`))); }
+        else { units.delete(u.n); [...topics].filter((k) => k.startsWith(`${u.n}|`)).forEach((k) => topics.delete(k)); }
+        next.disabled = units.size === 0;
+      }));
+      const txt = el("span", "tp-text");
+      txt.append(el("span", "tp-code", unitLabel(u)), el("span", "tp-name", u.title),
+        el("span", "tp-meta", [u.hours && `${parseInt(u.hours, 10)} lecture hours`, `${n} topic${n === 1 ? "" : "s"}`].filter(Boolean).join(" · ")));
+      row.appendChild(txt);
+      return row;
+    });
+    body.replaceChildren(...rows);
+    const all = button("ghost", "Select all", () => { body.querySelectorAll("input").forEach((c) => { if (!c.checked) c.click(); }); });
+    const next = button("primary inline", "Next: pick topics →", stepTopics);
+    next.disabled = units.size === 0;
+    const left = el("div", "tp-left");
+    left.appendChild(button("ghost", withSubject ? "← Subject" : "Other subject", () => { withSubject = true; stepSubject(); }));
+    left.appendChild(all);
+    foot.replaceChildren(left, next);
+  }
+
+  function stepTopics() {
+    const sub = SYL(myYear).subjects[code];
+    title(withSubject ? "Step 3 of 3 · Topics" : "Step 2 of 2 · Topics", "Everything in your units is ticked. Untick what you have already finished or that isn't in this exam.");
+    const blocks = [];
+    sub.outline.filter((u) => units.has(u.n)).forEach((u) => {
+      const box = el("div", "tp-unit-block");
+      box.appendChild(el("h3", "", `${unitLabel(u)} · ${u.title}`));
+      u.parts.forEach((p, pi) => {
+        const keys = p.topics.map((t, ti) => `${u.n}|${pi}|${ti}`);
+        const part = el("div", "tp-part");
+        const headRow = el("label", "tp-part-head");
+        const count = el("span", "tp-meta");
+        const chips = el("div", "chips");
+        const all = check(false, (on) => { keys.forEach((k) => (on ? topics.add(k) : topics.delete(k))); refresh(); });
+        function refresh() {
+          const n = keys.filter((k) => topics.has(k)).length;
+          all.checked = n === keys.length; all.indeterminate = n > 0 && n < keys.length;
+          count.textContent = `${n}/${keys.length}`;
+          [...chips.children].forEach((c, i) => c.classList.toggle("active", topics.has(keys[i])));
+          done.disabled = topics.size === 0;
+        }
+        // a unit with a single sub-unit of the same name: the row is just "All topics"
+        headRow.append(all, el("span", "tp-name", u.parts.length === 1 && p.title === u.title ? "All topics" : p.title), count);
+        p.topics.forEach((t, ti) => chips.appendChild(button("chip", t, () => {
+          const k = keys[ti]; topics.has(k) ? topics.delete(k) : topics.add(k); refresh();
+        })));
+        part.append(headRow, chips);
+        part._refresh = refresh;
+        box.appendChild(part);
+      });
+      blocks.push(box);
+    });
+    body.replaceChildren(...blocks);
+    body.scrollTop = 0;
+    const back = button("ghost", "← Units", stepUnits);
+    const done = button("primary inline", "Use these topics", () => {
+      // a topic left over from a unit that was unticked doesn't count
+      [...topics].filter((k) => !units.has(Number(k.split("|")[0]))).forEach((k) => topics.delete(k));
+      const used = new Set([...units].filter((n) => [...topics].some((k) => k.startsWith(`${n}|`))));
+      wrap._pick = { code, units: used, topics: new Set(topics) };
+      if (sylMatch(nameInput.value) !== code || nameInput.value.trim().toUpperCase() === code) nameInput.value = `${code} ${sub.name}`;
+      wrap.querySelector(".s-topics").value = pickedTopicsText(sub, wrap._pick);
+      planSample = false;
+      syncPickButton(wrap);
+      dlg.close();
+    });
+    const left = el("div", "tp-left");
+    left.append(back);
+    foot.replaceChildren(left, done);
+    body.querySelectorAll(".tp-part").forEach((p) => p._refresh());
+  }
+
+  let withSubject = !code; // the subject step is shown when the name didn't match a syllabus subject
+  code ? stepUnits() : stepSubject();
+  dlg.showModal();
+}
+$("tpClose").addEventListener("click", () => $("topicDialog").close());
+$("topicDialog").addEventListener("click", (e) => { if (e.target === $("topicDialog")) $("topicDialog").close(); });
 
 function resetSubjects(list) {
   $("subjects").replaceChildren();
   list.forEach((s) => $("subjects").appendChild(subjectRow(s)));
+  document.querySelectorAll("#subjects .subject").forEach(syncPickButton);
 }
 resetSubjects([{}, {}]);
 
 $("addSubject").addEventListener("click", () => {
   if ($("subjects").children.length >= 8) return;
-  $("subjects").appendChild(subjectRow());
+  const row = subjectRow();
+  $("subjects").appendChild(row);
+  syncPickButton(row);
 });
 
 $("fillSample").addEventListener("click", () => {

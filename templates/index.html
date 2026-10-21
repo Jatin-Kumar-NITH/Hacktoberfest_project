@@ -502,6 +502,7 @@
         <div class="card input-card">
           <div class="row-between"><span class="label">Your subjects</span><button class="ghost small" id="fillSample">Fill sample</button></div>
           <div id="subjects"></div>
+          <datalist id="sylSubjects"></datalist>
           <button class="ghost add-btn" id="addSubject">+ Add subject</button>
 
           <div class="two-col">
@@ -736,6 +737,11 @@
 </div>
 
 <script id="samples-data" type="application/json">{{ samples | tojson }}</script>
+<dialog class="picker" id="topicDialog" aria-labelledby="tpHead">
+  <div class="tp-head"><div id="tpHead"></div><button class="remove" id="tpClose" type="button" title="Close">×</button></div>
+  <div class="tp-body" id="tpBody"></div>
+  <div class="tp-foot" id="tpFoot"></div>
+</dialog>
 <script id="campus-data" type="application/json">{{ campus | tojson }}</script>
 <script id="me-data" type="application/json">{{ me | tojson }}</script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
