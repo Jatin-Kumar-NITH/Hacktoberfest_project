@@ -96,8 +96,13 @@ Students get information from too many places: a timetable PDF, notice-board pho
   - **📝 Read as text**: the full syllabus as text
   - **✦ Summarise**: the AI explains it unit by unit
 - An expandable "Other courses this year" list with the other semester's subjects.
-- Study material PDFs published by admins appear here too.
-- Other years show "not added yet". Admins can publish syllabus PDFs as Study material.
+- Other years show "not added yet". Admins can publish syllabus PDFs under Study Material.
+
+### 📄 Study Material
+- Its own page in the menu, listing the notes and PDFs admins publish as **Study material / PDF**.
+- Only shows material for the student's year and section (none ticked when publishing = everyone).
+- Subject chips (e.g. MA-111) filter the list when there is material for more than one subject.
+- Admins get **Edit** and **Delete** on each item and a button that opens the Publish page with Study material selected.
 
 ### ✦ Notice Explainer
 - Paste a notice or upload a photo. Gemma 4 returns the title, issuer, audience, a summary, urgency, **deadlines with the exact source words**, required documents, a **checklist**, key facts and a **"Missing or unclear"** list, plus a Hindi version.

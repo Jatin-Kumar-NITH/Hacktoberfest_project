@@ -37,7 +37,7 @@ let currentId = null;
 // ---------------------------------------------------------- routing
 function route() {
   const page = (location.hash || "#dashboard").slice(1);
-  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "results", "syllabus", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
+  const valid = ["dashboard", "board", "timetable", "assignments", "exams", "calendar", "attendance", "results", "syllabus", "materials", "notice", "planner", "hostel", "college-updates", "hostel-updates", "chat", "publish", "admins", "journalists", "about"].filter((v) => $(`page-${v}`));
   const p = valid.includes(page) ? page : "dashboard";
   valid.forEach((v) => ($(`page-${v}`).hidden = v !== p));
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("active", a.dataset.page === p));
@@ -54,6 +54,7 @@ function route() {
   if (p === "attendance") renderAttendance();
   if (p === "results") renderResultsPage();
   if (p === "syllabus") renderSyllabus();
+  if (p === "materials") renderMaterials();
   if (p === "hostel") renderHostel();
   if (p === "chat") startChat(); else stopChat();
   if (p === "publish") renderPublish();
@@ -1144,6 +1145,49 @@ function subjectCard(code, sec, syl) {
   card.appendChild(pre);
   return card;
 }
+// ========================================================== STUDY MATERIAL
+let matFilter = "all";
+function materialCard(m) {
+  const card = el("div", "as-card");
+  const head = el("div", "as-head"); const left = el("div");
+  if (m.code) left.appendChild(el("span", "as-code", m.code));
+  left.appendChild(el("h3", "", m.title)); head.appendChild(left); card.appendChild(head);
+  if (m.code && subjName(myYear, m.code)) card.appendChild(el("p", "muted", subjName(myYear, m.code)));
+  if (m.body) card.appendChild(el("p", "as-details", m.body));
+  card.appendChild(pubLine(m));
+  const act = el("div", "notice-actions"); act.appendChild(pdfLink(m.pdf, "📄 Open PDF"));
+  if (canDelete(m)) {
+    act.appendChild(editButton(() => itemEditor(card, [
+      { name: "title", label: "Title", value: m.title, max: 150 },
+      { name: "code", label: "Subject code", value: m.code || "", max: 40 },
+      { name: "body", label: "Description (optional)", type: "textarea", value: m.body || "", max: 8000 },
+      pdfField(true),
+    ], `/api/posts/${m.db_id}/edit`)));
+    act.appendChild(deleteButton(m));
+  }
+  card.appendChild(act);
+  return card;
+}
+function renderMaterials() {
+  $("matSub").textContent = `Notes and PDFs published for ${myLabel()}.`;
+  const mats = POSTS.filter((p) => p.kind === "material" && forStudent(p, myYear, mySection));
+  const codes = [...new Set(mats.map((m) => m.code || "Other"))].sort((a, b) => (a === "Other") - (b === "Other") || a.localeCompare(b));
+  if (matFilter !== "all" && !codes.includes(matFilter)) matFilter = "all";
+  const filters = $("matFilters");
+  filters.hidden = codes.length < 2;
+  filters.replaceChildren(...["all", ...codes].map((c) => {
+    const b = el("button", `chip${c === matFilter ? " active" : ""}`, c === "all" ? `All (${mats.length})` : c);
+    b.type = "button";
+    b.addEventListener("click", () => { matFilter = c; renderMaterials(); });
+    return b;
+  }));
+  const shown = mats.filter((m) => matFilter === "all" || (m.code || "Other") === matFilter);
+  $("matList").replaceChildren(...(shown.length ? shown.map(materialCard)
+    : [el("p", "empty-line card", IS_ADMIN ? "No study material for your year and section yet. Use \"Publish study material\" to add a PDF."
+        : "No study material for your year and section yet. When admins publish notes or PDFs, they'll show up here.")]));
+}
+if ($("matPublish")) $("matPublish").addEventListener("click", () => { location.hash = "#publish"; setTimeout(() => setPubKind("material"), 0); });
+
 function renderSyllabus() {
   const sec = secOf(myYear, mySection), syl = SYL(myYear);
   $("sySub").textContent = `${YEAR_NAMES[myYear]}, ${sec.name}: subjects in your timetable.`;
@@ -1151,32 +1195,10 @@ function renderSyllabus() {
   $("syBadge").textContent = syl.official ? `✓ ${syl.title}. ${syl.note || ""}` : `📋 ${syl.note}`;
   const docs = $("syDocs"); docs.replaceChildren();
   (syl.documents || []).forEach((d) => docs.appendChild(pdfLink(d.pdf, `📄 ${d.title}`)));
-  const mats = POSTS.filter((p) => p.kind === "material" && forStudent(p, myYear, mySection));
-  $("syMaterialsWrap").hidden = !mats.length;
-  $("syMaterials").replaceChildren(...mats.map((m) => {
-    const card = el("div", "as-card");
-    const head = el("div", "as-head"); const left = el("div");
-    if (m.code) left.appendChild(el("span", "as-code", m.code));
-    left.appendChild(el("h3", "", m.title)); head.appendChild(left); card.appendChild(head);
-    if (m.body) card.appendChild(el("p", "as-details", m.body));
-    card.appendChild(pubLine(m));
-    const act = el("div", "notice-actions"); act.appendChild(pdfLink(m.pdf, "📄 Open PDF"));
-    if (canDelete(m)) {
-      act.appendChild(editButton(() => itemEditor(card, [
-        { name: "title", label: "Title", value: m.title, max: 150 },
-        { name: "code", label: "Subject code", value: m.code || "", max: 40 },
-        { name: "body", label: "Description (optional)", type: "textarea", value: m.body || "", max: 8000 },
-        pdfField(true),
-      ], `/api/posts/${m.db_id}/edit`)));
-      act.appendChild(deleteButton(m));
-    }
-    card.appendChild(act);
-    return card;
-  }));
   const codes = [...new Set(sec.classes.map((c) => c.code))].sort();
   $("syGrid").replaceChildren(...(codes.length ? codes.map((c) => subjectCard(c, sec, syl))
     : [el("p", "empty-line card", Object.keys(syl.subjects).length ? "Add this section's timetable to see its subjects here."
-        : "The syllabus for this year hasn't been added yet. Admins can publish syllabus PDFs as Study material.")]));
+        : "The syllabus for this year hasn't been added yet. Admins can publish syllabus PDFs under Study Material.")]));
   const others = Object.keys(syl.subjects).filter((c) => !codes.includes(c)).sort();
   $("syOtherWrap").hidden = !others.length;
   $("syOtherCount").textContent = others.length;
