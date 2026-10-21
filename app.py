@@ -295,7 +295,8 @@ def load_campus():
         ov = accounts.get_setting(f"syllabus:{y}")
         if ov:
             edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
-            syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in syl["subjects"].items() if c not in gone}
+            subjects = {**syl["subjects"], **ov["value"].get("added", {})}  # "added": subjects admins added on the site
+            syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in subjects.items() if c not in gone}
     # menu:<hostel> is the "All years" menu; menu:<hostel>:<year> is a year's own menu and wins for that year
     # a saved menu with no dishes in it is ignored, so it can't hide the menu in data/hostel.json
     for h in ("boys", "girls"):
@@ -470,7 +471,7 @@ def edit_menu():
 def _overrides(key):
     ov = accounts.get_setting(key)
     v = ov["value"] if ov else {}
-    return {"edits": v.get("edits", {}), "deleted": v.get("deleted", [])}
+    return {"edits": v.get("edits", {}), "deleted": v.get("deleted", []), "added": v.get("added", {})}
 
 
 def _pdf_field(old_pdf):
@@ -538,6 +539,39 @@ def _builtin_subject(year, code):
     return load_campus()["syllabus"]["years"].get(year, {}).get("subjects", {}).get(code)
 
 
+@app.post("/api/syllabus/<year>/add")
+@admin_required
+def add_syllabus_subject(year):
+    """A subject that isn't in data/syllabus.json, added straight from the Syllabus page."""
+    if year not in ("1", "2", "3", "4"):
+        return jsonify(error="Pick a year."), 400
+    f = request.form
+    code = re.sub(r"\s+", "-", _txt(f.get("code"), 20).upper())
+    if not re.fullmatch(r"[A-Z0-9][A-Z0-9()\-]*", code):
+        return jsonify(error="Please enter a subject code, like CS-111 (letters, digits and dashes only)."), 400
+    if _builtin_subject(year, code):
+        return jsonify(error=f"{code} already has a syllabus for this year. Use Edit on its card instead."), 400
+    name = _txt(f.get("name"), 150)
+    text = f.get("text", "").strip()[:20000]
+    if len(name) < 2:
+        return jsonify(error="Please enter the subject name."), 400
+    sem = f.get("semester", "").strip()
+    pdf = _pdf_field(None)
+    if pdf is False:
+        return jsonify(error="Only PDF files can be uploaded."), 400
+    if not text and not pdf:
+        return jsonify(error="Please enter the syllabus text or attach the syllabus PDF."), 400
+    ov = _overrides(f"syllabus:{year}")
+    ov["deleted"] = [c for c in ov["deleted"] if c != code]  # re-adding a deleted subject brings it back with the new text
+    old = ov["edits"].pop(code, {})
+    ov["added"][code] = {"name": name, "text": text, "note": _txt(f.get("note"), 300) or None, "pdf": pdf,
+                         "semester": int(sem) if sem in ("1", "2") else None,
+                         "added_by": current_user()["name"]}
+    accounts.set_setting(f"syllabus:{year}", ov)
+    accounts.delete_file(old.get("pdf"))
+    return jsonify(ok=True)
+
+
 @app.post("/api/edit/syllabus/<year>/<code>")
 @admin_required
 def edit_syllabus_subject(year, code):
@@ -549,11 +583,11 @@ def edit_syllabus_subject(year, code):
     text = f.get("text", "").strip()[:20000]
     if len(name) < 2:
         return jsonify(error="Please enter the subject name."), 400
-    if not text:
-        return jsonify(error="Please enter the syllabus text."), 400
     pdf = _pdf_field(sub.get("pdf"))
     if pdf is False:
         return jsonify(error="Only PDF files can be uploaded."), 400
+    if not text and not pdf:
+        return jsonify(error="Please enter the syllabus text or attach the syllabus PDF."), 400
     ov = _overrides(f"syllabus:{year}")
     ov["edits"][code] = {"name": name, "text": text, "note": _txt(f.get("note"), 300) or None, "pdf": pdf}
     if pdf != sub.get("pdf"):
@@ -569,9 +603,13 @@ def delete_syllabus_subject(year, code):
         return jsonify(error="Subject not found."), 404
     ov = _overrides(f"syllabus:{year}")
     old = ov["edits"].pop(code, {})
-    ov["deleted"].append(code)
+    added = ov["added"].pop(code, None)
+    # subjects added on the site are simply removed; built-in ones (or ones an added subject replaced) are hidden
+    if code in load("syllabus.json")["years"].get(year, {}).get("subjects", {}) and code not in ov["deleted"]:
+        ov["deleted"].append(code)
     accounts.set_setting(f"syllabus:{year}", ov)
     accounts.delete_file(old.get("pdf"))
+    accounts.delete_file((added or {}).get("pdf"))
     return jsonify(ok=True)
 
 
@@ -934,7 +972,7 @@ def build_ask_context(year, section_id, group, client, branch=""):
     for code in codes:
         sub = subjects.get(code)
         if sub:
-            parts.append(f"### {code}: {sub['name']}\n{sub['text'][:650]}")
+            parts.append(f"### {code}: {sub['name']}\n{sub['text'][:650] or 'Syllabus is in the attached PDF.'}")
         else:
             parts.append(f"- {code}: {syl.get('missing', {}).get(code, 'syllabus not added yet')}")
 

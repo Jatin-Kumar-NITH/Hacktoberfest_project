@@ -1118,31 +1118,58 @@ function subjectCard(code, sec, syl) {
   if (fac.length) card.appendChild(el("p", "sy-fac", `Faculty (from timetable): ${fac.join(", ")}`));
   if (!sub) {
     card.appendChild(el("p", "empty-line", (syl.missing && syl.missing[code]) || "Syllabus not added yet."));
+    if (IS_ADMIN) {
+      const add = el("button", "ghost small", "＋ Add syllabus");
+      add.addEventListener("click", () => addSubjectEditor(card, code));
+      const actions = el("div", "sy-actions"); actions.appendChild(add); card.appendChild(actions);
+    }
     return card;
   }
   if (sub.note) card.appendChild(el("p", "sy-fac", sub.note));
+  if (sub.added_by) card.appendChild(el("p", "sy-fac", `Added on CampusMate by ${sub.added_by}`));
   const actions = el("div", "sy-actions");
-  actions.appendChild(pdfLink(sub.pdf, `📄 Original PDF${syl.official && sub.pages && sub.pages.length ? ` (p. ${sub.pages.join(", ")})` : ""}`));
+  if (sub.pdf) actions.appendChild(pdfLink(sub.pdf, `📄 ${sub.added_by ? "Syllabus PDF" : "Original PDF"}${syl.official && sub.pages && sub.pages.length ? ` (p. ${sub.pages.join(", ")})` : ""}`));
   const toggle = el("button", "ghost small", "📝 Read as text");
   const pre = el("pre", "sy-text", sub.text);
   pre.hidden = true;
   toggle.addEventListener("click", () => { pre.hidden = !pre.hidden; toggle.textContent = pre.hidden ? "📝 Read as text" : "Hide text"; });
   const ai = el("button", "ai-btn", "✦ Summarise");
   ai.addEventListener("click", () => { location.hash = "#dashboard"; setTimeout(() => askQuestion(`Summarise the syllabus of ${code}${sub.name !== code ? " " + sub.name : ""} unit by unit, in simple words.`), 60); });
-  actions.append(toggle, ai);
+  if (sub.text) actions.append(toggle, ai);
   if (IS_ADMIN) {
     const url = `/api/edit/syllabus/${myYear}/${encodeURIComponent(code)}`;
     actions.appendChild(editButton(() => itemEditor(card, [
       { name: "name", label: "Subject name", value: sub.name, max: 150 },
-      { name: "text", label: "Syllabus text", type: "textarea", rows: 12, value: sub.text, max: 20000 },
+      { name: "text", label: "Syllabus text", type: "textarea", rows: 12, value: sub.text, max: 20000,
+        hint: sub.pdf ? "Can be left empty if the PDF has the syllabus." : "" },
       { name: "note", label: "Note (optional)", value: sub.note || "", max: 300 },
-      pdfField(true),
+      pdfField(!!sub.pdf),
     ], url)));
     actions.appendChild(deleteButton({ title: `${code} syllabus` }, "Delete", `${url}/delete`));
   }
   card.appendChild(actions);
   card.appendChild(pre);
   return card;
+}
+// admins add a subject that isn't in the built-in syllabus; `card` is swapped for the form until it's saved or cancelled
+function addSubjectEditor(card, code = "") {
+  itemEditor(card, [
+    { name: "code", label: "Subject code", value: code, max: 20,
+      hint: `Adds it to ${YEAR_NAMES[myYear]}. Use the code from the timetable (like CS-111) so it shows on that subject's card.` },
+    { name: "name", label: "Subject name", value: "", max: 150 },
+    { name: "semester", label: "Semester (1 or 2, optional)", value: "", max: 1 },
+    { name: "text", label: "Syllabus text", type: "textarea", rows: 12, value: "", max: 20000,
+      hint: "Units and topics. Can be left empty if you attach the syllabus PDF." },
+    { name: "note", label: "Note (optional)", value: "", max: 300 },
+    pdfField(false),
+  ], `/api/syllabus/${myYear}/add`);
+  if (code) document.querySelector(".item-edit input[name=name]").focus();
+}
+if (IS_ADMIN) {
+  const slot = el("div");  // where the Add subject form opens; it's out of the page while the form is open
+  $("syGrid").before(slot);
+  $("syAdd").hidden = false;
+  $("syAdd").addEventListener("click", () => { if (slot.isConnected) addSubjectEditor(slot); });
 }
 function renderSyllabus() {
   const sec = secOf(myYear, mySection), syl = SYL(myYear);
@@ -1176,7 +1203,7 @@ function renderSyllabus() {
   const codes = [...new Set(sec.classes.map((c) => c.code))].sort();
   $("syGrid").replaceChildren(...(codes.length ? codes.map((c) => subjectCard(c, sec, syl))
     : [el("p", "empty-line card", Object.keys(syl.subjects).length ? "Add this section's timetable to see its subjects here."
-        : "The syllabus for this year hasn't been added yet. Admins can publish syllabus PDFs as Study material.")]));
+        : `The syllabus for this year hasn't been added yet.${IS_ADMIN ? " Use Add subject to add it." : ""}`)]));
   const others = Object.keys(syl.subjects).filter((c) => !codes.includes(c)).sort();
   $("syOtherWrap").hidden = !others.length;
   $("syOtherCount").textContent = others.length;
