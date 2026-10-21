@@ -4,7 +4,6 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import app.vercel.campusmate_nith.CampusMateApplication
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.outlined.CalendarViewWeek
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -51,6 +48,7 @@ import app.vercel.campusmate_nith.ui.screens.ChatScreen
 import app.vercel.campusmate_nith.ui.screens.ExamsScreen
 import app.vercel.campusmate_nith.ui.screens.ExplainScreen
 import app.vercel.campusmate_nith.ui.screens.HomeScreen
+import app.vercel.campusmate_nith.ui.screens.LoadingScreen
 import app.vercel.campusmate_nith.ui.screens.LoginScreen
 import app.vercel.campusmate_nith.ui.screens.MessScreen
 import app.vercel.campusmate_nith.ui.screens.MoreScreen
@@ -87,7 +85,7 @@ class Nav(private val c: NavHostController) {
 @Composable
 fun CampusMateApp(vm: AppViewModel = viewModel()) {
     when (vm.auth) {
-        AuthState.Checking -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+        AuthState.Checking -> LoadingScreen()
         AuthState.SignedOut -> LoginScreen(vm)
         AuthState.SignedIn -> when {
             !vm.profileChosen -> SetupScreen(vm, onDone = {})

@@ -4,6 +4,9 @@
     <color name="background">#F5F5F7</color>
     <color name="ink">#1D1D1F</color>
     <color name="accent">#0071E3</color>
+    <!-- Launch screen: the gold bolt on black in light and dark, like the app icon -->
+    <color name="splash_background">#000000</color>
+    <color name="splash_bolt">#FFD60A</color>
     <color name="widget_bg">#FFFFFF</color>
     <color name="widget_ink">#1D1D1F</color>
     <color name="widget_muted">#6E6E73</color>
