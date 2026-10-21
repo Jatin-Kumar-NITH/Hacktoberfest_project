@@ -34,39 +34,72 @@ jobs:
       - name: Build debug APK
         run: ./gradlew --no-daemon assembleDebug
 
-      - name: Build signed release APK and bundle
-        if: env.HAS_KEYSTORE == 'true'
+      # The release key comes from secrets. The first installs were signed with the shared key in
+      # android/debug.keystore (public, so anyone could sign an "update" with it), so the release APK
+      # also carries a key-rotation proof (APK Signature Scheme v3): phones on Android 9+ that have the
+      # old app accept it as an update, and from then on only accept updates signed with the release key.
+      # On pull requests without the secrets, the same steps run with a throwaway key as a check.
+      - name: Build release APK and bundle (release key, rotated from the old shared key)
+        if: env.HAS_KEYSTORE == 'true' || github.event_name == 'pull_request'
         env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/release.jks"
+          set -o pipefail
           export ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/release.jks"
+          if [ "$HAS_KEYSTORE" = "true" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$ANDROID_KEYSTORE_PATH"
+          else
+            echo "No release key secrets: checking the signing steps with a throwaway key (nothing is published)."
+            export ANDROID_KEYSTORE_PASSWORD=throwaway ANDROID_KEY_ALIAS=throwaway ANDROID_KEY_PASSWORD=throwaway
+            keytool -genkeypair -keystore "$ANDROID_KEYSTORE_PATH" -storetype PKCS12 -alias throwaway -keyalg RSA \
+              -keysize 2048 -validity 1 -dname "CN=Throwaway" -storepass throwaway -keypass throwaway
+          fi
           ./gradlew --no-daemon assembleRelease bundleRelease
-          echo "Release key SHA-256 (set this as ANDROID_CERT_SHA256 in Vercel):"
-          keytool -list -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" | grep SHA-256
+
+          BT="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          OLD=(--ks debug.keystore --ks-pass pass:android --ks-key-alias androiddebugkey --key-pass pass:android)
+          NEW=(--ks "$ANDROID_KEYSTORE_PATH" --ks-pass env:ANDROID_KEYSTORE_PASSWORD --ks-key-alias "$ANDROID_KEY_ALIAS" --key-pass env:ANDROID_KEY_PASSWORD)
+          "$BT/apksigner" rotate --out "$RUNNER_TEMP/lineage" --old-signer "${OLD[@]}" --new-signer "${NEW[@]}"
+          "$BT/apksigner" sign "${OLD[@]}" --next-signer "${NEW[@]}" --lineage "$RUNNER_TEMP/lineage" \
+            --rotation-min-sdk-version 28 --out "$RUNNER_TEMP/rotated.apk" app/build/outputs/apk/release/app-release.apk
+          "$BT/apksigner" verify --verbose --print-certs "$RUNNER_TEMP/rotated.apk" | grep -E "Verified using|Signer|SHA-1|DOES NOT" || true
+          "$BT/apksigner" verify --min-sdk-version 26 "$RUNNER_TEMP/rotated.apk"
+          "$BT/apksigner" lineage --in "$RUNNER_TEMP/rotated.apk" --print-certs
+          cp "$RUNNER_TEMP/rotated.apk" app/build/outputs/apk/release/app-release.apk
+          echo "Release key SHA-1 (add it to an Android OAuth client in Google Cloud):"
+          keytool -list -v -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" | grep -E "SHA1|SHA256"
 
       - name: Collect files
         run: |
-          mkdir -p ../dist
-          cp app/build/outputs/apk/debug/app-debug.apk ../dist/CampusMate-debug.apk
+          mkdir -p ../dist ../extra
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/android-latest"
           if [ "$HAS_KEYSTORE" = "true" ]; then
             cp app/build/outputs/apk/release/app-release.apk ../dist/CampusMate.apk
             cp app/build/outputs/bundle/release/app-release.aab ../dist/CampusMate.aab
+            cp app/build/outputs/apk/debug/app-debug.apk ../extra/CampusMate-debug.apk   # build check only, not published
+            # apps installed from the old debug builds read debugApk, so they also get the release APK
+            APK="$BASE/CampusMate.apk"; DEBUG_APK="$APK"
+          else
+            cp app/build/outputs/apk/debug/app-debug.apk ../dist/CampusMate-debug.apk
+            APK=""; DEBUG_APK="$BASE/CampusMate-debug.apk"
+            if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+              cp app/build/outputs/apk/release/app-release.apk ../extra/CampusMate-throwaway-key.apk
+            fi
           fi
           # the app reads this to offer "A new version is ready"
-          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/android-latest"
-          APK=""
-          if [ "$HAS_KEYSTORE" = "true" ]; then APK="$BASE/CampusMate.apk"; fi
           printf '{"versionCode": %d, "versionName": "2.1.%d", "apk": "%s", "debugApk": "%s"}\n' \
-            $((100 + APP_BUILD_NUMBER)) "$APP_BUILD_NUMBER" "$APK" "$BASE/CampusMate-debug.apk" > ../dist/version.json
+            $((100 + APP_BUILD_NUMBER)) "$APP_BUILD_NUMBER" "$APK" "$DEBUG_APK" > ../dist/version.json
           cat ../dist/version.json
 
       - uses: actions/upload-artifact@v4
         with:
           name: CampusMate-android
-          path: dist/
+          path: |
+            dist/
+            extra/
 
       # Keeps a download link that works on a phone:
       # https://github.com/<owner>/<repo>/releases/tag/android-latest
@@ -81,3 +114,7 @@ jobs:
               --notes "Built automatically from main. Install CampusMate.apk (or CampusMate-debug.apk if that is the only file)."
           git tag -f android-latest && git push -f origin android-latest
           gh release upload android-latest dist/* --clobber
+          # once the release key is in use, stop offering the debuggable build signed with the public key
+          if [ ! -f dist/CampusMate-debug.apk ]; then
+            gh release delete-asset android-latest CampusMate-debug.apk -y 2>/dev/null || true
+          fi
