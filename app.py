@@ -274,7 +274,13 @@ def load_campus():
     }
     ov = accounts.get_setting("calendar")
     if ov:
+        file_events = campus["calendar"]["events"]
         campus["calendar"] = {**campus["calendar"], **ov["value"], "edited_by": ov["updated_by"], "edited_at": ov["updated_at"]}
+        # an edit saved before academic_calendar.json was last updated never saw the file's new dates, so add them back
+        if ov["updated_at"] < campus["calendar"].get("updated", ""):
+            have = {(e["date"], e["title"]) for e in campus["calendar"]["events"]}
+            campus["calendar"]["events"] = sorted(campus["calendar"]["events"] + [e for e in file_events if (e["date"], e["title"]) not in have],
+                                                  key=lambda e: (e["date"], e["end"], e["title"]))
     for y in ("1", "2", "3", "4"):
         ov = accounts.get_setting(f"timetable:{y}")
         if ov:
