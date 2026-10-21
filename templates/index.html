@@ -76,6 +76,9 @@
   <main class="main">
     <div class="role-banner role-coowner handover-banner" id="handoverBanner" hidden></div>
     {% if me.role in ['admin', 'coowner', 'owner'] %}
+    <div class="role-banner upload-alert-banner" id="uploadAlertBanner" hidden></div>
+    {% endif %}
+    {% if me.role in ['admin', 'coowner', 'owner'] %}
     <div class="role-banner role-{{ me.role }}">
       <span>{{ {'owner': 'Owner mode', 'coowner': 'Co-owner mode'}.get(me.role, 'Admin mode') }} · You can publish notices, assignments and PDFs{{ ' and give admin or co-owner access' if me.role == 'owner' else (' and give admin access' if me.role == 'coowner' else '') }}.</span>
       <a href="#publish">Publish →</a>

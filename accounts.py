@@ -162,6 +162,7 @@ def init_app(app):
     print(f"[CampusMate] Google login: {'on' if google_client_id() else 'OFF - add GOOGLE_CLIENT_ID to .env'}")
     print("[CampusMate] ----------------------------------------------")
     app.register_blueprint(bp)
+    app.register_error_handler(UploadBlocked, lambda e: (jsonify(error=e.message, blocked=True, warning=e.warning), e.status))
 
 
 # ------------------------------------------------------------------ helpers
@@ -552,9 +553,94 @@ def save_pdf_upload(field="pdf"):
     upload.stream.seek(0)
     if not upload.filename.lower().endswith(".pdf") or head != b"%PDF-":
         return False
+    data = upload.read()
+    check_upload(data, "application/pdf", upload.filename)  # raises UploadBlocked; nothing is stored
     name = f"{uuid.uuid4().hex}.pdf"
-    db().execute("INSERT INTO files (name, data, created_at) VALUES (?,?,?)", (name, upload.read(), now_iso()))
+    db().execute("INSERT INTO files (name, data, created_at) VALUES (?,?,?)", (name, data, now_iso()))
     return name
+
+
+# ------------------------------------------------------------------ upload safety check (18+ / vulgar content)
+# Every uploaded file is checked by the AI on the server before it is stored, for every role (owner too).
+# A blocked file counts against the uploader (user_data `upload_strikes`). The first 3 blocked attempts
+# are warnings; every attempt after that is still blocked and admins, co-owners and the owner are alerted
+# (settings `upload_alert:<time in ns>`). If the AI check can't run, the upload is blocked without a strike.
+
+scan_upload = None  # set by app.py: (bytes, mime type) -> (flagged, reason); raises if the check fails
+FREE_WARNINGS = 3
+ALERT_PREFIX = "upload_alert:"
+KEEP_ALERTS = 100
+
+
+class UploadBlocked(Exception):
+    def __init__(self, message, status=400, warning=None):
+        super().__init__(message)
+        self.message, self.status, self.warning = message, status, warning
+
+
+def check_upload(data, mime_type, filename=""):
+    """Raise UploadBlocked unless the AI says the file is safe."""
+    try:
+        if scan_upload is None:
+            raise RuntimeError("NO_SCANNER")
+        flagged, reason = scan_upload(data, mime_type)
+    except Exception:
+        raise UploadBlocked("The safety check for uploads isn't working right now, so the file was not uploaded. "
+                            "Please try again in a few minutes.", 503)
+    if not flagged:
+        return
+    u = current_user()
+    prev = get_user_data(u["id"], "upload_strikes")
+    count = int((prev["value"] if prev else {}).get("count", 0)) + 1
+    set_user_data(u["id"], "upload_strikes", {"count": count, "last_at": now_iso()})
+    msg = "This file was blocked because it seems to contain 18+ or vulgar content."
+    if count <= FREE_WARNINGS:
+        msg += f" Warning {count} of {FREE_WARNINGS}."
+        if count == FREE_WARNINGS:
+            msg += " This is your last warning: if you try again, the admins, co-owners and owner will be told."
+        raise UploadBlocked(msg, 400, warning=count)
+    _add_upload_alert(u, count, filename, reason)
+    raise UploadBlocked(msg + f" You already had {FREE_WARNINGS} warnings, so the admins, co-owners and owner "
+                              "have been told.", 400, warning=count)
+
+
+def _add_upload_alert(u, attempt, filename, reason):
+    stamp = now_iso()
+    set_setting(f"{ALERT_PREFIX}{time.time_ns():020d}", {
+        "user": public_user(u), "attempt": attempt, "file": (filename or "")[:120], "reason": reason, "created_at": stamp})
+    keys = [r["key"] for r in db().execute("SELECT key FROM settings WHERE key LIKE ? ORDER BY key DESC",
+                                           (ALERT_PREFIX + "%",)).fetchall()]
+    for key in keys[KEEP_ALERTS:]:
+        db().execute("DELETE FROM settings WHERE key = ?", (key,))
+    db().commit()
+
+
+@bp.get("/api/upload-alerts")
+@admin_required
+def api_upload_alerts():
+    """Blocked uploads by people who already had 3 warnings, newest first; `new` = not yet dismissed by this viewer."""
+    seen = get_user_data(current_user()["id"], "upload_alerts_seen")
+    seen = seen["value"] if seen else ""
+    rows = db().execute("SELECT key, value FROM settings WHERE key LIKE ? ORDER BY key DESC LIMIT 50",
+                        (ALERT_PREFIX + "%",)).fetchall()
+    alerts = []
+    for r in rows:
+        try:
+            a = json.loads(r["value"])
+        except ValueError:
+            continue
+        a["new"] = r["key"] > seen
+        alerts.append(a)
+    return jsonify(alerts=alerts)
+
+
+@bp.post("/api/upload-alerts/seen")
+@admin_required
+def api_upload_alerts_seen():
+    """Dismiss the alerts shown to this viewer (other admins still see them)."""
+    latest = db().execute("SELECT MAX(key) AS k FROM settings WHERE key LIKE ?", (ALERT_PREFIX + "%",)).fetchone()
+    set_user_data(current_user()["id"], "upload_alerts_seen", (latest["k"] if latest else None) or "")
+    return jsonify(ok=True)
 
 
 def delete_file(name):

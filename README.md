@@ -271,6 +271,7 @@ Uploaded PDFs are stored in the database too. Vercel limits a single request to 
 |---|---|---|
 | `GEMINI_API_KEY` | ✅ | Your Google AI Studio key, used to call Gemma 4. |
 | `GEMMA_MODELS` | – | Models to try, in order. Default: `gemma-4-26b-a4b-it,gemma-4-31b-it` |
+| `SAFETY_MODELS` | – | Gemini models that check every uploaded PDF for 18+ or vulgar content before it is stored. Default: `gemini-flash-lite-latest,gemini-flash-latest`. If none can check a file, the upload is blocked. |
 | `GOOGLE_CLIENT_ID` | ✅ | OAuth client ID for Google Sign-In (see [Google Sign-In](#google-sign-in)). Login is disabled without it. |
 | `OWNER_EMAIL` | ✅ | Google account email of the site owner. Whoever signs in with it is always the **owner**. |
 | `OWNER_NAME` | – | Display name for the owner. |

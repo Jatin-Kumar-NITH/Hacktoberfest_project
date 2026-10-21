@@ -2311,6 +2311,32 @@ function renderHandoverCard() {
 }
 loadHandover();
 
+// ========================================================== BLOCKED UPLOAD ALERTS (admins and above)
+// The server blocks 18+ / vulgar files; after someone's 3 warnings, each new attempt shows up here.
+async function loadUploadAlerts() {
+  const box = $("uploadAlertBanner"); if (!box) return;
+  const res = await fetch("/api/upload-alerts");
+  if (!res.ok) return;
+  const fresh = (await res.json()).alerts.filter((a) => a.new);
+  box.replaceChildren();
+  box.appendChild(el("strong", "", `⚠ Blocked ${fresh.length === 1 ? "upload" : "uploads"} with 18+ or vulgar content`));
+  fresh.forEach((a) => {
+    const when = new Date(a.created_at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    const row = el("div", "handover-row");
+    row.appendChild(el("span", "", `${a.user.name} (${a.user.email}) tried to upload ${a.file ? `“${a.file}”` : "a file"} on ${when}. ` +
+      `Attempt ${a.attempt}, after 3 warnings.${a.reason ? ` AI: ${a.reason}.` : ""} The file was not stored.`));
+    box.appendChild(row);
+  });
+  const ok = el("button", "ghost small", "Dismiss");
+  ok.addEventListener("click", async () => {
+    const r = await fetch("/api/upload-alerts/seen", { method: "POST" });
+    if (r.ok) box.hidden = true;
+  });
+  box.appendChild(ok);
+  box.hidden = !fresh.length;
+}
+if (IS_ADMIN) loadUploadAlerts();
+
 // ========================================================== JOURNALISTS (admins and above)
 let PEOPLE = [];
 async function loadJournalists() {
