@@ -69,6 +69,19 @@ class Store(context: Context) {
         get() = read("assign_done", MapSerializer(String.serializer(), Boolean.serializer()), emptyMap())
         set(v) = write("assign_done", MapSerializer(String.serializer(), Boolean.serializer()), v)
 
+    /** Study mode: the running session, the lengths last used, and finished sessions (newest first). */
+    var study: StudyState?
+        get() = read("study", StudyState.serializer().nullable, null)
+        set(v) {
+            if (v == null) prefs.edit().remove("study").apply() else write("study", StudyState.serializer(), v)
+        }
+    var studyPrefs: StudyPrefs
+        get() = read("study_prefs", StudyPrefs.serializer(), StudyPrefs())
+        set(v) = write("study_prefs", StudyPrefs.serializer(), v)
+    var studyLog: List<StudyLog>
+        get() = read("study_log", ListSerializer(StudyLog.serializer()), emptyList())
+        set(v) = write("study_log", ListSerializer(StudyLog.serializer()), v.take(300))
+
     /** Offline copy of the account's attendance, per user (like the website's cm_attendance_<id>). */
     fun attendance(uid: Int): Attendance? = read("attendance_$uid", Attendance.serializer().nullable, null)
     fun saveAttendance(uid: Int, a: Attendance) = write("attendance_$uid", Attendance.serializer(), a)
@@ -118,6 +131,6 @@ class Store(context: Context) {
 
     /** "Clear data on this phone": everything except the sign-in cookie and settings. */
     fun clearLocal() {
-        prefs.edit().remove("notice_history").remove("plan").remove("assign_done").apply()
+        prefs.edit().remove("notice_history").remove("plan").remove("assign_done").remove("study_log").apply()
     }
 }

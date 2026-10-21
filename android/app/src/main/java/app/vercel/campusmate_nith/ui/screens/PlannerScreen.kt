@@ -1,5 +1,12 @@
 package app.vercel.campusmate_nith.ui.screens
 
+import androidx.compose.runtime.collectAsState
+import app.vercel.campusmate_nith.background.StudyTimer
+import app.vercel.campusmate_nith.data.StudyTarget
+import app.vercel.campusmate_nith.data.planKey
+import app.vercel.campusmate_nith.data.pomodorosFor
+import app.vercel.campusmate_nith.data.sessionMinutes
+import app.vercel.campusmate_nith.data.studyable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.items
@@ -65,6 +72,7 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
     var pickingFor by remember { mutableStateOf<SubjectEdit?>(null) }
     val syl = vm.syllabus()
     val canPick = outlined(syl).isNotEmpty()
+    val studyLog by StudyTimer.log.collectAsState()
 
     pickingFor?.let { s ->
         val code = sylMatch(syl, s.name)
@@ -89,7 +97,8 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
 
     Screen("Study planner", vm, onBack = { nav.back() }) {
         item { Muted("Add your subjects and exam dates. Gemma builds a realistic day-by-day plan with breaks and revision before each exam." +
-            if (canPick) " Pick each subject's units and topics from the syllabus, or type them." else "") }
+            (if (canPick) " Pick each subject's units and topics from the syllabus, or type them." else "") +
+            " Press ▶ Focus on a session to study it in study mode.") }
         items(subjects.size) { i ->
             val s = subjects[i]
             CmCard {
@@ -103,6 +112,10 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
                     Dropdown("Difficulty", listOf("easy" to "Easy", "medium" to "Medium", "hard" to "Hard"), s.difficulty, { s.difficulty = it; sample = false })
                 }
                 Field(s.topics, { s.topics = it; sample = false }, "Topics (comma separated)", maxLength = 2000, maxLines = 4)
+                if (s.name.isNotBlank()) SmallButton("⏱ Study now", {
+                    vm.pendingStudy = StudyTarget(s.name.trim(), s.topics.trim().take(300))
+                    nav.go("study")
+                })
                 if (canPick) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     val code = sylMatch(syl, s.name)
                     SmallButton(if (code != null) "📚 Choose $code topics" else "📚 Choose topics from syllabus", { pickingFor = s })
@@ -173,7 +186,13 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
                 CmCard(border = if (isToday) P.accent else null) {
                     Text((if (isToday) "Today · " else "") + niceDate(d.date), fontWeight = FontWeight.SemiBold)
                     if (d.focus.isNotEmpty()) Muted(d.focus, size = 13)
-                    d.sessions.forEach { SessionRow(it) }
+                    d.sessions.forEach { p ->
+                        val k = planKey(d.date, p)
+                        SessionRow(p, done = studyLog.filter { it.planKey == k }, onStudy = if (studyable(p)) ({
+                            vm.pendingStudy = StudyTarget(p.subject, p.task, k, pomodorosFor(sessionMinutes(p.time), vm.store.studyPrefs))
+                            nav.go("study")
+                        }) else null)
+                    }
                 }
             }
             if (plan.tips.isNotEmpty()) item {

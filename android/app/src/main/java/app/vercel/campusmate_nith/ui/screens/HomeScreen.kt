@@ -1,5 +1,13 @@
 package app.vercel.campusmate_nith.ui.screens
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import app.vercel.campusmate_nith.background.StudyTimer
+import app.vercel.campusmate_nith.data.StudyTarget
+import app.vercel.campusmate_nith.data.planKey
+import app.vercel.campusmate_nith.data.pomodorosFor
+import app.vercel.campusmate_nith.data.sessionMinutes
+import app.vercel.campusmate_nith.data.studyable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -186,6 +194,16 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
             }
         }
 
+        // ---- study mode running
+        item {
+            val run by StudyTimer.state.collectAsState()
+            run?.let { r ->
+                CmCard(onClick = { nav.go("study") }, border = P.accent) {
+                    Text("⏱ Study mode is on", fontWeight = FontWeight.SemiBold)
+                    Muted("${StudyTimer.phaseLabel(r)} · ${r.subject}${if (r.paused) " · paused" else ""}", size = 13)
+                }
+            }
+        }
         // ---- today's study plan
         item {
             val day = vm.plan?.result?.days?.firstOrNull { it.date == tIso }
@@ -194,7 +212,14 @@ fun HomeScreen(vm: AppViewModel, nav: Nav) {
                 if (day == null) EmptyLine(if (vm.plan != null) "Nothing scheduled for today in your saved plan." else "No plan yet. The Study Planner builds one from your exam dates.")
                 else {
                     if (day.focus.isNotEmpty()) Muted(day.focus)
-                    day.sessions.forEach { SessionRow(it) }
+                    val studyLog by StudyTimer.log.collectAsState()
+                    day.sessions.forEach { p ->
+                        val k = planKey(day.date, p)
+                        SessionRow(p, done = studyLog.filter { it.planKey == k }, onStudy = if (studyable(p)) ({
+                            vm.pendingStudy = StudyTarget(p.subject, p.task, k, pomodorosFor(sessionMinutes(p.time), vm.store.studyPrefs))
+                            nav.go("study")
+                        }) else null)
+                    }
                 }
             }
         }

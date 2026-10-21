@@ -1,6 +1,7 @@
 package app.vercel.campusmate_nith.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.vercel.campusmate_nith.data.PlanSession
 import app.vercel.campusmate_nith.data.ROLE_LABEL
+import app.vercel.campusmate_nith.data.StudyLog
 import app.vercel.campusmate_nith.data.fmtTime
 import app.vercel.campusmate_nith.ui.Muted
 import app.vercel.campusmate_nith.ui.P
@@ -55,15 +57,25 @@ fun sessionColor(type: String): Color = when (type) {
     else -> P.accent
 }
 
+/** One planner session. [onStudy] adds a button that starts study mode on it; [done] is study time already logged for it. */
 @Composable
-fun SessionRow(s: PlanSession) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+fun SessionRow(s: PlanSession, done: List<StudyLog> = emptyList(), onStudy: (() -> Unit)? = null) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.width(4.dp).size(width = 4.dp, height = 40.dp).background(sessionColor(s.type), RoundedCornerShape(2.dp))) {}
         Column(Modifier.weight(1f)) {
             Text(s.subject, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             if (s.task.isNotEmpty()) Text(s.task, fontSize = 13.sp, color = P.ink2)
+            if (done.isNotEmpty()) {
+                val min = done.sumOf { it.minutes }
+                val pomos = done.sumOf { it.pomodoros }
+                Text("✓ Studied $min min" + if (pomos > 0) " · $pomos 🍅" else "", fontSize = 12.sp, color = P.green, fontWeight = FontWeight.SemiBold)
+            }
         }
-        Muted(s.time, size = 12)
+        Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Muted(s.time, size = 12)
+            if (onStudy != null) Text("▶ Focus", color = P.accent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.background(P.accentSoft, RoundedCornerShape(999.dp)).clickable(onClick = onStudy).padding(horizontal = 10.dp, vertical = 4.dp))
+        }
     }
 }
 

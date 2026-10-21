@@ -97,6 +97,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var pendingExplain by mutableStateOf<Pair<String, String>?>(null)
     /** Subjects (name to exam date) the exam page hands to the study planner. */
     var pendingPlan by mutableStateOf<List<Pair<String, String>>?>(null)
+    /** A subject or plan session the study planner hands to study mode. */
+    var pendingStudy by mutableStateOf<app.vercel.campusmate_nith.data.StudyTarget?>(null)
     /** An explained notice from history to show in the explainer. */
     var openNotice by mutableStateOf<String?>(null)
 

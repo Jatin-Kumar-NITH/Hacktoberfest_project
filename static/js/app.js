@@ -590,12 +590,25 @@ $("planBtn").addEventListener("click", async () => {
   }
 });
 
-function sessionRow(s) {
+// [date] is the plan day, so study mode can be started on the session and its study time shown
+function sessionRow(s, date) {
   const row = el("div", `sess ${s.type}`);
   row.appendChild(el("div", "sess-time", s.time || ""));
   const body = el("div");
   body.appendChild(el("div", "sess-subj", s.subject || ""));
   if (s.task) body.appendChild(el("div", "sess-task", s.task));
+  if (date && studyable(s)) {
+    const key = planKey(date, s);
+    const done = studyLog().filter((l) => l.planKey === key);
+    if (done.length) {
+      const min = done.reduce((a, l) => a + l.minutes, 0), pomos = done.reduce((a, l) => a + l.pomodoros, 0);
+      body.appendChild(el("div", "sess-done", `✓ Studied ${min} min${pomos ? ` · ${pomos} 🍅` : ""}`));
+    }
+    const b = el("button", "sess-focus", "▶ Focus");
+    b.type = "button";
+    b.addEventListener("click", () => studyFrom(s, key));
+    body.appendChild(b);
+  }
   row.appendChild(body);
   return row;
 }
@@ -618,7 +631,7 @@ function renderPlan(r, live) {
     head.appendChild(el("strong", "", (d.date === today ? "Today · " : "") + niceDate(d.date)));
     head.appendChild(el("span", "", d.focus));
     card.appendChild(head);
-    d.sessions.forEach((s) => card.appendChild(sessionRow(s)));
+    d.sessions.forEach((s) => card.appendChild(sessionRow(s, d.date)));
     days.appendChild(card);
   });
   $("pFoot").textContent = live
@@ -635,8 +648,217 @@ function renderDashPlan() {
     return;
   }
   if (day.focus) box.appendChild(el("p", "muted", day.focus));
-  day.sessions.forEach((s) => box.appendChild(sessionRow(s)));
+  day.sessions.forEach((s) => box.appendChild(sessionRow(s, day.date)));
 }
+
+// ========================================================== STUDY MODE (Pomodoro)
+// Same rules as the Android app's study mode: focus blocks, a short break after each and a long one
+// after every 4th. The session lives in localStorage (cm_study) so a refresh keeps it running, and
+// finished sessions go to cm_study_log against the plan session they were started from.
+// Only the app can switch on Do Not Disturb; a browser can't.
+const ST_LONG = 15;
+let stPrefs = Object.assign({ focus: 25, short: 5, rounds: 4 }, store.get("cm_study_prefs", {}));
+let stKey = "";
+let stTick = null;
+const studyLog = () => store.get("cm_study_log", []);
+const studyable = (s) => !["break", "exam"].includes(s.type);
+const planKey = (date, s) => `${date}|${s.time || ""}|${s.subject || ""}`;
+const stLeft = (st) => (st.pausedLeft >= 0 ? st.pausedLeft : Math.max(0, st.endsAt - Date.now()));
+const stClock = (ms) => { const t = Math.ceil(ms / 1000); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+const stHm = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`);
+const stRound = (st) => (st.phase === "focus" ? st.done + 1 : st.done);
+const stLabel = (st) => (st.phase === "short" ? "Short break" : st.phase === "long" ? "Long break" : `Focus ${stRound(st)} of ${st.rounds}`);
+
+// "6:00-7:30 PM", "6 PM - 7:30 PM", "18:00-19:30" -> minutes
+function sessionMinutes(time) {
+  const parts = String(time || "").split(/\s*(?:-|–|—|\bto\b)\s*/i).filter(Boolean);
+  if (parts.length < 2) return null;
+  const read = (x) => { const m = /(\d{1,2})(?:[:.](\d{2}))?\s*([ap])?/i.exec(x); return m ? { h: +m[1], m: +(m[2] || 0), ap: (m[3] || "").toLowerCase() } : null; };
+  const a = read(parts[0]), b = read(parts[1]);
+  if (!a || !b || a.h > 23 || b.h > 23) return null;
+  const mins = (t, ap) => { let h = t.h; if (ap === "p" && h < 12) h += 12; if (ap === "a" && h === 12) h = 0; return h * 60 + t.m; };
+  const end = mins(b, b.ap);
+  let start = mins(a, a.ap || b.ap);
+  if (!a.ap && b.ap && start > end) start = mins(a, "");
+  let d = end - start;
+  if (d <= 0) d += !a.ap && !b.ap && d > -720 ? 720 : 1440;
+  return d >= 5 && d <= 720 ? d : null;
+}
+
+function studyFrom(s, key) {
+  if (store.get("cm_study", null)) { location.hash = "#planner"; setTimeout(() => $("studyCard").scrollIntoView({ behavior: "smooth" }), 60); return; }
+  $("stSubject").value = s.subject || "";
+  $("stTask").value = s.task || "";
+  stKey = key;
+  const min = sessionMinutes(s.time);
+  if (min) stPrefs.rounds = Math.min(8, Math.max(1, Math.round(min / (stPrefs.focus + stPrefs.short))));
+  renderStudy();
+  location.hash = "#planner";
+  setTimeout(() => $("studyCard").scrollIntoView({ behavior: "smooth" }), 60);
+}
+
+function stBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.35, 0.7].forEach((t) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.28);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.3);
+    });
+  } catch { /* no audio */ }
+}
+
+function stAlert(title, body) {
+  stBeep();
+  try { if ("Notification" in window && Notification.permission === "granted") new Notification(title, { body, tag: "zenkai-study" }); } catch { /* not allowed here */ }
+}
+
+function stSave(st) { if (st) store.set("cm_study", st); else { try { localStorage.removeItem("cm_study"); } catch { /* storage unavailable */ } } }
+
+function stFinish(st, alert) {
+  stSave(null);
+  const minutes = Math.floor(st.focusMs / 60000);
+  if (minutes >= 1 || st.done > 0) {
+    const log = [{ at: Date.now(), date: todayISO(), subject: st.subject, task: st.task, planKey: st.planKey, minutes, pomodoros: st.done }, ...studyLog()].slice(0, 300);
+    store.set("cm_study_log", log);
+  }
+  if (alert) stAlert("Study session complete", `${st.done} × ${st.focusMin} min of ${st.subject}.`);
+  stKey = "";
+  renderStudy();
+  studyChanged();
+}
+
+// moves to the next phase; [completed] is false when the student skipped
+function stNext(st, completed, alert) {
+  const now = Date.now();
+  if (st.phase === "focus") {
+    const done = completed ? st.done + 1 : st.done;
+    st.focusMs += completed ? st.phaseMs : st.phaseMs - stLeft(st);
+    st.done = done;
+    if (done >= st.rounds || (!completed && st.done + 1 >= st.rounds)) { stFinish(st, alert); return; }
+    const long = done > 0 && done % 4 === 0;
+    st.phase = long ? "long" : "short";
+    st.phaseMs = (long ? ST_LONG : st.shortMin) * 60000;
+    if (alert) stAlert(`Pomodoro ${done} of ${st.rounds} done`, `Take a ${long ? ST_LONG : st.shortMin} minute break.`);
+  } else {
+    st.phase = "focus";
+    st.phaseMs = st.focusMin * 60000;
+    if (alert) stAlert("Break over", `Pomodoro ${st.done + 1} of ${st.rounds}: ${st.subject}.`);
+  }
+  st.endsAt = now + st.phaseMs; st.pausedLeft = -1;
+  stSave(st);
+  renderStudy();
+}
+
+function stLoop() {
+  const st = store.get("cm_study", null);
+  if (!st) { clearInterval(stTick); stTick = null; document.title = stBaseTitle; return; }
+  if (st.pausedLeft < 0 && Date.now() >= st.endsAt) { stNext(st, true, true); return; }
+  stPaint(st);
+}
+
+const stBaseTitle = document.title;
+function stPaint(st) {
+  const left = stLeft(st);
+  $("stClock").textContent = stClock(left);
+  $("stPhase").textContent = stLabel(st);
+  $("stPhase").className = st.phase;
+  $("stUntil").textContent = st.pausedLeft >= 0 ? "Paused" : st.phase === "focus" ? "until a break" : "until focus";
+  const c = 2 * Math.PI * 52, bar = $("stBar");
+  bar.setAttribute("class", `st-bar ${st.phase}`);
+  bar.style.strokeDasharray = c;
+  bar.style.strokeDashoffset = c * (st.phaseMs ? left / st.phaseMs : 1);
+  document.title = `${stClock(left)} · ${st.phase === "focus" ? "Focus" : "Break"} · Zenkai`;
+}
+
+function renderStudy() {
+  if (!$("studyCard")) return;
+  const st = store.get("cm_study", null);
+  $("stSetup").hidden = !!st;
+  $("stRun").hidden = !st;
+  if (st) {
+    $("stRunSubject").textContent = st.subject;
+    $("stRunTask").textContent = st.task || "";
+    $("stPause").textContent = st.pausedLeft >= 0 ? "Resume" : "Pause";
+    $("stSkip").textContent = st.phase === "focus" ? "Skip" : "Skip break";
+    const dots = $("stDots"); dots.replaceChildren();
+    for (let i = 1; i <= st.rounds; i++) dots.appendChild(el("i", i <= st.done ? "done" : i === stRound(st) && st.phase === "focus" ? "now" : ""));
+    stPaint(st);
+    if (!stTick) stTick = setInterval(stLoop, 250);
+  } else {
+    document.querySelectorAll(".st-chips").forEach((g) => g.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", +c.dataset.v === stPrefs[g.dataset.st])));
+    const r = stPrefs.rounds, total = r * stPrefs.focus + (r - 1) * stPrefs.short + (r > 4 ? ST_LONG - stPrefs.short : 0);
+    $("stSum").textContent = `${r} × ${stPrefs.focus} min = ${stHm(r * stPrefs.focus)} of focus, about ${stHm(total)} in all. A ${ST_LONG} minute break after every 4th.`;
+    $("stFromPlan").hidden = !stKey;
+    if (stKey) { const [d, t] = stKey.split("|"); $("stFromPlan").textContent = `From your study plan · ${niceDate(d)}, ${t}`; }
+  }
+  // stats and history
+  const log = studyLog(), today = todayISO();
+  const wk = new Date(); wk.setDate(wk.getDate() - 6); wk.setMinutes(wk.getMinutes() - wk.getTimezoneOffset());
+  const weekStart = wk.toISOString().slice(0, 10);
+  const sum = (xs, f) => xs.reduce((a, l) => a + l[f], 0);
+  const t = log.filter((l) => l.date === today), w = log.filter((l) => l.date >= weekStart);
+  $("stToday").textContent = `${sum(t, "minutes")} min`; $("stTodayP").textContent = `${sum(t, "pomodoros")} 🍅`;
+  $("stWeek").textContent = stHm(sum(w, "minutes")); $("stWeekP").textContent = `${sum(w, "pomodoros")} 🍅`;
+  const ul = $("stLog"); ul.replaceChildren();
+  log.slice(0, 8).forEach((l) => {
+    const li = el("li"), left = el("div");
+    left.appendChild(el("strong", "", l.subject));
+    left.appendChild(el("span", "", [niceDate(l.date), l.task, l.planKey ? "from plan" : ""].filter(Boolean).join(" · ")));
+    li.appendChild(left);
+    li.appendChild(el("b", "", `${l.minutes} min${l.pomodoros ? ` · ${l.pomodoros} 🍅` : ""}`));
+    ul.appendChild(li);
+  });
+  $("stClear").hidden = !log.length;
+}
+
+// study time changed: refresh the "✓ Studied" marks on the plan and the dashboard
+function studyChanged() {
+  const saved = store.get("cm_plan", null);
+  if (saved && saved.result.days.length && !$("pResult").hidden) renderPlan(saved.result, null);
+  renderDashPlan();
+}
+
+if ($("studyCard")) {
+  document.querySelectorAll(".st-chips").forEach((g) => g.addEventListener("click", (e) => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    stPrefs[g.dataset.st] = +c.dataset.v; store.set("cm_study_prefs", stPrefs); renderStudy();
+  }));
+  $("stSubject").addEventListener("input", () => { stKey = ""; $("stFromPlan").hidden = true; });
+  $("stStart").addEventListener("click", () => {
+    const subject = $("stSubject").value.trim();
+    $("stError").hidden = !!subject;
+    if (!subject) { $("stError").textContent = "What are you studying? Type a subject or press ▶ Focus on a plan session."; return; }
+    if ("Notification" in window && Notification.permission === "default") { try { Notification.requestPermission(); } catch { /* ignore */ } }
+    const now = Date.now(), ms = stPrefs.focus * 60000;
+    stSave({ subject, task: $("stTask").value.trim(), planKey: stKey, focusMin: stPrefs.focus, shortMin: stPrefs.short, rounds: stPrefs.rounds,
+      phase: "focus", done: 0, phaseMs: ms, endsAt: now + ms, pausedLeft: -1, focusMs: 0, startedAt: now });
+    renderStudy();
+  });
+  $("stPause").addEventListener("click", () => {
+    const st = store.get("cm_study", null); if (!st) return;
+    if (st.pausedLeft >= 0) { st.endsAt = Date.now() + st.pausedLeft; st.pausedLeft = -1; } else st.pausedLeft = stLeft(st);
+    stSave(st); renderStudy();
+  });
+  $("stSkip").addEventListener("click", () => { const st = store.get("cm_study", null); if (st) stNext(st, false, false); });
+  $("stStop").addEventListener("click", () => {
+    const st = store.get("cm_study", null); if (!st) return;
+    if (st.phase === "focus") st.focusMs += st.phaseMs - stLeft(st);
+    stFinish(st, false);
+  });
+  $("stClear").addEventListener("click", () => { store.set("cm_study_log", []); renderStudy(); studyChanged(); });
+  // a session left running in a closed tab for a while ends (keeping its focus time) instead of carrying on from now
+  const old = store.get("cm_study", null);
+  if (old && old.pausedLeft < 0 && Date.now() > old.endsAt + 10 * 60000) {
+    if (old.phase === "focus") { old.done += 1; old.focusMs += old.phaseMs; }
+    stFinish(old, false);
+  }
+  renderStudy();
+}
+
 
 // restore the last plan on load
 (() => { const saved = store.get("cm_plan", null); if (saved && saved.result.days.length) { renderPlan(saved.result, null); showP("result"); } })();

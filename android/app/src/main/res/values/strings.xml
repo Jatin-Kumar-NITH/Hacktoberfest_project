@@ -6,4 +6,5 @@
     <string name="shortcut_mess">Mess menu</string>
     <string name="shortcut_attendance">Attendance</string>
     <string name="shortcut_ask">Ask Zenkai</string>
+    <string name="shortcut_study">Study mode</string>
 </resources>
