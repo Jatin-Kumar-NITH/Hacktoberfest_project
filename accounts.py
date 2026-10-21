@@ -10,7 +10,6 @@ Roles:
   journalist - a student who can also post text updates in College Updates and Hostel Updates.
   user  - can read everything and use the chat, but cannot publish or change content.
 """
-import hashlib
 import json
 import os
 import re
@@ -119,6 +118,17 @@ def sync_owner(conn):
     conn.commit()
 
 
+SECRET_SETTING = "secret_key"  # settings row; no API reads it
+
+
+def _stored_secret_key(conn):
+    """A random session secret saved once in the settings table (the first instance to start wins)."""
+    conn.execute("INSERT INTO settings (key, value, updated_by, updated_at) VALUES (?,?,?,?) ON CONFLICT(key) DO NOTHING",
+                 (SECRET_SETTING, json.dumps(secrets.token_hex(32)), "system", now_iso()))
+    conn.commit()
+    return json.loads(conn.execute("SELECT value FROM settings WHERE key = ?", (SECRET_SETTING,)).fetchone()[0])
+
+
 def init_app(app):
     """Create folders, database tables and the secret key, and keep the owner role in sync."""
     global INSTANCE, UPLOADS, DB_PATH
@@ -128,14 +138,18 @@ def init_app(app):
     INSTANCE.mkdir(parents=True, exist_ok=True)
     UPLOADS.mkdir(parents=True, exist_ok=True)
 
+    conn = database.connect(DB_PATH)
+    database.create_schema(conn)
+
+    # The session secret signs login cookies: whoever knows it can sign in as anyone, the owner included.
+    # It is never derived from other settings (the Gemini key, client ID and owner email are not secret enough).
     key = os.getenv("SECRET_KEY", "").strip()
-    key_file = INSTANCE / "secret_key"
-    if not key and os.getenv("VERCEL"):
-        # every serverless instance must share one key, or users get logged out between requests
-        seed = os.getenv("GEMINI_API_KEY", "") + os.getenv("GOOGLE_CLIENT_ID", "") + os.getenv("OWNER_EMAIL", "")
-        key = hashlib.sha256(("campusmate:" + seed).encode()).hexdigest()
-        print("[Zenkai] SECRET_KEY not set; derived one from other secrets. Set SECRET_KEY in Vercel for best security.")
+    if not key and database.using_postgres():
+        # every serverless instance must share one key, so a random one is kept in the database
+        key = _stored_secret_key(conn)
+        print("[Zenkai] SECRET_KEY not set; using a random key kept in the database.")
     if not key:
+        key_file = INSTANCE / "secret_key"
         if not key_file.exists():
             key_file.write_text(secrets.token_hex(32))
         key = key_file.read_text().strip()
@@ -143,11 +157,10 @@ def init_app(app):
     app.config.update(
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=bool(os.getenv("VERCEL")),  # the live site is HTTPS only
         PERMANENT_SESSION_LIFETIME=timedelta(days=30),   # "stay logged in"
     )
 
-    conn = database.connect(DB_PATH)
-    database.create_schema(conn)
     email = owner_email()
     conn.commit()
     sync_owner(conn)
@@ -173,6 +186,8 @@ def current_user():
         uid = session.get("uid")
         if uid:
             row = db().execute("SELECT id, email, name, role, created_at FROM users WHERE id = ?", (uid,)).fetchone()
+            if row and not email_allowed(row["email"]):
+                row = None  # sign-in was limited to college emails after this account signed in
             g.user = dict(row) if row else None
             if not row:
                 session.clear()
@@ -208,6 +223,59 @@ def csrf_guard():
     """Every state-changing API call must come from our own page (custom header = CSRF protection)."""
     if request.method == "POST" and request.path.startswith("/api/") and request.headers.get("X-CampusMate") != "1":
         return jsonify(error="Request blocked (missing security header). Refresh the page."), 400
+
+
+@bp.after_app_request
+def security_headers(resp):
+    """Browser protections: no framing (clickjacking), no MIME sniffing, HTTPS only on the live site."""
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Content-Security-Policy", "frame-ancestors 'none'; object-src 'none'; base-uri 'self'")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    if os.getenv("VERCEL"):
+        resp.headers.setdefault("Strict-Transport-Security", "max-age=31536000")
+    return resp
+
+
+# ------------------------------------------------------------------ who may sign in
+
+def _env_list(name):
+    return {x.strip().lower().lstrip("@") for x in os.getenv(name, "").split(",") if x.strip()}
+
+
+def email_allowed(email):
+    """With ALLOWED_EMAIL_DOMAINS set (e.g. nith.ac.in), only those addresses may sign in, plus the owner
+    and anyone listed in ALLOWED_EMAILS. Without it, any verified Google account may sign in."""
+    domains = _env_list("ALLOWED_EMAIL_DOMAINS")
+    if not domains:
+        return True
+    email = (email or "").lower()
+    return email == owner_email() or email in _env_list("ALLOWED_EMAILS") or email.rsplit("@", 1)[-1] in domains
+
+
+# ------------------------------------------------------------------ usage limits (kept in the database, so they hold
+# across serverless instances)
+
+def rate_limited(bucket, limits):
+    """Record one use of `bucket` by the current user. `limits` is [(max uses, seconds), ...].
+    Returns 0 if allowed, else roughly how many seconds until the next use is allowed (and records nothing)."""
+    u = current_user()
+    key = f"rate:{bucket}"
+    now = time.time()
+    longest = max(w for _, w in limits)
+    prev = get_user_data(u["id"], key)
+    stamps = [t for t in (prev["value"] if prev and isinstance(prev["value"], list) else [])
+              if isinstance(t, (int, float)) and now - t < longest]
+    for limit, window in limits:
+        recent = sorted(t for t in stamps if now - t < window)
+        if len(recent) >= limit:
+            return max(1, int(recent[-limit] + window - now) + 1)
+    set_user_data(u["id"], key, (stamps + [round(now, 2)])[-max(n for n, _ in limits):])
+    return 0
+
+
+def wait_text(seconds):
+    return f"{seconds} seconds" if seconds < 90 else (f"{round(seconds / 60)} minutes" if seconds < 5400 else f"{round(seconds / 3600)} hours")
 
 
 # ------------------------------------------------------------------ auth pages & API
@@ -248,7 +316,10 @@ def api_login():
     email = (info.get("email") or "").strip().lower()
     if not email or not info.get("email_verified"):
         return jsonify(error="Your Google account email is not verified."), 403
-    name = (info.get("name") or email.split("@")[0]).strip()[:40]
+    if not email_allowed(email):
+        domains = ", ".join(sorted("@" + d for d in _env_list("ALLOWED_EMAIL_DOMAINS")))
+        return jsonify(error=f"Please sign in with your college email ({domains})."), 403
+    name =(info.get("name") or email.split("@")[0]).strip()[:40]
 
     conn = db()
     row = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
@@ -846,9 +917,6 @@ def api_news_delete(nid):
 
 # ------------------------------------------------------------------ public chat
 
-_LAST_MSG = {}
-
-
 def msg_to_dict(r):
     return {"id": r["id"], "body": r["body"], "created_at": r["created_at"], "user_id": r["user_id"],
             "name": r["name"], "role": r["role"]}
@@ -883,9 +951,8 @@ def _send_message(body, channel_id):
     ban = ban_status(u["id"])
     if ban:
         return jsonify(error=ban["message"], banned=ban), 403
-    if time.time() - _LAST_MSG.get(u["id"], 0) < 1.5:
-        return jsonify(error="You're sending messages too fast. Wait a second."), 429
-    _LAST_MSG[u["id"]] = time.time()
+    if rate_limited("chat", [(1, 1.5), (20, 60), (300, 86400)]):
+        return jsonify(error="You're sending messages too fast. Wait a little and try again."), 429
     db().execute("INSERT INTO messages (user_id, body, created_at, channel_id) VALUES (?,?,?,?)",
                  (u["id"], body, now_iso(), channel_id))
     db().commit()
@@ -972,9 +1039,16 @@ def api_chat_ban():
     if problem:
         return jsonify(error=problem), 403
     hours = data.get("hours")
-    until = PERMANENT if hours in (0, "0", None, "permanent") else time.time() + float(hours) * 3600
-    if until != PERMANENT and not 0 < float(hours) <= 24 * 365:
-        return jsonify(error="Choose a valid ban duration."), 400
+    if hours in (0, "0", None, "permanent"):
+        until = PERMANENT
+    else:
+        try:
+            hours = float(hours)
+        except (TypeError, ValueError):
+            hours = -1
+        if not 0 < hours <= 24 * 365:  # also rejects NaN
+            return jsonify(error="Choose a valid ban duration."), 400
+        until = time.time() + hours * 3600
     db().execute("UPDATE users SET chat_ban_until = ?, chat_ban_by = ? WHERE id = ?", (until, current_user()["name"], target["id"]))
     db().commit()
     return jsonify(ok=True)
@@ -983,7 +1057,14 @@ def api_chat_ban():
 @bp.post("/api/chat/unban")
 @admin_required
 def api_chat_unban():
-    uid = (request.get_json(silent=True) or {}).get("user_id")
+    target = db().execute("SELECT id, name, role FROM users WHERE id = ?",
+                          ((request.get_json(silent=True) or {}).get("user_id"),)).fetchone()
+    if not target:
+        return jsonify(error="User not found."), 404
+    problem = _can_ban(current_user(), target)
+    if problem:
+        return jsonify(error=problem.replace("ban", "unban")), 403
+    uid = target["id"]
     db().execute("UPDATE users SET chat_ban_until = 0, chat_ban_by = NULL WHERE id = ?", (uid,))
     db().commit()
     return jsonify(ok=True)
@@ -1080,7 +1161,10 @@ def api_channel(cid):
     ch = _channel_for_member(cid)
     if not ch:
         return _not_found()
-    return jsonify(channel=dict(ch), members=_channel_members(cid), can_manage=_is_admin(current_user()))
+    members = _channel_members(cid)
+    if not _is_admin(current_user()):  # students see who is in the channel, not their email addresses
+        members = [{k: v for k, v in m.items() if k != "email"} for m in members]
+    return jsonify(channel=dict(ch), members=members, can_manage=_is_admin(current_user()))
 
 
 @bp.get("/api/channels/<int:cid>/messages")

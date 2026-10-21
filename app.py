@@ -189,6 +189,17 @@ def _list(v):
     return v if isinstance(v, list) else []
 
 
+# Each AI request costs Gemini quota shared by everyone, so one account can't use it all up.
+AI_LIMITS = [(20, 600), (100, 86400)]   # per user: 20 in 10 minutes, 100 a day (notice, planner and Ask together)
+
+
+def ai_limit_error():
+    wait = accounts.rate_limited("ai", AI_LIMITS)
+    if not wait:
+        return None
+    return jsonify(error=f"You've used the AI a lot in a short time. Please try again in about {accounts.wait_text(wait)}."), 429
+
+
 def cache_file(kind, sample_id, language):
     return CACHE_DIR / f"{kind}__{sample_id}__{language.replace(' ', '_')}.json"
 
@@ -252,8 +263,14 @@ def normalize_notice(d):
     return out
 
 
+MAX_IMAGE_PIXELS = 40_000_000  # a 12 MB file can decode to gigabytes; real phone photos are well under this
+
+
 def prepare_image(file_storage):
-    img = ImageOps.exif_transpose(Image.open(file_storage.stream)).convert("RGB")
+    img = Image.open(file_storage.stream)
+    if img.width * img.height > MAX_IMAGE_PIXELS:
+        raise ValueError("image too large")
+    img = ImageOps.exif_transpose(img).convert("RGB")
     img.thumbnail((1600, 1600))
     buf = io.BytesIO()
     img.save(buf, "JPEG", quality=88)
@@ -270,7 +287,9 @@ def explain_notice():
         return jsonify(error="That notice is very long. Please paste at most about 15,000 characters."), 400
     hindi = request.form.get("hindi") == "1"
     sample_id = request.form.get("sample_id") or ""
-    if not re.fullmatch(r"[a-z0-9_-]{1,40}", sample_id):
+    # cached answers are shown to everyone who tries that sample, so only cache a known sample's own text
+    sample = next((s for s in load("sample_notices.json") if s.get("id") == sample_id), None)
+    if not sample or text != str(sample.get("text") or "").strip():
         sample_id = ""
 
     image_bytes = None
@@ -283,6 +302,11 @@ def explain_notice():
 
     if not text and not image_bytes:
         return jsonify(error="Paste the notice text or upload a photo of it first."), 400
+    if image_bytes:
+        sample_id = ""
+    limited = ai_limit_error()
+    if limited:
+        return limited
 
     if image_bytes and text:
         source = "in the image, plus this text:\n---\n" + text + "\n---"
@@ -924,11 +948,15 @@ def make_plan():
 
     prompt = PLAN_PROMPT.format(dates=date_list, hours=hours, start=start, subjects="\n".join(lines))
     sample = data.get("sample_id") == "demo"
+    demo_id = f"demo-{current_user()['id']}"  # the demo inputs can be edited, so each student gets their own copy
+    limited = ai_limit_error()
+    if limited:
+        return limited
     started = time.time()
     try:
         raw, model = ask_gemma([prompt])
     except Exception as e:
-        cf = cache_file("plan", "demo", "en")
+        cf = cache_file("plan", demo_id, "en")
         if sample and cf.exists():
             saved = json.loads(cf.read_text(encoding="utf-8"))
             return jsonify(result=saved["result"], model=saved["model"], cached=True,
@@ -956,7 +984,7 @@ def make_plan():
               "days": days, "tips": [str(x) for x in _list(raw.get("tips"))]}
 
     if sample:
-        cache_file("plan", "demo", "en").write_text(json.dumps(
+        cache_file("plan", demo_id, "en").write_text(json.dumps(
             {"result": result, "model": model, "saved_at": datetime.now().strftime("%d %b %Y, %H:%M")},
             ensure_ascii=False, indent=2), encoding="utf-8")
     return jsonify(result=result, model=model, cached=False, seconds=round(time.time() - started, 1))
@@ -1125,6 +1153,9 @@ def ask():
     if not re.fullmatch(r"Gr\.\d", group):
         group = ""
     branch = _txt(data.get("branch"), 40)
+    limited = ai_limit_error()
+    if limited:
+        return limited
     label, context = build_ask_context(year, str(data.get("section") or ""), group, data.get("client") or {}, branch)
     history = ""
     turns = [t for t in _list(data.get("history")) if isinstance(t, dict)][-4:]
