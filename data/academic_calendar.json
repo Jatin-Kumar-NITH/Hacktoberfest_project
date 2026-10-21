@@ -1,7 +1,7 @@
 {
  "name": "Academic Calendar 2026-27",
- "note": "Gazetted holidays are from NIT Hamirpur's official list for calendar year 2026; holidays marked * depend on moon sighting. Other dates are confirmed and published by CampusMate admins. Always follow the official notice if anything differs.",
- "updated": "2026-10-21T07:30:00Z",
+ "note": "Gazetted holidays are from NIT Hamirpur's official list for calendar year 2026 (holidays marked * depend on moon sighting). Odd semester dates are from the official 2026-27 academic calendar for all years except 1st year, whose calendar is notified separately. Always follow the official notice if anything differs.",
+ "updated": "2026-10-21T07:45:00Z",
  "events": [
   {
    "date": "2026-01-26",
@@ -94,6 +94,54 @@
    ]
   },
   {
+   "date": "2026-07-13",
+   "end": "2026-07-19",
+   "title": "Online fee deposit for semester registration",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-07-21",
+   "end": "2026-07-21",
+   "title": "Registration of UG students",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-07-22",
+   "end": "2026-07-22",
+   "title": "Commencement of classes",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-07-31",
+   "end": "2026-07-31",
+   "title": "Last date of registration with late fee",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
    "date": "2026-08-15",
    "end": "2026-08-15",
    "title": "Independence Day",
@@ -101,6 +149,18 @@
    "note": "Gazetted holiday.",
    "years": [
     "all"
+   ]
+  },
+  {
+   "date": "2026-08-21",
+   "end": "2026-08-21",
+   "title": "Notification of list of registered students",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
    ]
   },
   {
@@ -114,6 +174,18 @@
    ]
   },
   {
+   "date": "2026-09-03",
+   "end": "2026-09-03",
+   "title": "Notification of shortage of attendance by departments",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
    "date": "2026-09-04",
    "end": "2026-09-04",
    "title": "Janmashtami (Vaishnva)",
@@ -121,6 +193,42 @@
    "note": "Gazetted holiday.",
    "years": [
     "all"
+   ]
+  },
+  {
+   "date": "2026-09-21",
+   "end": "2026-09-26",
+   "title": "Mid semester theory examinations",
+   "type": "exam",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-09-28",
+   "end": "2026-10-05",
+   "title": "Mid semester evaluation of UG projects",
+   "type": "exam",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "end": "2026-09-30",
+   "title": "Abhyudaya",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
    ]
   },
   {
@@ -134,6 +242,30 @@
    ]
   },
   {
+   "date": "2026-10-16",
+   "end": "2026-10-18",
+   "title": "Hill'Fair 2026 (annual cultural festival)",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-10-19",
+   "end": "2026-10-25",
+   "title": "Mid semester break",
+   "type": "holiday",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
    "date": "2026-10-20",
    "end": "2026-10-20",
    "title": "Dussehra",
@@ -141,6 +273,18 @@
    "note": "Gazetted holiday.",
    "years": [
     "all"
+   ]
+  },
+  {
+   "date": "2026-10-27",
+   "end": "2026-10-27",
+   "title": "Last date for showing mid sem answer sheets",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
    ]
   },
   {
@@ -154,6 +298,54 @@
    ]
   },
   {
+   "date": "2026-11-12",
+   "end": "2026-11-12",
+   "title": "End of classes",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-11-13",
+   "end": "2026-11-13",
+   "title": "Final notification of shortage of attendance by departments",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-11-16",
+   "end": "2026-11-21",
+   "title": "End semester practical examinations",
+   "type": "exam",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-11-23",
+   "end": "2026-12-07",
+   "title": "End semester theory examinations",
+   "type": "exam",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
    "date": "2026-11-24",
    "end": "2026-11-24",
    "title": "Guru Nanak's Birthday",
@@ -164,6 +356,42 @@
    ]
   },
   {
+   "date": "2026-12-08",
+   "end": "2026-12-10",
+   "title": "End semester evaluation of UG projects",
+   "type": "exam",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-12-11",
+   "end": "2026-12-11",
+   "title": "Last date for evaluation of end semester answer sheets",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "date": "2026-12-14",
+   "end": "2026-12-14",
+   "title": "Last date for grade submission",
+   "type": "event",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
+   ]
+  },
+  {
    "date": "2026-12-25",
    "end": "2026-12-25",
    "title": "Christmas Day",
@@ -171,6 +399,18 @@
    "note": "Gazetted holiday.",
    "years": [
     "all"
+   ]
+  },
+  {
+   "date": "2026-12-31",
+   "end": "2026-12-31",
+   "title": "Declaration of results",
+   "type": "semester",
+   "note": "Odd semester 2026-27 academic calendar (except 1st year).",
+   "years": [
+    2,
+    3,
+    4
    ]
   }
  ]
