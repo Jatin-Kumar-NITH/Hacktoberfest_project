@@ -47,6 +47,8 @@ private class SubjectEdit(name: String = "", date: String = "", topics: String =
     var date by mutableStateOf(date)
     var topics by mutableStateOf(topics)
     var difficulty by mutableStateOf(difficulty)
+    /** Topics picked from the syllabus; [topics] holds their text and can still be edited by hand. */
+    var pick by mutableStateOf<TopicPick?>(null)
 }
 
 @Composable
@@ -60,6 +62,21 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
     var foot by remember { mutableStateOf("Saved plan") }
     var cachedNote by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    var pickingFor by remember { mutableStateOf<SubjectEdit?>(null) }
+    val syl = vm.syllabus()
+    val canPick = outlined(syl).isNotEmpty()
+
+    pickingFor?.let { s ->
+        val code = sylMatch(syl, s.name)
+        TopicPickerDialog(vm, code, s.pick?.takeIf { it.code == code }, onDismiss = { pickingFor = null }) { c, pick ->
+            val sub = syl.subjects.getValue(c)
+            if (sylMatch(syl, s.name) != c || s.name.trim().uppercase() == c) s.name = "$c ${sub.name}"
+            s.pick = pick
+            s.topics = pickedTopicsText(sub, pick)
+            sample = false
+            pickingFor = null
+        }
+    }
 
     LaunchedEffect(vm.pendingPlan) {
         vm.pendingPlan?.let { list ->
@@ -71,7 +88,8 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
     fun plus(n: Long) = today().plusDays(n).toString()
 
     Screen("Study planner", vm, onBack = { nav.back() }) {
-        item { Muted("Add your subjects and exam dates. Gemma builds a realistic day-by-day plan with breaks and revision before each exam.") }
+        item { Muted("Add your subjects and exam dates. Gemma builds a realistic day-by-day plan with breaks and revision before each exam." +
+            if (canPick) " Pick each subject's units and topics from the syllabus, or type them." else "") }
         items(subjects.size) { i ->
             val s = subjects[i]
             CmCard {
@@ -84,7 +102,14 @@ fun PlannerScreen(vm: AppViewModel, nav: Nav) {
                     DateField("Exam date", s.date, { s.date = it; sample = false })
                     Dropdown("Difficulty", listOf("easy" to "Easy", "medium" to "Medium", "hard" to "Hard"), s.difficulty, { s.difficulty = it; sample = false })
                 }
-                Field(s.topics, { s.topics = it; sample = false }, "Topics (comma separated)", maxLength = 600)
+                Field(s.topics, { s.topics = it; sample = false }, "Topics (comma separated)", maxLength = 2000, maxLines = 4)
+                if (canPick) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    val code = sylMatch(syl, s.name)
+                    SmallButton(if (code != null) "📚 Choose $code topics" else "📚 Choose topics from syllabus", { pickingFor = s })
+                    s.pick?.takeIf { it.code == code && it.topics.isNotEmpty() }?.let { p ->
+                        Muted("${p.units.size} unit${if (p.units.size == 1) "" else "s"} · ${p.topics.size} topic${if (p.topics.size == 1) "" else "s"}", size = 12)
+                    }
+                }
             }
         }
         item {

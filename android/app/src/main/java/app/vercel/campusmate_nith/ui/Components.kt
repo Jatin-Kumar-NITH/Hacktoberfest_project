@@ -318,10 +318,10 @@ fun DateField(label: String, value: String, onChange: (String) -> Unit, modifier
 }
 
 @Composable
-fun Field(value: String, onChange: (String) -> Unit, label: String, modifier: Modifier = Modifier.fillMaxWidth(), minLines: Int = 1, maxLength: Int = 500, number: Boolean = false) {
+fun Field(value: String, onChange: (String) -> Unit, label: String, modifier: Modifier = Modifier.fillMaxWidth(), minLines: Int = 1, maxLength: Int = 500, number: Boolean = false, maxLines: Int = Int.MAX_VALUE) {
     OutlinedTextField(
         value = value, onValueChange = { if (it.length <= maxLength) onChange(it) }, label = { Text(label) },
-        modifier = modifier, minLines = minLines, shape = RoundedCornerShape(12.dp),
+        modifier = modifier, minLines = minLines, maxLines = maxLines, shape = RoundedCornerShape(12.dp),
         keyboardOptions = if (number) androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number)
             else androidx.compose.foundation.text.KeyboardOptions.Default,
     )

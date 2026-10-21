@@ -348,6 +348,35 @@ def load(name):
     return json.loads((BASE_DIR / "data" / name).read_text(encoding="utf-8"))
 
 
+def outline_from_text(text):
+    """Units and topics for the study planner, from syllabus text an admin typed:
+    "Unit 1: Heading: topic, topic. Heading 2: topic, ..." (one unit per paragraph or line starting with "Unit")."""
+    units, cur = [], None
+    for line in text.splitlines():
+        m = re.match(r"^\s*unit[\s\-]*0?(\d{1,2})\b\s*[:.\-–)]?\s*(.*)$", line, re.I)
+        if m:
+            cur = {"n": int(m.group(1)), "body": m.group(2)}
+            units.append(cur)
+        elif re.match(r"^\s*(course outcomes|text ?books?|reference|books)\b", line, re.I):
+            cur = None
+        elif cur is not None:
+            cur["body"] += " " + line
+    out = []
+    for u in units:
+        body = re.sub(r"\s*\b\d{1,2}\s*L\b\s*", " ", u["body"])  # contact hours ("05L")
+        parts = []
+        for piece in re.split(r"(?<=[.;])\s+(?=[A-Z][^:.;,]{2,60}:)", body.strip()):
+            m = re.match(r"^([^:.;,]{2,60}):\s*(.*)$", piece)
+            title, rest = (m.group(1).strip(), m.group(2)) if m else (f"Unit {u['n']}", piece)
+            topics = [t.strip(" .-–") for t in re.split(r"[,;]\s*(?![^()]*\))", rest)]
+            topics = [t[0].upper() + t[1:] for t in topics if len(t) > 1]
+            if topics:
+                parts.append({"title": title, "topics": topics[:40]})
+        if parts:
+            out.append({"n": u["n"], "title": " · ".join(p["title"] for p in parts), "hours": "", "parts": parts})
+    return out[:12]
+
+
 def load_campus():
     """All campus data the website shows: JSON files in data/, plus edits admins made on the site."""
     campus = {
@@ -390,6 +419,10 @@ def load_campus():
             edits, gone = ov["value"].get("edits", {}), set(ov["value"].get("deleted", []))
             subjects = {**syl["subjects"], **ov["value"].get("added", {})}  # "added": subjects admins added on the site
             syl["subjects"] = {c: {**sub, **edits.get(c, {})} for c, sub in subjects.items() if c not in gone}
+            # the planner's unit/topic outline comes from the official text; text an admin wrote gets its own outline
+            for c, sub in syl["subjects"].items():
+                if sub.get("text") != subjects[c].get("text") or "outline" not in sub:
+                    sub["outline"] = outline_from_text(sub.get("text") or "")
     # menu:<hostel> is the "All years" menu; menu:<hostel>:<year> is a year's own menu and wins for that year
     # a saved menu with no dishes in it is ignored, so it can't hide the menu in data/hostel.json
     for h in ("boys", "girls"):
@@ -932,7 +965,7 @@ def make_plan():
             return jsonify(error=f"Please pick a valid exam date for {name}."), 400
         if exam < today:
             return jsonify(error=f"The exam date for {name} is in the past."), 400
-        topics = str(s.get("topics") or "").strip()[:600]
+        topics = str(s.get("topics") or "").strip()[:2000]  # long when picked from the syllabus
         level = s.get("difficulty") if s.get("difficulty") in ("easy", "medium", "hard") else "medium"
         subjects.append(exam)
         lines.append(f"- {name}: exam on {exam.isoformat()} ({exam.strftime('%A')}), difficulty {level}, "
