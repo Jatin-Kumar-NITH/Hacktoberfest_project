@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Study mode: switch Do Not Disturb on and off (the student grants it once in Settings) -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <!-- Study mode: end each Pomodoro and break on time even when the phone is idle -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".CampusMateApplication"
@@ -46,6 +50,10 @@
         <!-- Class reminders. -->
         <receiver
             android:name=".background.ReminderReceiver"
+            android:exported="false" />
+        <!-- Study mode: phase alarms and the notification's buttons. -->
+        <receiver
+            android:name=".background.StudyReceiver"
             android:exported="false" />
         <receiver
             android:name=".background.BootReceiver"

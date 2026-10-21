@@ -540,6 +540,43 @@
           </div>
         </div>
       </div>
+
+      <!-- study mode: a Pomodoro timer (the phone app also switches on Do Not Disturb) -->
+      <div class="card study-card" id="studyCard">
+        <div class="card-head"><h2>⏱ Study mode</h2><span class="muted small-note">Pomodoro timer</span></div>
+        <div class="study-grid">
+          <div id="stSetup">
+            <label class="field"><span class="label">What are you studying?</span><input type="text" id="stSubject" maxlength="80" placeholder="e.g. Engineering Mathematics"></label>
+            <label class="field"><span class="label">Task (optional)</span><input type="text" id="stTask" maxlength="300" placeholder="e.g. Unit 2: Laplace transform problems"></label>
+            <p class="fine" id="stFromPlan" hidden></p>
+            <span class="label">Focus</span>
+            <div class="chips st-chips" data-st="focus"><button class="chip" data-v="25">25 min</button><button class="chip" data-v="45">45 min</button><button class="chip" data-v="50">50 min</button></div>
+            <span class="label">Break</span>
+            <div class="chips st-chips" data-st="short"><button class="chip" data-v="5">5 min</button><button class="chip" data-v="10">10 min</button></div>
+            <span class="label">Pomodoros</span>
+            <div class="chips st-chips" data-st="rounds"><button class="chip" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4</button><button class="chip" data-v="5">5</button><button class="chip" data-v="6">6</button><button class="chip" data-v="7">7</button><button class="chip" data-v="8">8</button></div>
+            <p class="fine" id="stSum"></p>
+            <div id="stError" class="alert error" hidden></div>
+            <button class="primary" id="stStart">Start study mode</button>
+            <p class="fine">A browser can't switch on Do Not Disturb, so silence your phone yourself, or start study mode in the Zenkai Android app, which does it for you.</p>
+          </div>
+          <div id="stRun" hidden>
+            <div class="st-ring">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="st-track" cx="60" cy="60" r="52"></circle><circle class="st-bar" id="stBar" cx="60" cy="60" r="52"></circle></svg>
+              <div class="st-center"><span id="stPhase"></span><strong id="stClock">25:00</strong><span class="muted" id="stUntil"></span></div>
+            </div>
+            <div class="st-dots" id="stDots"></div>
+            <div class="st-subject" id="stRunSubject"></div>
+            <div class="muted st-task" id="stRunTask"></div>
+            <div class="st-actions"><button class="primary inline" id="stPause">Pause</button><button class="ghost" id="stSkip">Skip</button><button class="ghost danger" id="stStop">Stop</button></div>
+          </div>
+          <div class="st-side">
+            <div class="st-stats"><div><span class="label">Today</span><strong id="stToday">0 min</strong><span class="muted" id="stTodayP"></span></div><div><span class="label">Last 7 days</span><strong id="stWeek">0 min</strong><span class="muted" id="stWeekP"></span></div></div>
+            <ul class="st-log" id="stLog"></ul>
+            <button class="ghost small" id="stClear" hidden>Clear history</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ HOSTEL (mess menus) ============ -->

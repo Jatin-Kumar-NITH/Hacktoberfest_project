@@ -7,6 +7,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -18,11 +20,13 @@ import app.vercel.campusmate_nith.R
 object Notify {
     const val UPDATES = "updates"
     const val CLASSES = "classes"
+    const val STUDY = "study"
+    const val STUDY_ALERT = "study_alert"
 
     /** Screens a notification, shortcut or widget may open. */
     val ROUTES = setOf(
         "home", "timetable", "board", "chat", "more", "assignments", "exams", "calendar", "attendance",
-        "syllabus", "explain", "planner", "mess", "ask", "settings", "college-updates", "hostel-updates", "results",
+        "syllabus", "explain", "planner", "mess", "ask", "settings", "college-updates", "hostel-updates", "results", "study",
     )
 
     fun createChannels(context: Context) {
@@ -35,6 +39,23 @@ object Notify {
         nm.createNotificationChannel(
             NotificationChannel(CLASSES, "Class reminders", NotificationManager.IMPORTANCE_HIGH)
                 .apply { description = "A reminder a few minutes before each class" },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(STUDY, "Study timer", NotificationManager.IMPORTANCE_LOW)
+                .apply { description = "The Pomodoro countdown while study mode is on"; setShowBadge(false) },
+        )
+        // rings through study mode's own Do Not Disturb: alarm sound, and allowed to bypass it once access is granted
+        nm.createNotificationChannel(
+            NotificationChannel(STUDY_ALERT, "Study breaks", NotificationManager.IMPORTANCE_HIGH).apply {
+                description = "When a Pomodoro or a break ends"
+                setBypassDnd(true)
+                enableVibration(true)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build(),
+                )
+            },
         )
     }
 

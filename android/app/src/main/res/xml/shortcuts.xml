@@ -52,4 +52,17 @@
             <extra android:name="route" android:value="ask" />
         </intent>
     </shortcut>
+    <shortcut
+        android:shortcutId="study"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_study"
+        android:shortcutShortLabel="@string/shortcut_study"
+        android:shortcutLongLabel="@string/shortcut_study">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.vercel.campusmate_nith"
+            android:targetClass="app.vercel.campusmate_nith.MainActivity">
+            <extra android:name="route" android:value="study" />
+        </intent>
+    </shortcut>
 </shortcuts>

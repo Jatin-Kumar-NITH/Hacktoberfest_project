@@ -58,6 +58,7 @@ import app.vercel.campusmate_nith.ui.screens.PublishScreen
 import app.vercel.campusmate_nith.ui.screens.SettingsScreen
 import app.vercel.campusmate_nith.ui.screens.SetupScreen
 import app.vercel.campusmate_nith.ui.screens.TutorialScreen
+import app.vercel.campusmate_nith.ui.screens.StudyScreen
 import app.vercel.campusmate_nith.ui.screens.SyllabusScreen
 import app.vercel.campusmate_nith.ui.screens.TimetableScreen
 
@@ -148,6 +149,7 @@ private fun Main(vm: AppViewModel) {
             composable("syllabus") { SyllabusScreen(vm, nav) }
             composable("explain") { ExplainScreen(vm, nav) }
             composable("planner") { PlannerScreen(vm, nav) }
+            composable("study") { StudyScreen(vm, nav) }
             composable("mess") { MessScreen(vm, nav) }
             composable("ask") { AskScreen(vm, nav) }
             composable("publish") { PublishScreen(vm, nav) }

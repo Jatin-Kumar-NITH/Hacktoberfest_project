@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Publish
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -68,6 +69,7 @@ fun MoreScreen(vm: AppViewModel, nav: Nav) {
         Entry("ask", "Ask Zenkai", "Questions about your campus data", Icons.Outlined.AutoAwesome),
         Entry("explain", "Notice explainer", "Deadlines and a checklist from any notice", Icons.Outlined.Description),
         Entry("planner", "Study planner", "A day-by-day plan for your exams", Icons.Outlined.School),
+        Entry("study", "Study mode", "Pomodoro timer, phone on Do Not Disturb", Icons.Outlined.Timer),
     )
     val admin = buildList {
         if (vm.isAdmin) add(Entry("publish", "Publish", "Notices, announcements, assignments, material", Icons.Outlined.Publish))

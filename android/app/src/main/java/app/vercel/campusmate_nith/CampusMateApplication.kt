@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.vercel.campusmate_nith.background.ClassReminders
 import app.vercel.campusmate_nith.background.Notify
+import app.vercel.campusmate_nith.background.StudyTimer
 import app.vercel.campusmate_nith.background.SyncWorker
 import app.vercel.campusmate_nith.background.TodayWidget
 import app.vercel.campusmate_nith.data.Api
@@ -34,6 +35,7 @@ class CampusMateApplication : Application() {
         api = Api(this)
         store = Store(this)
         themeMode = store.theme
+        StudyTimer.load(store)
         Notify.createChannels(this)
         SyncWorker.schedule(this)
         background {

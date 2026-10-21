@@ -105,6 +105,7 @@ class BootReceiver : BroadcastReceiver() {
                     try {
                         ClassReminders.schedule(context, app.store.campusCache?.campus)
                         TodayWidget.refresh(context)
+                        StudyTimer.restore(context)
                     } finally {
                         pending.finish()
                     }

@@ -1159,3 +1159,49 @@ html[data-theme="dark"] .cal-exam { color: #da8fff; }
 .upload-alert-banner { flex-direction: column; align-items: stretch; background: var(--red-soft); color: var(--ink); border: 0; }
 .upload-alert-banner strong { color: var(--red); }
 .upload-alert-banner button { align-self: flex-start; }
+
+/* ---------------------------------------------------------- study mode (Pomodoro) */
+.study-card { margin-top: 20px; }
+.study-card .small-note { font-size: 12px; }
+.study-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.study-grid .field:first-child { margin-top: 0; }
+.st-chips { margin-bottom: 14px; }
+#stSetup > .label { margin-top: 16px; }
+.st-ring { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+.st-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.st-ring circle { fill: none; stroke-width: 9; }
+.st-track { stroke: var(--fill-2); }
+.st-bar { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .3s linear, stroke .3s; }
+.st-bar.short { stroke: var(--green); }
+.st-bar.long { stroke: var(--indigo); }
+.st-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.st-center strong { font-size: 46px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.st-center span { font-size: 13px; }
+#stPhase { font-weight: 600; color: var(--accent); font-size: 14px; }
+#stPhase.short { color: var(--green); }
+#stPhase.long { color: var(--indigo); }
+.st-dots { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
+.st-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--fill-2); }
+.st-dots i.done { background: var(--accent); }
+.st-dots i.now { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
+.st-subject { text-align: center; font-weight: 600; font-size: 17px; }
+.st-task { text-align: center; font-size: 14px; margin-top: 2px; }
+.st-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+.st-actions .ghost { padding: 9px 14px; font-size: 14px; }
+.ghost.danger { color: var(--red); }
+.st-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.st-stats > div { background: var(--fill); border-radius: 12px; padding: 12px; }
+.st-stats strong { display: block; font-size: 22px; letter-spacing: -0.02em; }
+.st-stats .label { margin-bottom: 2px; color: var(--muted); font-weight: 600; font-size: 12px; }
+.st-stats .muted { font-size: 12px; }
+.st-log { list-style: none; padding: 0; margin: 12px 0 8px; display: grid; gap: 6px; }
+.st-log li { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.st-log li span { color: var(--muted); font-size: 12px; display: block; }
+.st-log li b { color: var(--accent); white-space: nowrap; }
+.sess-focus { margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.sess-focus:hover { opacity: .8; }
+.sess-done { font-size: 12px; font-weight: 600; color: var(--green); margin-top: 3px; }
+@media (max-width: 900px) {
+  .study-grid { grid-template-columns: minmax(0, 1fr); }
+}
+#stStart { margin-top: 14px; }
