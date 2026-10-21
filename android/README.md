@@ -1,7 +1,7 @@
 # Zenkai for Android
 
 A fully native Kotlin app (Jetpack Compose, Material 3) for
-https://campusmate-nith.vercel.app. It has every feature of the site:
+https://zenkai-nith.vercel.app. It has every feature of the site:
 timetable, notice board, assignments, exams, academic calendar, attendance,
 syllabus, mess menu, notice explainer, study planner, Ask Zenkai, chat,
 and the admin editors and publishing tools for CRs and admins.

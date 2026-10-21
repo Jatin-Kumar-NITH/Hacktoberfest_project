@@ -6,7 +6,7 @@ plugins {
 }
 
 // The server the app talks to. The app id must match ANDROID_PACKAGE in app.py.
-def siteHost = "campusmate-nith.vercel.app"
+def siteHost = "zenkai-nith.vercel.app"
 // CI passes its run number so every build installs over the last one (and the app can spot updates).
 def buildNumber = (System.getenv("APP_BUILD_NUMBER") ?: "0").toInteger()
 def updateUrl = "https://github.com/Jatin-Kumar-NITH/Hacktoberfest_project/releases/download/android-latest/version.json"
